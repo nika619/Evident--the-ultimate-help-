@@ -19,12 +19,15 @@ import {
   AccountScreen,
   PaywallScreen,
   OnboardingScreen,
+  LandingScreen,
 } from '../screens';
 import { Header } from '../components/Header';
+import { InteractiveTutorial } from '../components/InteractiveTutorial';
 import { useEvidenceStore } from '../store/useEvidenceStore';
 
 export type ScreenKey =
   | 'home'
+  | 'landing'
   | 'evidence'
   | 'opportunity'
   | 'application'
@@ -34,6 +37,7 @@ export type ScreenKey =
 
 const SCREEN_TITLES: Record<ScreenKey, string> = {
   home: 'Home',
+  landing: 'Evident Welcome',
   evidence: 'Evidence Graph',
   opportunity: 'Role Matching',
   application: 'Application Studio',
@@ -45,6 +49,7 @@ const SCREEN_TITLES: Record<ScreenKey, string> = {
 export const RootNavigator: React.FC = () => {
   const [navigationStack, setNavigationStack] = useState<ScreenKey[]>(['home']);
   const [paywallVisible, setPaywallVisible] = useState<boolean>(false);
+  const [tutorialVisible, setTutorialVisible] = useState<boolean>(false);
   const triggerSync = useEvidenceStore((s) => s.triggerContinuousSync);
   const hasCompletedOnboarding = useEvidenceStore((s) => s.hasCompletedOnboarding);
 
@@ -96,6 +101,22 @@ export const RootNavigator: React.FC = () => {
             onNavigateToHistory={() => navigateTo('history')}
             onNavigateToAccount={() => navigateTo('account')}
             onNavigateToPaywall={() => setPaywallVisible(true)}
+            onOpenTutorial={() => setTutorialVisible(true)}
+            onOpenLanding={() => navigateTo('landing')}
+          />
+        );
+      case 'landing':
+        return (
+          <LandingScreen
+            onEnterCockpit={() => switchTab('home')}
+            onOpenTutorial={() => setTutorialVisible(true)}
+            onExploreNikaProfile={() => {
+              useEvidenceStore.getState().initialize();
+              switchTab('home');
+            }}
+            onConnectGitHub={() => {
+              useEvidenceStore.getState().setOnboardingComplete(false);
+            }}
           />
         );
       case 'opportunity':
@@ -126,6 +147,8 @@ export const RootNavigator: React.FC = () => {
           <AccountScreen
             onNavigateToPaywall={() => setPaywallVisible(true)}
             onGoBack={goBack}
+            onOpenTutorial={() => setTutorialVisible(true)}
+            onOpenLanding={() => navigateTo('landing')}
           />
         );
       case 'evidence':
@@ -261,10 +284,20 @@ export const RootNavigator: React.FC = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Paywall Modal */}
+      {/* RevenueCat Pro Paywall Modal */}
       {paywallVisible && (
         <PaywallScreen onClose={() => setPaywallVisible(false)} />
       )}
+
+      {/* 5-Stop Guided Trip Tutorial Modal */}
+      <InteractiveTutorial
+        visible={tutorialVisible}
+        onClose={() => setTutorialVisible(false)}
+        onComplete={() => {
+          useEvidenceStore.getState().setHasSeenTutorial(true);
+          setTutorialVisible(false);
+        }}
+      />
     </View>
   );
 };
