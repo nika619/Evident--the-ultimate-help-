@@ -3,15 +3,17 @@
  * Minimalist Studio Design (Linear-style solid chalk white primary, matte secondary).
  */
 
-import React from 'react';
+import React, { useRef } from 'react';
 import {
-  TouchableOpacity,
+  Pressable,
   Text,
   StyleSheet,
   ActivityIndicator,
   ViewStyle,
   TextStyle,
+  Animated,
 } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme';
 
 interface EvidentButtonProps {
@@ -37,6 +39,47 @@ export const EvidentButton: React.FC<EvidentButtonProps> = ({
   textStyle,
   icon,
 }) => {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+
+  React.useEffect(() => {
+    if (variant === 'primary' && !disabled && !loading) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1.02,
+            duration: 1500,
+            useNativeDriver: true,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 1500,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
+    }
+  }, [variant, disabled, loading]);
+
+  const handlePressIn = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Animated.spring(scaleAnim, {
+      toValue: 0.95,
+      useNativeDriver: true,
+      speed: 20,
+      bounciness: 10,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 20,
+      bounciness: 10,
+    }).start();
+  };
+
   const getVariantStyles = () => {
     switch (variant) {
       case 'secondary':
@@ -91,42 +134,47 @@ export const EvidentButton: React.FC<EvidentButtonProps> = ({
   const sStyles = getSizeStyles();
 
   return (
-    <TouchableOpacity
-      style={[
-        styles.baseBtn,
-        vStyles.btn,
-        {
-          paddingVertical: sStyles.paddingVertical,
-          paddingHorizontal: sStyles.paddingHorizontal,
-        },
-        disabled && styles.btnDisabled,
-        style,
-      ]}
+    <Pressable
       onPress={onPress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
       disabled={disabled || loading}
-      activeOpacity={0.85}
     >
-      {loading ? (
-        <ActivityIndicator
-          size="small"
-          color={variant === 'primary' ? '#0A0C10' : '#FFFFFF'}
-        />
-      ) : (
-        <>
-          {icon}
-          <Text
-            style={[
-              styles.baseText,
-              vStyles.text,
-              { fontSize: sStyles.fontSize },
-              textStyle,
-            ]}
-          >
-            {title}
-          </Text>
-        </>
-      )}
-    </TouchableOpacity>
+      <Animated.View
+        style={[
+          styles.baseBtn,
+          vStyles.btn,
+          {
+            paddingVertical: sStyles.paddingVertical,
+            paddingHorizontal: sStyles.paddingHorizontal,
+            transform: [{ scale: Animated.multiply(scaleAnim, pulseAnim) }],
+          },
+          disabled && styles.btnDisabled,
+          style,
+        ]}
+      >
+        {loading ? (
+          <ActivityIndicator
+            size="small"
+            color={variant === 'primary' ? '#FFFFFF' : Colors.primary}
+          />
+        ) : (
+          <>
+            {icon}
+            <Text
+              style={[
+                styles.baseText,
+                vStyles.text,
+                { fontSize: sStyles.fontSize },
+                textStyle,
+              ]}
+            >
+              {title}
+            </Text>
+          </>
+        )}
+      </Animated.View>
+    </Pressable>
   );
 };
 
