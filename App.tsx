@@ -58,6 +58,14 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <View style={styles.outerShell} onPointerMove={handlePointerMove}>
+        {Platform.OS === 'web' && (
+          <LinearGradient
+            colors={['#0B0F17', '#111827', '#1E293B']}
+            style={StyleSheet.absoluteFill}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          />
+        )}
         <View style={styles.appContainer}>
           {/* Dynamic Cursor Glow Background */}
           <View style={styles.dynamicBackground}>
@@ -76,7 +84,7 @@ export default function App() {
 const styles = StyleSheet.create({
   outerShell: {
     flex: 1,
-    backgroundColor: Platform.OS === 'web' ? '#E2E8F0' : Colors.bgPrimary,
+    backgroundColor: '#0B0F17',
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
@@ -88,6 +96,13 @@ const styles = StyleSheet.create({
     maxWidth: Platform.OS === 'web' ? 480 : ('100%' as any),
     backgroundColor: Colors.bgPrimary,
     overflow: 'hidden',
+    ...(Platform.OS === 'web'
+      ? {
+          boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.08)',
+          borderRadius: 24,
+          maxHeight: 920,
+        }
+      : {}),
   },
   dynamicBackground: {
     position: 'absolute',

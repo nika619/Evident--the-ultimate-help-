@@ -65,3 +65,21 @@ export const Colors = {
   violet: '#8B5CF6',
   violetGlow: 'rgba(139, 92, 246, 0.15)',
 };
+
+export const Gradients = {
+  // Living UI gradient palettes
+  backgroundMesh: ['#F0F4FF', '#EDFBF7', '#F5F3FF', '#F8FAFC'],
+  backgroundHeader: ['rgba(255, 255, 255, 0.95)', 'rgba(241, 245, 249, 0.85)'],
+  backgroundWebShell: ['#0B0F17', '#111827', '#1E293B'],
+  cardAurora: ['rgba(255, 255, 255, 0.95)', 'rgba(240, 249, 255, 0.75)'],
+  cardEmerald: ['#F0FDF4', '#DCFCE7'],
+  cardBlue: ['#EFF6FF', '#DBEAFE'],
+  cardPurple: ['#FAF5FF', '#F3E8FF'],
+  cardGold: ['#FFFBEB', '#FEF3C7'],
+  primaryBtn: ['#2563EB', '#1D4ED8'],
+  proGold: ['#F59E0B', '#D97706'],
+  cyanOrb: ['rgba(14, 165, 233, 0.45)', 'rgba(56, 189, 248, 0.18)', 'transparent'],
+  violetOrb: ['rgba(99, 102, 241, 0.35)', 'rgba(168, 85, 247, 0.15)', 'transparent'],
+  emeraldOrb: ['rgba(16, 185, 129, 0.28)', 'rgba(14, 165, 233, 0.12)', 'transparent'],
+};
+

@@ -92,6 +92,14 @@ export const CloudCursorBackground: React.FC<CloudCursorProps> = ({ pointerX, po
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="none">
+      {/* Living Multi-Stop Base Mesh Gradient */}
+      <LinearGradient
+        colors={['#EFF6FF', '#EDFBF7', '#F5F3FF', '#F8FAFC']}
+        style={StyleSheet.absoluteFill}
+        start={{ x: 0.1, y: 0 }}
+        end={{ x: 0.9, y: 1 }}
+      />
+
       {/* Ambient Top Light Beam (Permanent $1M Atmosphere) */}
       <LinearGradient
         colors={['rgba(224, 242, 254, 0.85)', 'rgba(240, 253, 244, 0.4)', 'rgba(248, 250, 252, 0)']}
