@@ -151,7 +151,7 @@ export const OnboardingScreen = () => {
             activeOpacity={0.7}
           >
             <Ionicons name="sparkles-outline" size={14} color={Colors.primary} />
-            <Text style={styles.demoButtonText}>Explore with Verified Golden Profile (Aarav)</Text>
+            <Text style={styles.demoButtonText}>Explore Verified Profile (@nika619)</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
