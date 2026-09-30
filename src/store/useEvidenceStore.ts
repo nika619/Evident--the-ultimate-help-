@@ -12,6 +12,7 @@ import { GOLDEN_PROJECTS, GOLDEN_EVIDENCE } from '../domain/fixtures';
 
 interface EvidenceState {
   hasCompletedOnboarding: boolean;
+  hasSeenTutorial: boolean;
   candidateName: string;
   projects: ProjectSource[];
   evidence: EvidenceItem[];
@@ -25,6 +26,7 @@ interface EvidenceState {
   // Actions
   initialize: () => void;
   setOnboardingComplete: (status: boolean) => void;
+  setHasSeenTutorial: (seen: boolean) => void;
   selectEvidence: (item: EvidenceItem | null) => void;
   setFilter: (filter: EvidenceStatus | 'all') => void;
   markUserVerification: (evidenceId: string, isAccurate: boolean) => void;
@@ -35,6 +37,7 @@ interface EvidenceState {
 
 export const useEvidenceStore = create<EvidenceState>((set, get) => ({
   hasCompletedOnboarding: false,
+  hasSeenTutorial: false,
   candidateName: 'Mayank Tiwari (@nika619)',
   projects: GOLDEN_PROJECTS,
   evidence: GOLDEN_EVIDENCE,
@@ -60,6 +63,10 @@ export const useEvidenceStore = create<EvidenceState>((set, get) => ({
 
   setOnboardingComplete: (status) => {
     set({ hasCompletedOnboarding: status });
+  },
+
+  setHasSeenTutorial: (seen) => {
+    set({ hasSeenTutorial: seen });
   },
 
   selectEvidence: (item) => {
