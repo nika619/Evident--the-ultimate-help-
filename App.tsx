@@ -7,7 +7,7 @@
  *  Evident remembers what you have done. Apply knows when it matters."
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, Platform, Animated } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -19,8 +19,10 @@ import { useInterviewStore } from './src/store/useInterviewStore';
 import { useSubscriptionStore } from './src/store/useSubscriptionStore';
 import { LinearGradient } from 'expo-linear-gradient';
 import { CloudCursorBackground } from './src/components/CloudCursorBackground';
+import { LoadingScreen } from './src/screens/LoadingScreen';
 
 export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
   const initializeEvidence = useEvidenceStore((s) => s.initialize);
   const initializeOpportunity = useOpportunityStore((s) => s.initialize);
   const initializeInterview = useInterviewStore((s) => s.initialize);
@@ -64,6 +66,7 @@ export default function App() {
 
           <StatusBar style="dark" />
           <RootNavigator />
+          {isLoading && <LoadingScreen onFinish={() => setIsLoading(false)} />}
         </View>
       </View>
     </SafeAreaProvider>
