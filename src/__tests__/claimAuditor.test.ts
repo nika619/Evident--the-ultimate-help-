@@ -10,10 +10,10 @@ describe('ClaimAuditor', () => {
   it('verifies a bullet whose claims are strictly supported by evidence', () => {
     const validBullet: GroundedResumeBullet = {
       id: 'b_valid',
-      projectId: 'proj_rift',
-      projectName: 'RIFT',
-      text: 'Implemented HMAC-SHA256 JWT validation middleware with token rotation in TypeScript.',
-      evidenceIds: ['ev_rift_jwt', 'ev_rift_rotation'],
+      projectId: 'proj_evident',
+      projectName: 'Evident--the-ultimate-help-',
+      text: 'Implemented SHA-256 deterministic Merkle root provenance generator with React Native mobile interface in TypeScript.',
+      evidenceIds: ['ev_evident_merkle', 'ev_evident_rn'],
       isAudited: true,
       userVerified: false,
     };
@@ -28,11 +28,11 @@ describe('ClaimAuditor', () => {
   it('detects and flags hallucinated technologies not present in supporting evidence', () => {
     const hallucinatedBullet: GroundedResumeBullet = {
       id: 'b_hallucinated',
-      projectId: 'proj_rift',
-      projectName: 'RIFT',
-      // Notice: RIFT evidence does NOT have Kubernetes or AWS
+      projectId: 'proj_evident',
+      projectName: 'Evident--the-ultimate-help-',
+      // Notice: Evident evidence does NOT have Kubernetes or AWS
       text: 'Architected scalable Kubernetes clusters and automated AWS cloud deployments.',
-      evidenceIds: ['ev_rift_jwt'],
+      evidenceIds: ['ev_evident_merkle'],
       isAudited: true,
       userVerified: false,
     };
@@ -48,8 +48,8 @@ describe('ClaimAuditor', () => {
   it('flags bullets with missing or invalid evidence IDs', () => {
     const ungroundedBullet: GroundedResumeBullet = {
       id: 'b_ungrounded',
-      projectId: 'proj_rift',
-      projectName: 'RIFT',
+      projectId: 'proj_evident',
+      projectName: 'Evident--the-ultimate-help-',
       text: 'Built high performance web service.',
       evidenceIds: [], // Empty
       isAudited: false,

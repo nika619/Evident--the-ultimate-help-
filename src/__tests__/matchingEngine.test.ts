@@ -26,10 +26,10 @@ describe('MatchingEngine', () => {
       GOLDEN_PROJECTS
     );
 
-    // TypeScript requirement should be directly supported
-    const tsMatch = result.matches.find((m) => m.requirementId === 'req_ts');
-    expect(tsMatch).toBeDefined();
-    expect(tsMatch!.status).toBe('direct');
+    // Systems requirement should be directly supported
+    const sysMatch = result.matches.find((m) => m.requirementId === 'req_systems');
+    expect(sysMatch).toBeDefined();
+    expect(sysMatch!.status).toBe('direct');
 
     // Kubernetes requirement should be classified as a gap (not found)
     const k8sMatch = result.matches.find((m) => m.requirementId === 'req_k8s');
@@ -37,19 +37,19 @@ describe('MatchingEngine', () => {
     expect(k8sMatch!.status).toBe('not_found');
 
     // Coverage must reflect authentic must-haves
-    expect(result.coverage.totalMustHaves).toBe(5);
-    expect(result.coverage.coveredMustHaves).toBeGreaterThanOrEqual(4);
+    expect(result.coverage.totalMustHaves).toBe(3);
+    expect(result.coverage.coveredMustHaves).toBe(3);
     expect(result.coverage.summarySentence).toContain('directly supported');
   });
 
-  it('ranks RIFT as the #1 project for the Core Systems role', () => {
+  it('ranks Evident as the #1 project for the Core Systems role', () => {
     const result = MatchingEngine.matchOpportunity(
       SAMPLE_OPPORTUNITY,
       GOLDEN_EVIDENCE,
       GOLDEN_PROJECTS
     );
 
-    expect(result.rankedProjects[0].projectName).toBe('RIFT');
+    expect(result.rankedProjects[0].projectName).toBe('Evident--the-ultimate-help-');
     expect(result.rankedProjects[0].matchCount).toBeGreaterThan(0);
   });
 

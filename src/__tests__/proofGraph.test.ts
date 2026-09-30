@@ -14,28 +14,28 @@ describe('ProofGraph', () => {
   });
 
   it('initializes with candidate golden projects and evidence', () => {
-    expect(graph.getProjects().length).toBe(3);
+    expect(graph.getProjects().length).toBe(GOLDEN_PROJECTS.length);
     expect(graph.getEvidence().length).toBe(GOLDEN_EVIDENCE.length);
   });
 
   it('correctly retrieves evidence items for a specific project', () => {
-    const riftEvidence = graph.getEvidenceForProject('proj_rift');
-    expect(riftEvidence.length).toBeGreaterThan(0);
-    expect(riftEvidence.every((e) => e.projectId === 'proj_rift')).toBe(true);
+    const evidentEvidence = graph.getEvidenceForProject('proj_evident');
+    expect(evidentEvidence.length).toBeGreaterThan(0);
+    expect(evidentEvidence.every((e) => e.projectId === 'proj_evident')).toBe(true);
   });
 
   it('filters evidence by skill query', () => {
-    const jwtEvidence = graph.getEvidenceForSkill('jwt');
-    expect(jwtEvidence.length).toBeGreaterThan(0);
-    expect(jwtEvidence[0].skillName).toContain('JWT');
+    const tsEvidence = graph.getEvidenceForSkill('typescript');
+    expect(tsEvidence.length).toBeGreaterThan(0);
+    expect(tsEvidence[0].skillName).toContain('TypeScript');
   });
 
   it('extracts distinct skills with accurate frequency counts', () => {
     const skills = graph.getDistinctSkills();
     expect(skills.length).toBeGreaterThan(0);
-    const reactSkill = skills.find((s) => s.name.toLowerCase().includes('react'));
-    expect(reactSkill).toBeDefined();
-    expect(reactSkill!.count).toBeGreaterThanOrEqual(1);
+    const pythonSkill = skills.find((s) => s.name.toLowerCase().includes('python'));
+    expect(pythonSkill).toBeDefined();
+    expect(pythonSkill!.count).toBeGreaterThanOrEqual(1);
   });
 
   it('generates a connected visual graph structure with nodes and edges', () => {
@@ -45,7 +45,7 @@ describe('ProofGraph', () => {
 
     // Verify project nodes exist
     const projectNodes = visual.nodes.filter((n) => n.type === 'project');
-    expect(projectNodes.length).toBe(3);
+    expect(projectNodes.length).toBe(GOLDEN_PROJECTS.length);
 
     // Verify skill nodes exist
     const skillNodes = visual.nodes.filter((n) => n.type === 'skill');
@@ -73,7 +73,7 @@ describe('ProofGraph', () => {
     };
 
     graph.addProject(newProj);
-    expect(graph.getProjects().length).toBe(4);
+    expect(graph.getProjects().length).toBe(GOLDEN_PROJECTS.length + 1);
     expect(graph.getProjects().some((p) => p.id === 'proj_custom')).toBe(true);
   });
 

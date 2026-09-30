@@ -15,7 +15,7 @@ describe('ProofPackService', () => {
     );
 
     const markdown = ProofPackService.generateDossierMarkdown(
-      'Aarav',
+      'Mayank Tiwari (@nika619)',
       SAMPLE_OPPORTUNITY,
       matchResult.coverage,
       matchResult.rankedProjects,
@@ -25,10 +25,10 @@ describe('ProofPackService', () => {
     );
 
     expect(markdown).toContain('# EVIDENT — Candidate Application Proof Pack');
-    expect(markdown).toContain('Aarav');
+    expect(markdown).toContain('Mayank Tiwari (@nika619)');
     expect(markdown).toContain(SAMPLE_OPPORTUNITY.title);
     expect(markdown).toContain('Verifiable Evidence Coverage');
-    expect(markdown).toContain('RIFT');
+    expect(markdown).toContain('Evident--the-ultimate-help-');
     expect(markdown).toContain('Anti-Hallucination & Integrity Attestation');
   });
 
@@ -40,7 +40,7 @@ describe('ProofPackService', () => {
     );
 
     const markdown = ProofPackService.generateDossierMarkdown(
-      'Aarav',
+      'Mayank Tiwari (@nika619)',
       SAMPLE_OPPORTUNITY,
       matchResult.coverage,
       matchResult.rankedProjects,

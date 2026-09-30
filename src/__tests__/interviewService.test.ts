@@ -11,16 +11,16 @@ describe('InterviewService', () => {
 
     expect(questions.length).toBeGreaterThanOrEqual(3);
 
-    // Question for RIFT should cite middleware or tokenRotation
-    const riftQ = questions.find((q) => q.projectId === 'proj_rift');
-    expect(riftQ).toBeDefined();
-    expect(riftQ!.relevantFile).toMatch(/src\/auth/);
-    expect(riftQ!.keyTradeoffHint).toBeDefined();
+    // Question for Evident should cite proofPackService or App.tsx
+    const evidentQ = questions.find((q) => q.projectId === 'proj_evident');
+    expect(evidentQ).toBeDefined();
+    expect(evidentQ!.relevantFile).toMatch(/(proofPackService|App\.tsx)/);
+    expect(evidentQ!.keyTradeoffHint).toBeDefined();
 
-    // Question for KALMAN should cite kalman1d.ts
-    const kalmanQ = questions.find((q) => q.projectId === 'proj_kalman');
-    expect(kalmanQ).toBeDefined();
-    expect(kalmanQ!.relevantFile).toBe('src/filters/kalman1d.ts');
+    // Question for nids-project should cite model/train_rf.py
+    const nidsQ = questions.find((q) => q.projectId === 'proj_nids');
+    expect(nidsQ).toBeDefined();
+    expect(nidsQ!.relevantFile).toBe('model/train_rf.py');
   });
 
   it('evaluates candidate defense with trade-off detection and code citation tips', () => {
