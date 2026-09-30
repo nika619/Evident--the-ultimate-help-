@@ -1,0 +1,432 @@
+/**
+ * Evident Interview Defense Arena Screen
+ * Prepares the student to defend the claims on their resume during technical interviews.
+ * Questions are derived strictly from their actual files, commits, and trade-offs.
+ */
+
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+  TouchableOpacity,
+  SafeAreaView,
+} from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { Colors, Typography, Spacing, BorderRadius } from '../theme';
+import { useInterviewStore } from '../store/useInterviewStore';
+import { useSubscriptionStore } from '../store/useSubscriptionStore';
+import { GlassCard } from '../components/GlassCard';
+import { EvidentButton } from '../components/EvidentButton';
+
+interface InterviewScreenProps {
+  onNavigateToPaywall: () => void;
+}
+
+export const InterviewScreen: React.FC<InterviewScreenProps> = ({ onNavigateToPaywall }) => {
+  const questions = useInterviewStore((s) => s.questions);
+  const currentIndex = useInterviewStore((s) => s.currentQuestionIndex);
+  const userAnswers = useInterviewStore((s) => s.userAnswers);
+  const evaluations = useInterviewStore((s) => s.evaluations);
+  const isEvaluating = useInterviewStore((s) => s.isEvaluating);
+  const initialize = useInterviewStore((s) => s.initialize);
+  const setAnswer = useInterviewStore((s) => s.setAnswer);
+  const evaluateCurrent = useInterviewStore((s) => s.evaluateCurrentQuestion);
+  const nextQuestion = useInterviewStore((s) => s.nextQuestion);
+  const previousQuestion = useInterviewStore((s) => s.previousQuestion);
+
+  const isPro = useSubscriptionStore((s) => s.subscription.isPro);
+
+  useEffect(() => {
+    initialize();
+  }, []);
+
+  const currentQ = questions[currentIndex];
+  const currentAnswer = currentQ ? userAnswers[currentQ.id] || '' : '';
+  const currentEval = currentQ ? evaluations[currentQ.id] : undefined;
+
+  // Free tier preview: allow 1 question, prompt Pro for remaining
+  const isLocked = !isPro && currentIndex >= 1;
+
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        {/* Header */}
+        <View style={styles.headerBox}>
+          <View style={styles.badgeRow}>
+            <View style={styles.arenaBadge}>
+              <Ionicons name="chatbubbles-outline" size={13} color={Colors.textSecondary} />
+              <Text style={styles.arenaBadgeText}>DEFENSE SIMULATOR</Text>
+            </View>
+            <Text style={styles.progressText}>
+              Question {currentIndex + 1} of {questions.length}
+            </Text>
+          </View>
+          <Text style={styles.headerTitle}>Architectural Code Defense</Text>
+          <Text style={styles.headerSubtitle}>
+            Can you explain and defend the code choices appearing in your application?
+          </Text>
+        </View>
+
+        {isLocked ? (
+          <GlassCard style={styles.lockedCard}>
+            <Ionicons name="lock-closed" size={32} color={Colors.textPrimary} />
+            <Text style={styles.lockedTitle}>Unlock Deep Interview Defense</Text>
+            <Text style={styles.lockedSubtitle}>
+              Pro tier provides unlimited architectural probing, trade-off evaluations, and commit citations across all your repositories.
+            </Text>
+            <EvidentButton
+              title="Unlock Pro Defense (RevenueCat)"
+              size="medium"
+              onPress={onNavigateToPaywall}
+              style={{ marginTop: Spacing.md }}
+            />
+          </GlassCard>
+        ) : (
+          currentQ && (
+            <View style={styles.questionSection}>
+              {/* Question Card */}
+              <GlassCard style={styles.qCard}>
+                <View style={styles.qMeta}>
+                  <Text style={styles.qProject}>{currentQ.projectName}</Text>
+                  <Text style={styles.qSkill}>{currentQ.targetedSkill}</Text>
+                </View>
+
+                <Text style={styles.qText}>{currentQ.question}</Text>
+
+                <View style={styles.sourceAnchor}>
+                  <Ionicons name="code-working-outline" size={13} color={Colors.textSecondary} />
+                  <Text style={styles.sourceAnchorText}>
+                    Targeted File: {currentQ.relevantFile}
+                  </Text>
+                </View>
+              </GlassCard>
+
+              {/* Answer Box */}
+              <View style={styles.answerSection}>
+                <Text style={styles.sectionLabel}>YOUR ARCHITECTURAL DEFENSE</Text>
+                <TextInput
+                  style={styles.answerInput}
+                  multiline
+                  placeholder="Explain your technical rationale, personal contribution, and trade-offs considered..."
+                  placeholderTextColor={Colors.textMuted}
+                  value={currentAnswer}
+                  onChangeText={(text) => setAnswer(currentQ.id, text)}
+                />
+
+                <EvidentButton
+                  title={currentEval ? 'Re-Evaluate Defense' : 'Evaluate Architectural Defense'}
+                  loading={isEvaluating}
+                  onPress={evaluateCurrent}
+                  size="medium"
+                  style={{ marginTop: Spacing.sm }}
+                />
+              </View>
+
+              {/* Defense Evaluation Feedback Card */}
+              {currentEval && (
+                <GlassCard style={styles.evalCard}>
+                  <View style={styles.evalHeader}>
+                    <Ionicons name="analytics-outline" size={16} color={Colors.textPrimary} />
+                    <Text style={styles.evalTitle}>DEFENSE EVALUATION</Text>
+                  </View>
+
+                  <View style={styles.evalScoresRow}>
+                    <View style={styles.evalScorePill}>
+                      <Text style={styles.evalScoreLabel}>TECHNICAL DEPTH</Text>
+                      <Text style={[styles.evalScoreValue, { color: Colors.accent }]}>
+                        {currentEval.technicalUnderstanding}
+                      </Text>
+                    </View>
+                    <View style={styles.evalScorePill}>
+                      <Text style={styles.evalScoreLabel}>CONTRIBUTION</Text>
+                      <Text style={[styles.evalScoreValue, { color: Colors.emerald }]}>
+                        {currentEval.contributionClarity}
+                      </Text>
+                    </View>
+                    <View style={styles.evalScorePill}>
+                      <Text style={styles.evalScoreLabel}>TRADE-OFFS</Text>
+                      <Text style={[styles.evalScoreValue, { color: Colors.amber }]}>
+                        {currentEval.tradeoffAwareness}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <Text style={styles.evalNotes}>{currentEval.feedbackNotes}</Text>
+
+                  <View style={styles.citationBox}>
+                    <Ionicons name="bulb-outline" size={14} color={Colors.gold} />
+                    <Text style={styles.citationText}>
+                      Code Citation Tip: {currentEval.codeCitationSuggestion}
+                    </Text>
+                  </View>
+                </GlassCard>
+              )}
+
+              {/* Navigation Buttons */}
+              <View style={styles.navRow}>
+                <TouchableOpacity
+                  style={[styles.navBtn, currentIndex === 0 && styles.navBtnDisabled]}
+                  disabled={currentIndex === 0}
+                  onPress={previousQuestion}
+                  activeOpacity={0.7}
+                >
+                  <Ionicons name="arrow-back" size={16} color={Colors.textSecondary} />
+                  <Text style={styles.navBtnText}>Previous</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[
+                    styles.navBtn,
+                    currentIndex === questions.length - 1 && styles.navBtnDisabled,
+                  ]}
+                  disabled={currentIndex === questions.length - 1}
+                  onPress={nextQuestion}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.navBtnText}>Next Question</Text>
+                  <Ionicons name="arrow-forward" size={16} color={Colors.textSecondary} />
+                </TouchableOpacity>
+              </View>
+            </View>
+          )
+        )}
+
+        <View style={{ height: Spacing.xxxl }} />
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: Colors.bgPrimary,
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: Spacing.lg,
+  },
+  headerBox: {
+    backgroundColor: Colors.bgSurface,
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.lg,
+    marginTop: Spacing.md,
+    borderWidth: 1,
+    borderColor: Colors.borderSubtle,
+  },
+  badgeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  arenaBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    paddingVertical: 2,
+    paddingHorizontal: 7,
+    borderRadius: BorderRadius.sm,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  arenaBadgeText: {
+    ...Typography.label,
+    color: Colors.textSecondary,
+    fontSize: 8.5,
+    fontWeight: '700',
+    letterSpacing: 0.8,
+  },
+  progressText: {
+    ...Typography.label,
+    color: Colors.textMuted,
+    fontSize: 10,
+  },
+  headerTitle: {
+    ...Typography.h1,
+    color: Colors.textPrimary,
+  },
+  headerSubtitle: {
+    ...Typography.bodySmall,
+    color: Colors.textSecondary,
+    marginTop: 4,
+  },
+  questionSection: {
+    marginTop: Spacing.lg,
+  },
+  qCard: {
+    padding: Spacing.md,
+  },
+  qMeta: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
+  qProject: {
+    ...Typography.label,
+    color: Colors.textSecondary,
+    fontSize: 10,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+  },
+  qSkill: {
+    ...Typography.label,
+    color: Colors.textMuted,
+    fontSize: 10,
+  },
+  qText: {
+    ...Typography.body,
+    color: Colors.textPrimary,
+    fontWeight: '600',
+    fontSize: 15,
+    lineHeight: 22,
+    marginBottom: Spacing.sm,
+  },
+  sourceAnchor: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: Colors.codeBg,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: BorderRadius.sm,
+    alignSelf: 'flex-start',
+    borderWidth: 1,
+    borderColor: Colors.borderSubtle,
+  },
+  sourceAnchorText: {
+    ...Typography.code,
+    color: Colors.textSecondary,
+    fontSize: 11,
+  },
+  answerSection: {
+    marginTop: Spacing.lg,
+  },
+  sectionLabel: {
+    ...Typography.label,
+    color: Colors.textMuted,
+    fontSize: 10,
+    marginBottom: 6,
+  },
+  answerInput: {
+    backgroundColor: Colors.bgSurface,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    borderColor: Colors.borderSubtle,
+    color: Colors.textPrimary,
+    padding: Spacing.md,
+    minHeight: 110,
+    textAlignVertical: 'top',
+    fontSize: 13,
+    lineHeight: 19,
+  },
+  evalCard: {
+    marginTop: Spacing.lg,
+    padding: Spacing.md,
+    borderColor: 'rgba(255, 255, 255, 0.16)',
+  },
+  evalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: Spacing.sm,
+  },
+  evalTitle: {
+    ...Typography.label,
+    color: Colors.textPrimary,
+    fontSize: 11,
+    fontWeight: '700',
+  },
+  evalScoresRow: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    marginBottom: Spacing.sm,
+  },
+  evalScorePill: {
+    flex: 1,
+    backgroundColor: Colors.bgElevated,
+    padding: Spacing.sm,
+    borderRadius: BorderRadius.sm,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.borderSubtle,
+  },
+  evalScoreLabel: {
+    ...Typography.label,
+    color: Colors.textMuted,
+    fontSize: 8,
+    marginBottom: 2,
+  },
+  evalScoreValue: {
+    ...Typography.label,
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  evalNotes: {
+    ...Typography.bodySmall,
+    color: Colors.textSecondary,
+    lineHeight: 18,
+    marginBottom: Spacing.sm,
+  },
+  citationBox: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 6,
+    backgroundColor: Colors.bgElevated,
+    padding: Spacing.sm,
+    borderRadius: BorderRadius.sm,
+    borderWidth: 1,
+    borderColor: Colors.borderSubtle,
+  },
+  citationText: {
+    ...Typography.bodySmall,
+    color: Colors.textPrimary,
+    fontSize: 11,
+    flex: 1,
+  },
+  navRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: Spacing.xl,
+  },
+  navBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: Colors.bgElevated,
+    paddingVertical: 10,
+    paddingHorizontal: Spacing.lg,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    borderColor: Colors.borderSubtle,
+  },
+  navBtnDisabled: {
+    opacity: 0.3,
+  },
+  navBtnText: {
+    ...Typography.label,
+    color: Colors.textSecondary,
+    fontSize: 11,
+  },
+  lockedCard: {
+    alignItems: 'center',
+    padding: Spacing.xl,
+    marginTop: Spacing.xl,
+    gap: Spacing.sm,
+  },
+  lockedTitle: {
+    ...Typography.h2,
+    color: Colors.textPrimary,
+    marginTop: Spacing.sm,
+  },
+  lockedSubtitle: {
+    ...Typography.bodySmall,
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: 18,
+  },
+});
