@@ -33,6 +33,8 @@ interface HomeScreenProps {
   onNavigateToHistory: () => void;
   onNavigateToAccount: () => void;
   onNavigateToPaywall: () => void;
+  onOpenTutorial?: () => void;
+  onOpenLanding?: () => void;
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
@@ -43,6 +45,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   onNavigateToHistory,
   onNavigateToAccount,
   onNavigateToPaywall,
+  onOpenTutorial,
+  onOpenLanding,
 }) => {
   const candidateName = useEvidenceStore((s) => s.candidateName);
   const projects = useEvidenceStore((s) => s.projects);
@@ -138,6 +142,52 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </View>
           </GlassCard>
         </Animated.View>
+
+        {/* Interactive Guided Tour Banner */}
+        {onOpenTutorial && (
+          <TouchableOpacity
+            style={styles.tourBanner}
+            onPress={onOpenTutorial}
+            activeOpacity={0.8}
+          >
+            <LinearGradient
+              colors={['#EFF6FF', '#EDE9FE']}
+              style={styles.tourBannerGradient}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <View style={styles.tourIconCircle}>
+                <Ionicons name="compass" size={20} color={Colors.primary} />
+              </View>
+              <View style={styles.tourTextGroup}>
+                <View style={styles.tourBadgeRow}>
+                  <Text style={styles.tourBadgeText}>INTERACTIVE WALKTHROUGH</Text>
+                </View>
+                <Text style={styles.tourBannerTitle}>Take the 5-Stop Interactive Tour</Text>
+                <Text style={styles.tourBannerSub}>Learn how Evident eliminates AI resume hallucination</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color={Colors.primary} />
+            </LinearGradient>
+          </TouchableOpacity>
+        )}
+
+        {/* Landing Page Portal Banner */}
+        {onOpenLanding && (
+          <TouchableOpacity
+            style={styles.landingBanner}
+            onPress={onOpenLanding}
+            activeOpacity={0.8}
+          >
+            <LinearGradient
+              colors={['#FFFFFF', '#F8FAFC']}
+              style={styles.landingBannerGradient}
+            >
+              <Ionicons name="sparkles" size={16} color={Colors.accent} />
+              <Text style={styles.landingBannerText}>View Mobile Welcome & Thesis Showcase</Text>
+              <Ionicons name="open-outline" size={14} color={Colors.textSecondary} />
+            </LinearGradient>
+          </TouchableOpacity>
+        )}
 
         {/* Quick Action Dock (Touch First for Mobile) */}
         <View style={styles.sectionHeader}>
@@ -634,5 +684,80 @@ const styles = StyleSheet.create({
     fontSize: 9,
     color: Colors.emerald,
     fontWeight: '600',
+  },
+  tourBanner: {
+    marginTop: Spacing.md,
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(99, 102, 241, 0.25)',
+    shadowColor: '#4F46E5',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 3,
+  },
+  tourBannerGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: Spacing.md,
+    gap: 12,
+  },
+  tourIconCircle: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#2563EB',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  tourTextGroup: {
+    flex: 1,
+  },
+  tourBadgeRow: {
+    marginBottom: 2,
+  },
+  tourBadgeText: {
+    ...Typography.label,
+    fontSize: 8,
+    color: Colors.primary,
+    letterSpacing: 0.8,
+    fontWeight: '800',
+  },
+  tourBannerTitle: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: Colors.textPrimary,
+  },
+  tourBannerSub: {
+    fontSize: 11,
+    color: Colors.textSecondary,
+    marginTop: 1,
+  },
+  landingBanner: {
+    marginTop: Spacing.xs,
+    borderRadius: BorderRadius.md,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.05)',
+  },
+  landingBannerGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 9,
+    paddingHorizontal: Spacing.md,
+  },
+  landingBannerText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: Colors.textSecondary,
   },
 });
