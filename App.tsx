@@ -73,7 +73,7 @@ export default function App() {
 const styles = StyleSheet.create({
   outerShell: {
     flex: 1,
-    backgroundColor: '#E2E8F0',
+    backgroundColor: Platform.OS === 'web' ? '#E2E8F0' : Colors.bgPrimary,
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   appContainer: {
     flex: 1,
     width: '100%',
-    maxWidth: 480,
+    maxWidth: Platform.OS === 'web' ? 480 : ('100%' as any),
     backgroundColor: Colors.bgPrimary,
     overflow: 'hidden',
   },

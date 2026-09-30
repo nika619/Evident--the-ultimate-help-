@@ -2,24 +2,27 @@
   "expo": {
     "name": "Evident",
     "slug": "evident",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#08090D"
+      "backgroundColor": "#F8FAFC"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.evident.careers"
+      "bundleIdentifier": "com.evident.careers",
+      "buildNumber": "1.1.0"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#08090D"
+        "backgroundColor": "#F8FAFC"
       },
-      "package": "com.evident.careers"
+      "package": "com.evident.careers",
+      "versionCode": 110,
+      "permissions": []
     },
     "web": {
       "favicon": "./assets/favicon.png",
