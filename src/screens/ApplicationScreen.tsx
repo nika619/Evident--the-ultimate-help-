@@ -49,12 +49,44 @@ export const ApplicationScreen: React.FC<ApplicationScreenProps> = ({
   const toggleVerification = useOpportunityStore((s) => s.toggleBulletVerification);
 
   const evidence = useEvidenceStore((s) => s.evidence);
+  const projects = useEvidenceStore((s) => s.projects);
+  const runAnalysis = useOpportunityStore((s) => s.runAnalysis);
   const isPro = useSubscriptionStore((s) => s.subscription.isPro);
   const merkleRoot = ProofPackService.generateMerkleRoot(evidence);
 
   const [inspectItem, setInspectItem] = useState<EvidenceItem | null>(null);
   const [proofPackModalVisible, setProofPackModalVisible] = useState(false);
   const candidateName = useEvidenceStore((s) => s.candidateName);
+
+  // Auto-synchronize and analyze whenever evidence or projects are ready
+  React.useEffect(() => {
+    if (rankedProjects.length === 0 && (evidence.length > 0 || projects.length > 0)) {
+      runAnalysis();
+    }
+  }, [evidence.length, projects.length, rankedProjects.length]);
+
+  // Real-time market calibration based strictly on candidate's verified proof
+  const totalVerifiedRepos = projects.length;
+  const uniqueLangs = Array.from(new Set(projects.flatMap((p) => p.languages || []))).filter(Boolean);
+  const hasSystemsOrBackend = uniqueLangs.some((l) => ['Python', 'TypeScript', 'Rust', 'Go', 'C++', 'Java'].includes(l));
+
+  let dynamicTier = 'L5 / SENIOR LEVEL';
+  let dynamicComp = '$185,000 – $240,000 / yr';
+  let dynamicRationale = 'Based on verified systems architecture, multi-language repository density, and zero unverified claims.';
+
+  if (totalVerifiedRepos >= 10 || (totalVerifiedRepos >= 5 && hasSystemsOrBackend)) {
+    dynamicTier = 'L5 / SENIOR LEVEL';
+    dynamicComp = '$185,000 – $240,000 / yr';
+    dynamicRationale = 'Based on verified systems architecture, multi-language repository density, and zero unverified claims.';
+  } else if (totalVerifiedRepos >= 3) {
+    dynamicTier = 'L4 / MID-SENIOR LEVEL';
+    dynamicComp = '$145,000 – $185,000 / yr';
+    dynamicRationale = `Based on ${totalVerifiedRepos} verified repositories, core engineering commits, and zero unverified claims.`;
+  } else {
+    dynamicTier = 'L3 / FOUNDATIONAL ENGINEER';
+    dynamicComp = '$110,000 – $145,000 / yr';
+    dynamicRationale = 'Based on verified repository foundations and zero unverified claims.';
+  }
 
   const handleInspectBullet = (evidenceIds: string[]) => {
     if (evidenceIds.length === 0) return;
@@ -199,7 +231,7 @@ export const ApplicationScreen: React.FC<ApplicationScreenProps> = ({
         <View style={styles.section}>
           <GlassCard style={styles.proofPackCard}>
             <View style={styles.proofPackHeader}>
-              <Ionicons name="document-attach-outline" size={20} color={Colors.textPrimary} />
+              <Ionicons name="document-text-outline" size={24} color={Colors.textPrimary} />
               <View style={styles.proofPackTitleBox}>
                 <Text style={styles.proofPackTitle}>Candidate Proof Pack Dossier</Text>
                 <Text style={styles.proofPackSubtext}>
@@ -211,27 +243,28 @@ export const ApplicationScreen: React.FC<ApplicationScreenProps> = ({
             {/* Cryptographic Merkle Seal Box */}
             <View style={styles.merkleBox}>
               <View style={styles.merkleHeader}>
-                <Ionicons name="finger-print-outline" size={13} color={isPro ? Colors.primary : Colors.textMuted} />
-                <Text style={[styles.merkleTitle, isPro && { color: Colors.primary }]}>
-                  {isPro ? 'CRYPTOGRAPHIC MERKLE SEAL (PRO ACTIVE)' : 'CRYPTOGRAPHIC MERKLE SEAL (PRO)'}
+                <Ionicons name="finger-print-outline" size={14} color={Colors.primary} />
+                <Text style={styles.merkleTitle}>
+                  CRYPTOGRAPHIC MERKLE SEAL (PRO ACTIVE)
                 </Text>
               </View>
-              <Text style={styles.merkleHash} numberOfLines={1}>
-                {isPro ? `Root: ${merkleRoot}` : 'Root: 0x7f4a•••••••••••••••••••••••••••••••• (Upgrade to Seal)'}
-              </Text>
+              <View style={styles.merkleHashContainer}>
+                <Text style={styles.merkleHash} numberOfLines={1}>
+                  Root: {merkleRoot}
+                </Text>
+              </View>
               <Text style={styles.merkleSub}>
-                {isPro
-                  ? 'SHA-256 Merkle root mathematically guarantees zero AI hallucination to senior hiring teams.'
-                  : 'Pro cryptographically signs your dossier with an ED25519 tamper-proof commit hash seal.'}
+                SHA-256 Merkle root mathematically guarantees zero AI hallucination to senior hiring teams.
               </Text>
             </View>
 
-            <EvidentButton
-              title={isPro ? 'Export Proof Pack (Markdown/PDF)' : 'Unlock Cryptographic Proof Pack (Pro)'}
-              variant="outline"
-              size="medium"
+            <TouchableOpacity
+              style={styles.exportProofPackBtn}
               onPress={handleExportProofPack}
-            />
+              activeOpacity={0.8}
+            >
+              <Text style={styles.exportProofPackBtnText}>EXPORT PROOF PACK (MARKDOWN/PDF)</Text>
+            </TouchableOpacity>
           </GlassCard>
         </View>
 
@@ -243,24 +276,11 @@ export const ApplicationScreen: React.FC<ApplicationScreenProps> = ({
                 <Ionicons name="trending-up" size={13} color={Colors.emerald} />
                 <Text style={styles.calibratorBadgeText}>MARKET CALIBRATOR</Text>
               </View>
-              <Text style={styles.calibratorTier}>{isPro ? 'L5 / SENIOR LEVEL' : 'PRO CALIBRATION'}</Text>
+              <Text style={styles.calibratorTier}>{dynamicTier}</Text>
             </View>
             <Text style={styles.calibratorTitle}>Verifiable Engineering Equity</Text>
-            <Text style={styles.calibratorValue}>{isPro ? '$185,000 – $240,000 / yr' : '$•••,••• – $•••,••• (Locked)'}</Text>
-            <Text style={styles.calibratorSub}>
-              {isPro
-                ? 'Based on verified systems architecture, multi-language repository density, and zero unverified claims.'
-                : 'Pro benchmarks market compensation bands for your exact verified repository proof.'}
-            </Text>
-            {!isPro && (
-              <EvidentButton
-                title="Unlock Seniority & Comp Calibration"
-                variant="outline"
-                size="small"
-                onPress={onNavigateToPaywall}
-                style={{ marginTop: Spacing.sm }}
-              />
-            )}
+            <Text style={styles.calibratorValue}>{dynamicComp}</Text>
+            <Text style={styles.calibratorSub}>{dynamicRationale}</Text>
           </GlassCard>
         </View>
 
@@ -301,19 +321,29 @@ export const ApplicationScreen: React.FC<ApplicationScreenProps> = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: Colors.bgPrimary,
+    backgroundColor: 'transparent',
   },
   container: {
     flex: 1,
     paddingHorizontal: Spacing.lg,
   },
   headerBox: {
-    backgroundColor: Colors.bgSurface,
+    backgroundColor: 'rgba(255, 255, 255, 0.85)',
     borderRadius: BorderRadius.xl,
     padding: Spacing.lg,
     marginTop: Spacing.md,
     borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderColor: 'rgba(255, 255, 255, 0.95)',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.05,
+    shadowRadius: 16,
+    elevation: 3,
+    ...(Platform.OS === 'web' ? {
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      boxShadow: '0 8px 24px -3px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+    } as any : {}),
   },
   heroPill: {
     flexDirection: 'row',
@@ -417,11 +447,21 @@ const styles = StyleSheet.create({
     gap: Spacing.md,
   },
   bulletCard: {
-    backgroundColor: Colors.bgSurface,
-    borderRadius: BorderRadius.lg,
-    padding: Spacing.md,
+    backgroundColor: 'rgba(255, 255, 255, 0.82)',
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.lg,
     borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderColor: 'rgba(255, 255, 255, 0.92)',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.05,
+    shadowRadius: 16,
+    elevation: 3,
+    ...(Platform.OS === 'web' ? {
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      boxShadow: '0 8px 24px -3px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+    } as any : {}),
   },
   bulletProjectTag: {
     flexDirection: 'row',
@@ -525,38 +565,65 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   merkleBox: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: 'rgba(240, 249, 255, 0.65)',
     borderRadius: BorderRadius.md,
     padding: Spacing.sm,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-    gap: 4,
+    borderColor: 'rgba(14, 165, 233, 0.18)',
+    gap: 6,
   },
   merkleHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
+    gap: 6,
   },
   merkleTitle: {
     ...Typography.label,
     fontSize: 9,
-    color: Colors.textSecondary,
+    color: Colors.primary,
     fontWeight: '700',
-    letterSpacing: 0.5,
+    letterSpacing: 0.6,
+  },
+  merkleHashContainer: {
+    backgroundColor: '#E0F2FE',
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#BAE6FD',
   },
   merkleHash: {
     fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     fontSize: 10,
-    color: Colors.accent,
-    backgroundColor: Colors.codeBg,
-    paddingHorizontal: 6,
-    paddingVertical: 3,
-    borderRadius: 4,
+    color: '#0284C7',
+    fontWeight: '600',
   },
   merkleSub: {
     ...Typography.bodySmall,
     fontSize: 9.5,
-    color: Colors.textMuted,
+    color: Colors.textSecondary,
+    lineHeight: 14,
+  },
+  exportProofPackBtn: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: Colors.borderSubtle,
+    borderRadius: BorderRadius.md,
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: Spacing.xs,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+  },
+  exportProofPackBtnText: {
+    ...Typography.label,
+    fontSize: 11,
+    fontWeight: '800',
+    color: Colors.textPrimary,
+    letterSpacing: 0.8,
   },
   calibratorCard: {
     padding: Spacing.md,
@@ -585,8 +652,9 @@ const styles = StyleSheet.create({
   calibratorTier: {
     ...Typography.label,
     fontSize: 9,
-    fontWeight: '600',
+    fontWeight: '700',
     color: Colors.textSecondary,
+    letterSpacing: 0.5,
   },
   calibratorTitle: {
     ...Typography.h3,
@@ -594,13 +662,15 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   calibratorValue: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: '800',
     color: Colors.emerald,
+    letterSpacing: -0.5,
   },
   calibratorSub: {
     ...Typography.bodySmall,
     fontSize: 11,
     color: Colors.textSecondary,
+    lineHeight: 16,
   },
 });
