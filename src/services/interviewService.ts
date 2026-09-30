@@ -16,76 +16,76 @@ export class InterviewService {
   ): DefenseQuestion[] {
     const questions: DefenseQuestion[] = [];
 
-    // 1. RIFT: Auth & Token Rotation
-    const riftJwt = evidence.find((e) => e.id === 'ev_rift_jwt');
-    if (riftJwt) {
+    // 1. Evident: Deterministic SHA-256 Merkle Provenance & Hallucination Elimination
+    const evidentMerkle = evidence.find((e) => e.id === 'ev_evident_merkle');
+    if (evidentMerkle) {
       questions.push({
-        id: 'q_rift_jwt',
-        projectId: 'proj_rift',
-        projectName: 'RIFT',
+        id: 'q_evident_merkle',
+        projectId: 'proj_evident',
+        projectName: 'Evident--the-ultimate-help-',
         question:
-          'In RIFT, walk me through how token verification is handled in `src/auth/middleware.ts`. What was your personal contribution versus third-party libraries?',
-        intent: 'clarify_contribution',
-        relevantFile: 'src/auth/middleware.ts',
-        relevantCommit: riftJwt.sourceLocation.commitHash,
-        targetedSkill: 'JWT & Token Security',
-        keyTradeoffHint: 'Distinguishing jsonwebtoken library wrapper logic from custom bearer schema checks.',
+          'In Evident, walk me through how your deterministic SHA-256 Merkle root generation in `src/services/proofPackService.ts` guarantees zero AI hallucination in candidate claims. What are the cryptographic boundary conditions?',
+        intent: 'explain_implementation',
+        relevantFile: 'src/services/proofPackService.ts',
+        relevantCommit: evidentMerkle.sourceLocation?.commitHash || '98047cc',
+        targetedSkill: 'Cryptographic Provenance (SHA-256 Merkle)',
+        keyTradeoffHint: 'Deterministic lexicographical sorting of evidence tokens vs performance on huge commit graphs.',
       });
     }
 
-    const riftRotation = evidence.find((e) => e.id === 'ev_rift_rotation');
-    if (riftRotation) {
+    const evidentRn = evidence.find((e) => e.id === 'ev_evident_rn');
+    if (evidentRn) {
       questions.push({
-        id: 'q_rift_rotation',
-        projectId: 'proj_rift',
-        projectName: 'RIFT',
+        id: 'q_evident_rn',
+        projectId: 'proj_evident',
+        projectName: 'Evident--the-ultimate-help-',
         question:
-          'In `src/auth/tokenRotation.ts`, you implemented refresh token invalidation. Why did you choose database-backed token family tracking over server-side session cookies?',
+          'In `App.tsx`, how did you implement the multi-spectral living aurora canvas shaders and dynamic physics to maintain 60fps across mobile runtimes without battery drain?',
         intent: 'explore_tradeoff',
-        relevantFile: 'src/auth/tokenRotation.ts',
-        relevantCommit: riftRotation.sourceLocation.commitHash,
-        targetedSkill: 'Refresh Token Rotation',
-        keyTradeoffHint: 'Stateless API routing vs database query overhead during refresh bursts.',
+        relevantFile: 'App.tsx',
+        relevantCommit: evidentRn.sourceLocation?.commitHash || '8628cfc',
+        targetedSkill: 'React Native & Mobile Systems',
+        keyTradeoffHint: 'Hardware-accelerated native animations vs JavaScript thread bridge congestion.',
       });
     }
 
-    // 2. KALMAN: Noise Filtering & Stream
-    const kalmanFilter = evidence.find((e) => e.id === 'ev_kalman_filter');
-    if (kalmanFilter) {
+    // 2. nids-project: ML Network Intrusion & SMOTE
+    const nidsRf = evidence.find((e) => e.id === 'ev_nids_rf');
+    if (nidsRf) {
       questions.push({
-        id: 'q_kalman_filter',
-        projectId: 'proj_kalman',
-        projectName: 'KALMAN',
+        id: 'q_nids_rf',
+        projectId: 'proj_nids',
+        projectName: 'nids-project',
         question:
-          'In KALMAN, explain the mathematical trade-off of the discrete 1D filter in `src/filters/kalman1d.ts`. How did you tune the process variance (q) and measurement variance (r)?',
-        intent: 'explain_implementation',
-        relevantFile: 'src/filters/kalman1d.ts',
-        relevantCommit: kalmanFilter.sourceLocation.commitHash,
-        targetedSkill: 'Algorithmic State Estimation',
-        keyTradeoffHint: 'Responsiveness to sudden true spikes vs lag from over-smoothing.',
+          'In nids-project, how did you calibrate SMOTE oversampling alongside the Random Forest hyper-parameters in `model/train_rf.py` to balance intrusion detection sensitivity against false positive spikes on the NSL-KDD dataset?',
+        intent: 'explore_tradeoff',
+        relevantFile: 'model/train_rf.py',
+        relevantCommit: nidsRf.sourceLocation?.commitHash || 'e31b09f',
+        targetedSkill: 'Machine Learning & Security Architecture',
+        keyTradeoffHint: 'Synthetic minority sample fidelity vs overfitting decision trees on anomalous edge cases.',
       });
     }
 
-    // 3. SYNTRA: Virtualized Scrolling
-    const syntraGrid = evidence.find((e) => e.id === 'ev_syntra_react');
-    if (syntraGrid) {
+    // 3. SepsisGuard: Model Context Protocol (MCP) & Clinical AI
+    const sepsisMcp = evidence.find((e) => e.id === 'ev_sepsis_mcp');
+    if (sepsisMcp) {
       questions.push({
-        id: 'q_syntra_grid',
-        projectId: 'proj_syntra',
-        projectName: 'SYNTRA',
+        id: 'q_sepsis_mcp',
+        projectId: 'proj_sepsis',
+        projectName: 'SepsisGuard-AI-Real-Time-Sepsis-Intelligence-MCP',
         question:
-          'In SYNTRA, how does your windowing slice calculation in `src/components/VirtualGrid.tsx` prevent layout thrashing and DOM node bloat when scrolling 50,000 items?',
+          'In SepsisGuard, walk through how you architected the Model Context Protocol (MCP) server in `server.py` for real-time clinical intelligence. How do you handle telemetry streaming latency?',
         intent: 'explain_implementation',
-        relevantFile: 'src/components/VirtualGrid.tsx',
-        relevantCommit: syntraGrid.sourceLocation.commitHash,
-        targetedSkill: 'React Windowing & Virtualization',
-        keyTradeoffHint: 'Overscan buffer sizing: larger buffer prevents white flash, smaller buffer saves memory.',
+        relevantFile: 'server.py',
+        relevantCommit: sepsisMcp.sourceLocation?.commitHash || 'a71e290',
+        targetedSkill: 'Model Context Protocol (MCP) & Clinical AI',
+        keyTradeoffHint: 'Stateless tool calling overhead vs persistent WebSocket context streaming.',
       });
     }
 
     // 4. Dynamic Generation for Synced Projects & Repositories
     for (const proj of projects) {
-      if (['proj_rift', 'proj_kalman', 'proj_syntra'].includes(proj.id)) continue;
+      if (['proj_evident', 'proj_nids', 'proj_sepsis'].includes(proj.id)) continue;
 
       const projEvidence = evidence.filter((e) => e.projectId === proj.id);
       const topSkill = projEvidence[0]?.skillName || proj.primaryLanguage || 'Core Architecture';
