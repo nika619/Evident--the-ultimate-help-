@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import { Animated, StyleSheet, ViewStyle } from 'react-native';
+import { Animated, StyleSheet, ViewStyle, Platform } from 'react-native';
 import { Colors, BorderRadius, Spacing } from '../theme';
 
 interface GlassCardProps {
@@ -58,18 +58,26 @@ export const GlassCard: React.FC<GlassCardProps> = ({ children, style, active = 
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.bgSurface,
-    borderRadius: BorderRadius.lg,
-    padding: Spacing.md,
+    backgroundColor: 'rgba(255, 255, 255, 0.82)',
+    borderRadius: BorderRadius.xl,
+    padding: Spacing.lg,
     borderWidth: 1,
-    borderColor: Colors.borderSubtle,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 5,
+    borderColor: 'rgba(255, 255, 255, 0.92)',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.07,
+    shadowRadius: 20,
+    elevation: 4,
+    ...(Platform.OS === 'web'
+      ? ({
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          boxShadow: '0 12px 32px -4px rgba(15, 23, 42, 0.07), 0 2px 8px -1px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+        } as any)
+      : {}),
   },
   cardActive: {
-    borderColor: Colors.bgGlassBorderActive,
-    backgroundColor: Colors.bgElevated,
+    borderColor: Colors.accentBorder,
+    backgroundColor: 'rgba(255, 255, 255, 0.92)',
   },
 });
