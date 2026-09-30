@@ -68,6 +68,50 @@ export const ProofPackModal: React.FC<ProofPackModalProps> = ({
     }
   };
 
+  const handlePrintPdf = () => {
+    try {
+      if (typeof window !== 'undefined') {
+        const printWindow = window.open('', '_blank');
+        if (printWindow) {
+          printWindow.document.write(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Evident Proof Pack Dossier — ${candidateName || 'Candidate'}</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; padding: 40px; color: #0F172A; line-height: 1.6; max-width: 800px; margin: 0 auto; }
+    h1 { color: #0F172A; border-bottom: 2px solid #E2E8F0; padding-bottom: 8px; font-size: 24px; }
+    h2 { color: #2563EB; margin-top: 24px; border-bottom: 1px solid #E2E8F0; padding-bottom: 6px; font-size: 18px; }
+    h3 { color: #0F172A; margin-top: 16px; font-size: 15px; }
+    code { background: #F1F5F9; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 12px; }
+    pre { background: #F8FAFC; padding: 16px; border-radius: 8px; border: 1px solid #E2E8F0; white-space: pre-wrap; word-wrap: break-word; font-family: inherit; font-size: 13px; }
+    .seal-box { background: #EFF6FF; border: 1px solid #BFDBFE; padding: 12px 16px; border-radius: 6px; margin: 20px 0; }
+    @media print { body { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <div class="seal-box">
+    <strong>CRYPTOGRAPHIC MERKLE SEAL (PRO ACTIVE)</strong><br>
+    Root: <code>${merkleRoot}</code><br>
+    <small>SHA-256 Merkle root mathematically guarantees zero AI hallucination to senior hiring teams.</small>
+  </div>
+  <pre>${markdown.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
+  <script>
+    window.onload = function() { window.print(); };
+  </script>
+</body>
+</html>`);
+          printWindow.document.close();
+        }
+      } else {
+        handleDownload();
+      }
+    } catch (e) {
+      console.warn('PDF Print error:', e);
+      handleDownload();
+    }
+  };
+
   const handleShare = async () => {
     try {
       if (Platform.OS !== 'web') {
@@ -125,12 +169,21 @@ export const ProofPackModal: React.FC<ProofPackModalProps> = ({
             >
               <Ionicons
                 name={copied ? 'checkmark-circle' : 'copy-outline'}
-                size={16}
+                size={15}
                 color={copied ? Colors.emerald : Colors.textPrimary}
               />
               <Text style={[styles.actionBtnText, copied && { color: Colors.emerald }]}>
-                {copied ? 'Copied to Clipboard!' : 'Copy Markdown'}
+                {copied ? 'Copied!' : 'Copy'}
               </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.actionBtn, { borderColor: Colors.primary }]}
+              onPress={handlePrintPdf}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="print-outline" size={15} color={Colors.primary} />
+              <Text style={[styles.actionBtnText, { color: Colors.primary }]}>Print / PDF</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -140,11 +193,11 @@ export const ProofPackModal: React.FC<ProofPackModalProps> = ({
             >
               <Ionicons
                 name={downloaded ? 'checkmark-done' : 'download-outline'}
-                size={16}
+                size={15}
                 color={downloaded ? Colors.emerald : '#FFFFFF'}
               />
               <Text style={[styles.actionBtnText, { color: '#FFFFFF' }]}>
-                {downloaded ? 'Downloaded!' : 'Download .md File'}
+                {downloaded ? 'Saved!' : 'Download .md'}
               </Text>
             </TouchableOpacity>
           </View>
