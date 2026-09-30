@@ -35,7 +35,12 @@ export class MatchingEngine {
     }[];
     groundedBullets: GroundedResumeBullet[];
   } {
-    const matches: RequirementMatch[] = opportunity.requirements.map((req) =>
+    const rawRequirements = opportunity?.requirements || [];
+    const requirements = rawRequirements.length > 0
+      ? rawRequirements
+      : this.deriveRequirementsFromOpportunity(opportunity, evidenceItems);
+
+    const matches: RequirementMatch[] = requirements.map((req) =>
       this.evaluateRequirement(req, evidenceItems)
     );
 
@@ -49,6 +54,63 @@ export class MatchingEngine {
       rankedProjects,
       groundedBullets,
     };
+  }
+
+  /**
+   * Automatically generates baseline requirements if custom JD lacked structured fields
+   */
+  private static deriveRequirementsFromOpportunity(
+    opportunity: Opportunity,
+    evidence: EvidenceItem[]
+  ): OpportunityRequirement[] {
+    const title = (opportunity?.title || 'Software Engineering Role').toLowerCase();
+    const desc = (opportunity?.descriptionRaw || '').toLowerCase();
+
+    const derived: OpportunityRequirement[] = [
+      {
+        id: 'req_core_lang',
+        category: 'technical_core',
+        name: 'Core System Programming',
+        description: 'Proficiency in primary backend, systems, or application languages.',
+        isMustHave: true,
+      },
+      {
+        id: 'req_arch',
+        category: 'architecture',
+        name: 'Modular Architecture & APIs',
+        description: 'Experience authoring resilient services, endpoints, and data layers.',
+        isMustHave: true,
+      },
+      {
+        id: 'req_reliability',
+        category: 'infrastructure',
+        name: 'Deployment & System Reliability',
+        description: 'Experience maintaining production repos, Docker, or CI/CD pipelines.',
+        isMustHave: false,
+      },
+    ];
+
+    if (desc.includes('react') || title.includes('frontend') || title.includes('fullstack')) {
+      derived.push({
+        id: 'req_ui',
+        category: 'technical_core',
+        name: 'Modern UI & State Management',
+        description: 'Component architecture, responsive rendering, and frontend engineering.',
+        isMustHave: true,
+      });
+    }
+
+    if (desc.includes('python') || desc.includes('data') || desc.includes('ml')) {
+      derived.push({
+        id: 'req_python',
+        category: 'technical_core',
+        name: 'Data & Python Tooling',
+        description: 'Numerical processing, data ingestion, and scripting.',
+        isMustHave: false,
+      });
+    }
+
+    return derived;
   }
 
   /**
@@ -73,11 +135,17 @@ export class MatchingEngine {
         score += 10;
       }
 
-      // Check token overlap (allowing 3-letter acronyms like jwt, git, api, sql, k8s)
-      const keywords = reqText.split(/[\s,&/()]+/).filter((w) => w.length >= 3);
+      // Check token overlap with stop words and word boundaries
+      const stopWords = new Set(['and', 'the', 'for', 'with', 'experience', 'using', 'in', 'of', 'to', 'is', 'on', 'as']);
+      const keywords = reqText.split(/[\s,&/()]+/).filter((w) => w.length >= 2 && !stopWords.has(w));
       for (const kw of keywords) {
-        if (claim.includes(kw) || skillName.includes(kw)) {
-          score += 3;
+        try {
+          const regex = new RegExp(`\\b${kw}\\b`, 'i');
+          if (regex.test(claim) || regex.test(skillName)) {
+            score += 3;
+          }
+        } catch {
+          // ignore invalid regex from weird symbols
         }
       }
 
@@ -96,53 +164,64 @@ export class MatchingEngine {
         isMustHave: req.isMustHave,
         status: 'not_found',
         supportingEvidenceIds: [],
-        rationale: 'No direct or derived implementation evidence detected in repository history.',
+        rationale: `No verifiable repository evidence detected matching ${req.name}.`,
       };
     }
 
-    const topMatch = matchingEvidence[0].item;
-    const isDirect = topMatch.evidenceStatus === 'direct' && matchingEvidence[0].score >= 8;
-    const isSupported = topMatch.evidenceStatus === 'supported' || matchingEvidence[0].score >= 4;
+    const primary = matchingEvidence[0].item;
+    const supportingIds = matchingEvidence.slice(1).map((m) => m.item.id);
 
     return {
       requirementId: req.id,
       requirementName: req.name,
       category: req.category,
       isMustHave: req.isMustHave,
-      status: isDirect ? 'direct' : isSupported ? 'supported' : 'partial',
-      primaryEvidenceId: topMatch.id,
-      supportingEvidenceIds: matchingEvidence.map((m) => m.item.id),
-      rationale: `Supported by ${topMatch.projectName} via ${topMatch.sourceLocation.filePath || topMatch.sourceType}: "${topMatch.claim}"`,
-      topProjectName: topMatch.projectName,
+      status: primary.evidenceStatus,
+      primaryEvidenceId: primary.id,
+      supportingEvidenceIds: supportingIds,
+      rationale: `${primary.claim} Observed in ${primary.projectName}.`,
+      topProjectName: primary.projectName,
     };
   }
 
   /**
-   * Summarizes coverage without false precision percentages
+   * Calculates honest coverage metrics
    */
   public static calculateCoverage(matches: RequirementMatch[]): EvidenceCoverage {
     let directCount = 0;
     let supportedCount = 0;
     let partialCount = 0;
     let notFoundCount = 0;
+
     let totalMustHaves = 0;
     let coveredMustHaves = 0;
 
-    for (const m of matches) {
-      if (m.isMustHave) {
+    for (const match of matches) {
+      if (match.isMustHave) {
         totalMustHaves += 1;
-        if (m.status === 'direct' || m.status === 'supported') {
+        if (match.status === 'direct' || match.status === 'supported') {
           coveredMustHaves += 1;
         }
       }
 
-      if (m.status === 'direct') directCount += 1;
-      else if (m.status === 'supported') supportedCount += 1;
-      else if (m.status === 'partial') partialCount += 1;
-      else notFoundCount += 1;
+      switch (match.status) {
+        case 'direct':
+          directCount += 1;
+          break;
+        case 'supported':
+          supportedCount += 1;
+          break;
+        case 'partial':
+          partialCount += 1;
+          break;
+        case 'not_found':
+        default:
+          notFoundCount += 1;
+          break;
+      }
     }
 
-    const summarySentence = `${directCount} directly supported, ${supportedCount} supported, ${partialCount} partial, and ${notFoundCount} evidence gap${notFoundCount === 1 ? '' : 's'}. Covers ${coveredMustHaves}/${totalMustHaves} core must-haves.`;
+    const summarySentence = `${directCount} directly supported, ${supportedCount} supported, ${partialCount} partial, and ${notFoundCount} growth vector${notFoundCount === 1 ? '' : 's'}. Covers ${coveredMustHaves}/${totalMustHaves} core must-haves.`;
 
     return {
       directCount,
@@ -223,6 +302,25 @@ export class MatchingEngine {
             isAudited: true,
             userVerified: false,
           });
+        }
+      }
+    }
+
+    // Safety fallback: if requirements produced 0 bullets but evidence exists, synthesize from top evidence
+    if (bullets.length === 0 && evidence.length > 0) {
+      for (const ev of evidence) {
+        if (ev.evidenceStatus !== 'not_found' && !usedEvidence.has(ev.id)) {
+          usedEvidence.add(ev.id);
+          bullets.push({
+            id: `bullet_ev_${ev.id}`,
+            projectId: ev.projectId,
+            projectName: ev.projectName,
+            text: `${ev.claim} (${ev.sourceLocation?.filePath || 'verified commit history'}).`,
+            evidenceIds: [ev.id],
+            isAudited: true,
+            userVerified: false,
+          });
+          if (bullets.length >= 6) break;
         }
       }
     }
