@@ -7,3 +7,6 @@ export * from './HistoryScreen';
 export * from './AccountScreen';
 export * from './PaywallScreen';
 export * from './OnboardingScreen';
+export * from './LandingScreen';
+export * from './LoadingScreen';
+
