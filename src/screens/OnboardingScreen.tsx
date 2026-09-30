@@ -83,6 +83,12 @@ export const OnboardingScreen = () => {
     }
   };
 
+  const handleExploreDemo = () => {
+    useOpportunityStore.getState().runAnalysis();
+    useInterviewStore.getState().initialize();
+    setOnboardingComplete(true);
+  };
+
   return (
     <KeyboardAvoidingView 
       style={styles.container} 
@@ -103,7 +109,7 @@ export const OnboardingScreen = () => {
             style={styles.input}
             value={githubUser}
             onChangeText={setGithubUser}
-            placeholder="e.g. torvalds"
+            placeholder="e.g. nika619 or torvalds"
             placeholderTextColor={Colors.textMuted}
             autoCapitalize="none"
           />
@@ -137,6 +143,15 @@ export const OnboardingScreen = () => {
                 </>
               )}
             </LinearGradient>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.demoButton}
+            onPress={handleExploreDemo}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="sparkles-outline" size={14} color={Colors.primary} />
+            <Text style={styles.demoButtonText}>Explore with Verified Golden Profile (Aarav)</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -235,5 +250,19 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '800',
     letterSpacing: 1.5,
+  },
+  demoButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: Spacing.md,
+    paddingVertical: Spacing.sm,
+  },
+  demoButtonText: {
+    ...Typography.label,
+    color: Colors.primary,
+    fontSize: 11,
+    fontWeight: '700',
   },
 });
