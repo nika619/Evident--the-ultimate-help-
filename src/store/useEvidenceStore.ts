@@ -6,41 +6,60 @@
 
 import { create } from 'zustand';
 import { ProjectSource, EvidenceItem, EvidenceStatus } from '../domain/types';
-import { GOLDEN_PROJECTS, GOLDEN_EVIDENCE } from '../domain/fixtures';
 import { ProofGraph } from '../domain/proofGraph';
+import { GithubService } from '../services/githubService';
+import { GOLDEN_PROJECTS, GOLDEN_EVIDENCE } from '../domain/fixtures';
 
 interface EvidenceState {
+  hasCompletedOnboarding: boolean;
   candidateName: string;
   projects: ProjectSource[];
   evidence: EvidenceItem[];
   selectedEvidence: EvidenceItem | null;
   activeFilter: EvidenceStatus | 'all';
   isSyncing: boolean;
+  syncError: string | null;
   lastSyncedTimestamp: string;
   graph: ProofGraph;
 
   // Actions
   initialize: () => void;
+  setOnboardingComplete: (status: boolean) => void;
   selectEvidence: (item: EvidenceItem | null) => void;
   setFilter: (filter: EvidenceStatus | 'all') => void;
   markUserVerification: (evidenceId: string, isAccurate: boolean) => void;
-  triggerContinuousSync: () => Promise<void>;
+  triggerContinuousSync: (username?: string) => Promise<{ success: boolean; error?: string }>;
+  clearSyncError: () => void;
   addCustomProject: (project: ProjectSource, evidenceItems: EvidenceItem[]) => void;
 }
 
 export const useEvidenceStore = create<EvidenceState>((set, get) => ({
-  candidateName: 'Aarav',
+  hasCompletedOnboarding: false,
+  candidateName: 'Aarav (Verified)',
   projects: GOLDEN_PROJECTS,
   evidence: GOLDEN_EVIDENCE,
   selectedEvidence: null,
   activeFilter: 'all',
   isSyncing: false,
-  lastSyncedTimestamp: '2026-09-24T12:00:00Z',
+  syncError: null,
+  lastSyncedTimestamp: '2026-09-30T12:00:00Z',
   graph: new ProofGraph(GOLDEN_PROJECTS, GOLDEN_EVIDENCE),
 
+  clearSyncError: () => set({ syncError: null }),
+
   initialize: () => {
-    const graph = new ProofGraph(get().projects, get().evidence);
-    set({ graph });
+    const currentProjects = get().projects.length > 0 ? get().projects : GOLDEN_PROJECTS;
+    const currentEvidence = get().evidence.length > 0 ? get().evidence : GOLDEN_EVIDENCE;
+    const graph = new ProofGraph(currentProjects, currentEvidence);
+    set({
+      projects: currentProjects,
+      evidence: currentEvidence,
+      graph,
+    });
+  },
+
+  setOnboardingComplete: (status) => {
+    set({ hasCompletedOnboarding: status });
   },
 
   selectEvidence: (item) => {
@@ -69,15 +88,42 @@ export const useEvidenceStore = create<EvidenceState>((set, get) => ({
     });
   },
 
-  triggerContinuousSync: async () => {
-    set({ isSyncing: true });
-    // Simulate background worker indexing fresh commits
-    await new Promise((resolve) => setTimeout(resolve, 1200));
+  triggerContinuousSync: async (inputUrlOrUsername?: string) => {
+    const targetUser = inputUrlOrUsername || get().candidateName;
+    if (!targetUser) return { success: false, error: 'No user provided' };
+    
+    set({ isSyncing: true, syncError: null });
+    
+    try {
+      const { projects, evidence, extractedUsername } = await GithubService.fetchCandidateData(targetUser);
+      
+      set({
+        candidateName: extractedUsername,
+        projects: projects,
+        evidence: evidence,
+        graph: new ProofGraph(projects, evidence),
+        isSyncing: false,
+        syncError: null,
+        lastSyncedTimestamp: new Date().toISOString(),
+      });
 
-    set((state) => ({
-      isSyncing: false,
-      lastSyncedTimestamp: new Date().toISOString(),
-    }));
+      // Synchronize downstream matching engines and interview simulators
+      try {
+        const { useOpportunityStore } = require('./useOpportunityStore');
+        const { useInterviewStore } = require('./useInterviewStore');
+        useOpportunityStore.getState().runAnalysis();
+        useInterviewStore.getState().initialize();
+      } catch (storeSyncErr) {
+        console.warn('Post-sync store propagation warning:', storeSyncErr);
+      }
+
+      return { success: true };
+    } catch (error: any) {
+      const errorMsg = error?.message || 'Sync failed. Profile not found or network error.';
+      console.warn('Sync failed:', errorMsg);
+      set({ isSyncing: false, syncError: errorMsg });
+      return { success: false, error: errorMsg };
+    }
   },
 
   addCustomProject: (project, evidenceItems) => {

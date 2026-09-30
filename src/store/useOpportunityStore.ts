@@ -60,31 +60,37 @@ export const useOpportunityStore = create<OpportunityState>((set, get) => ({
 
   runAnalysis: () => {
     set({ isAnalyzing: true });
-    const { projects, evidence, candidateName } = useEvidenceStore.getState();
-    const currentOpp = get().opportunity;
 
-    const result = MatchingEngine.matchOpportunity(currentOpp, evidence, projects);
-    const audits = ClaimAuditor.auditBullets(result.groundedBullets, evidence);
+    try {
+      const { projects, evidence, candidateName } = useEvidenceStore.getState();
+      const currentOpp = get().opportunity;
 
-    const markdown = ProofPackService.generateDossierMarkdown(
-      candidateName,
-      currentOpp,
-      result.coverage,
-      result.rankedProjects,
-      result.groundedBullets,
-      evidence,
-      projects
-    );
+      const result = MatchingEngine.matchOpportunity(currentOpp, evidence, projects);
+      const audits = ClaimAuditor.auditBullets(result.groundedBullets, evidence);
 
-    set({
-      matches: result.matches,
-      coverage: result.coverage,
-      rankedProjects: result.rankedProjects,
-      groundedBullets: result.groundedBullets,
-      auditReports: audits,
-      isAnalyzing: false,
-      proofPackDossierMarkdown: markdown,
-    });
+      const markdown = ProofPackService.generateDossierMarkdown(
+        candidateName,
+        currentOpp,
+        result.coverage,
+        result.rankedProjects,
+        result.groundedBullets,
+        evidence,
+        projects
+      );
+
+      set({
+        matches: result.matches,
+        coverage: result.coverage,
+        rankedProjects: result.rankedProjects,
+        groundedBullets: result.groundedBullets,
+        auditReports: audits,
+        isAnalyzing: false,
+        proofPackDossierMarkdown: markdown,
+      });
+    } catch (e) {
+      console.error('runAnalysis error:', e);
+      set({ isAnalyzing: false });
+    }
   },
 
   toggleBulletVerification: (bulletId) => {
