@@ -6,6 +6,7 @@
 
 import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Purchases from 'react-native-purchases';
 import { SubscriptionState, SubscriptionTier } from '../domain/types';
 
 const STORAGE_KEY = '@evident_subscription_state_v1';
@@ -55,10 +56,7 @@ export class PurchaseService {
     }
 
     try {
-      // Dynamic import to prevent bundler crashes if native binary isn't linked
-      const Purchases = (await import('react-native-purchases')).default;
       const apiKey = Platform.OS === 'ios' ? REVENUECAT_API_KEY_IOS : REVENUECAT_API_KEY_ANDROID;
-
       await Purchases.configure({ apiKey });
       this.isInitialized = true;
     } catch {
@@ -89,8 +87,7 @@ export class PurchaseService {
   public static async purchasePlan(pkg: PlanPackage): Promise<SubscriptionState> {
     // Attempt native RevenueCat Test Store purchase
     try {
-      const Purchases = (await import('react-native-purchases')).default;
-      if (typeof Purchases.purchasePackage === 'function') {
+      if (Purchases && typeof Purchases.purchasePackage === 'function') {
         // Will succeed in native builds with Test Store configured
       }
     } catch {
@@ -111,8 +108,7 @@ export class PurchaseService {
 
   public static async restorePurchases(): Promise<SubscriptionState> {
     try {
-      const Purchases = (await import('react-native-purchases')).default;
-      if (typeof Purchases.restorePurchases === 'function') {
+      if (Purchases && typeof Purchases.restorePurchases === 'function') {
         await Purchases.restorePurchases();
       }
     } catch {

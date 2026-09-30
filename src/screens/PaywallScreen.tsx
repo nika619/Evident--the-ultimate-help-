@@ -28,23 +28,28 @@ interface PaywallScreenProps {
 const PRO_BENEFITS = [
   {
     icon: 'sync-circle-outline',
-    title: 'Living Career Memory',
+    title: 'Living Career Memory & Continuous Sync',
     desc: 'Continuously indexes your new commits, branches, and repositories as you write code.',
   },
   {
-    icon: 'infinite-outline',
-    title: 'Unlimited Opportunity Matching',
-    desc: 'Analyze dozens of internship & job descriptions with instant evidence provenance.',
+    icon: 'shield-half-outline',
+    title: 'FAANG Bar-Raiser Blindspot Radar',
+    desc: 'Exposes concurrency traps, race-condition vectors, and scaling bottlenecks before your interviewers find them.',
   },
   {
-    icon: 'chatbubbles-outline',
-    title: 'Deep Architectural Defense',
-    desc: 'Mock technical interview probing with real-time commit citations and trade-off grading.',
+    icon: 'finger-print-outline',
+    title: 'Cryptographic Merkle Provenance Seals',
+    desc: 'Generate SHA-256 tamper-proof hash chains that prove zero AI hallucination to senior hiring committees.',
+  },
+  {
+    icon: 'trending-up-outline',
+    title: 'L5/L6 Seniority & Salary Calibrator',
+    desc: 'Benchmarks your verified repository proof against top-tier tech compensation bands ($180k–$275k).',
   },
   {
     icon: 'document-attach-outline',
-    title: 'Modular Proof Pack Exports',
-    desc: 'Export privacy-safe 1-page candidate dossiers for recruiters and engineering leads.',
+    title: 'Executive Proof Pack Dossier Exports',
+    desc: 'Export privacy-safe 1-page candidate dossiers for recruiters and engineering directors.',
   },
 ];
 
