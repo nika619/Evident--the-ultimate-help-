@@ -83,6 +83,59 @@ export class InterviewService {
       });
     }
 
+    // 4. Dynamic Generation for Synced Projects & Repositories
+    for (const proj of projects) {
+      if (['proj_rift', 'proj_kalman', 'proj_syntra'].includes(proj.id)) continue;
+
+      const projEvidence = evidence.filter((e) => e.projectId === proj.id);
+      const topSkill = projEvidence[0]?.skillName || proj.primaryLanguage || 'Core Architecture';
+      const topFile = proj.files?.[0] || 'src/index.ts';
+
+      questions.push({
+        id: `q_${proj.id}_arch`,
+        projectId: proj.id,
+        projectName: proj.name,
+        question: `In ${proj.name}, walk me through your core architectural design decisions using ${topSkill}. What performance or maintainability trade-offs did you make in \`${topFile}\`?`,
+        intent: 'explore_tradeoff',
+        relevantFile: topFile,
+        relevantCommit: projEvidence[0]?.sourceLocation?.commitHash || 'main@head',
+        targetedSkill: `${topSkill} Architecture`,
+        keyTradeoffHint: `Balancing modularity and abstraction overhead against raw execution throughput.`,
+      });
+
+      if (projEvidence.length > 1) {
+        const secSkill = projEvidence[1]?.skillName || 'System Reliability';
+        questions.push({
+          id: `q_${proj.id}_impl`,
+          projectId: proj.id,
+          projectName: proj.name,
+          question: `Regarding your work with ${secSkill} in ${proj.name}: how did you validate edge cases, prevent race conditions, and ensure high availability?`,
+          intent: 'explain_implementation',
+          relevantFile: proj.files?.[1] || 'README.md',
+          relevantCommit: projEvidence[1]?.sourceLocation?.commitHash || 'main@head',
+          targetedSkill: `${secSkill} Systems Engineering`,
+          keyTradeoffHint: `Defensive programming, retry logic with exponential backoff, and idempotent mutations.`,
+        });
+      }
+    }
+
+    // 5. Absolute Safety Guarantee: If no questions matched yet, synthesize from evidence directly
+    if (questions.length === 0 && evidence.length > 0) {
+      for (let i = 0; i < Math.min(3, evidence.length); i++) {
+        const ev = evidence[i];
+        questions.push({
+          id: `q_ev_${ev.id}`,
+          projectId: ev.projectId,
+          projectName: ev.projectName,
+          question: `How did you implement "${ev.claim}" in ${ev.projectName}? Walk me through your design choices.`,
+          intent: 'explain_implementation',
+          relevantFile: ev.sourceLocation?.filePath || 'src/index.ts',
+          targetedSkill: ev.skillName,
+          keyTradeoffHint: 'Memory efficiency, latency budgets, and clean separation of concerns.',
+        });
+      }
+    }
+
     return questions;
   }
 
@@ -100,40 +153,33 @@ export class InterviewService {
         contributionClarity: 'Vague',
         tradeoffAwareness: 'Omitted',
         feedbackNotes:
-          'Answer is too concise. In an interview, explain both your concrete implementation steps and the trade-offs you considered.',
-        codeCitationSuggestion: `Reference line ranges or commit rationale in ${question.relevantFile}.`,
+          'Your answer is too concise and brief. In high-caliber technical interviews, specify the exact data structures, libraries, and edge cases you personally authored.',
+        codeCitationSuggestion: question.relevantFile || 'src/index.ts',
       };
     }
 
-    // Check for technical signal words
-    const hasTradeoffWords =
-      text.includes('tradeoff') ||
-      text.includes('instead') ||
-      text.includes('because') ||
-      text.includes('overhead') ||
-      text.includes('latency') ||
-      text.includes('security') ||
-      text.includes('memory') ||
-      text.includes('cache');
+    // Check for technical vocabulary
+    const technicalKeywords = [
+      'token', 'middleware', 'database', 'filter', 'variance', 'cache',
+      'latency', 'throughput', 'memory', 'render', 're-render', 'buffer',
+      'asynchronous', 'promise', 'query', 'scale', 'concurrency', 'state',
+      'complexity', 'payload', 'schema', 'lock', 'mutex', 'stream',
+    ];
 
-    const hasSpecificCodeMention =
-      text.includes('file') ||
-      text.includes('token') ||
-      text.includes('database') ||
-      text.includes('filter') ||
-      text.includes('scroll') ||
-      text.includes('buffer') ||
-      text.includes('hash');
+    const matchedKeywords = technicalKeywords.filter((kw) => text.includes(kw));
+
+    const isDeep = wordCount >= 30 && matchedKeywords.length >= 2;
+    const isModerate = wordCount >= 15 || matchedKeywords.length >= 1;
 
     return {
       questionId: question.id,
-      technicalUnderstanding: hasSpecificCodeMention ? 'Strong' : 'Adequate',
-      contributionClarity: text.includes('i ') || text.includes('my ') ? 'Clear' : 'Vague',
-      tradeoffAwareness: hasTradeoffWords ? 'Comprehensive' : 'Partial',
-      feedbackNotes: hasTradeoffWords
-        ? 'Solid defense! You articulated the engineering rationale and acknowledged the architectural trade-offs.'
-        : `Technically reasonable explanation, but consider explicitly mentioning why you didn't choose the alternative (Hint: ${question.keyTradeoffHint}).`,
-      codeCitationSuggestion: `Cite your commit (${question.relevantCommit || 'HEAD'}) in ${question.relevantFile} to provide undeniable backing.`,
+      technicalUnderstanding: isDeep ? 'Strong' : isModerate ? 'Adequate' : 'Needs Clarification',
+      contributionClarity: isDeep ? 'Clear' : isModerate ? 'Clear' : 'Vague',
+      tradeoffAwareness: isDeep ? 'Comprehensive' : isModerate ? 'Partial' : 'Omitted',
+      feedbackNotes: isDeep
+        ? `Strong grounded defense. You articulated technical trade-offs well and cited concrete implementation details (${matchedKeywords.slice(0, 3).join(', ')}).`
+        : `Acceptable answer, but lacks architectural depth. Connect your explanation to concrete code trade-offs and potential bottlenecks.`,
+      codeCitationSuggestion: question.relevantFile || 'src/index.ts',
     };
   }
 }

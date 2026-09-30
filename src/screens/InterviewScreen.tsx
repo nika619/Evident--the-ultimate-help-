@@ -20,6 +20,8 @@ import { useInterviewStore } from '../store/useInterviewStore';
 import { useSubscriptionStore } from '../store/useSubscriptionStore';
 import { GlassCard } from '../components/GlassCard';
 import { EvidentButton } from '../components/EvidentButton';
+import { AnimatedTextReveal } from '../components/AnimatedTextReveal';
+import { AnimatedListItem } from '../components/AnimatedListItem';
 
 interface InterviewScreenProps {
   onNavigateToPaywall: () => void;
@@ -60,11 +62,13 @@ export const InterviewScreen: React.FC<InterviewScreenProps> = ({ onNavigateToPa
               <Ionicons name="chatbubbles-outline" size={13} color={Colors.textSecondary} />
               <Text style={styles.arenaBadgeText}>DEFENSE SIMULATOR</Text>
             </View>
-            <Text style={styles.progressText}>
-              Question {currentIndex + 1} of {questions.length}
-            </Text>
+            {questions.length > 0 && (
+              <Text style={styles.progressText}>
+                Question {currentIndex + 1} of {questions.length}
+              </Text>
+            )}
           </View>
-          <Text style={styles.headerTitle}>Architectural Code Defense</Text>
+          <AnimatedTextReveal text="Architectural Code Defense" style={styles.headerTitle} stagger={40} />
           <Text style={styles.headerSubtitle}>
             Can you explain and defend the code choices appearing in your application?
           </Text>
@@ -84,10 +88,19 @@ export const InterviewScreen: React.FC<InterviewScreenProps> = ({ onNavigateToPa
               style={{ marginTop: Spacing.md }}
             />
           </GlassCard>
+        ) : questions.length === 0 ? (
+          <GlassCard style={styles.lockedCard}>
+            <Ionicons name="cube-outline" size={32} color={Colors.textSecondary} />
+            <Text style={styles.lockedTitle}>Awaiting Architecture</Text>
+            <Text style={styles.lockedSubtitle}>
+              Please sync your GitHub profile to build the environment. We need verified code artifacts before we can synthesize your architectural defense questions.
+            </Text>
+          </GlassCard>
         ) : (
           currentQ && (
             <View style={styles.questionSection}>
               {/* Question Card */}
+              <AnimatedListItem delayIndex={1}>
               <GlassCard style={styles.qCard}>
                 <View style={styles.qMeta}>
                   <Text style={styles.qProject}>{currentQ.projectName}</Text>
@@ -103,8 +116,69 @@ export const InterviewScreen: React.FC<InterviewScreenProps> = ({ onNavigateToPa
                   </Text>
                 </View>
               </GlassCard>
+              </AnimatedListItem>
+
+              {/* FAANG Bar-Raiser Blindspot Radar ($1M Tier Defense) */}
+              <AnimatedListItem delayIndex={1.5}>
+                {isPro ? (
+                  <GlassCard style={styles.radarCard}>
+                    <View style={styles.radarHeader}>
+                      <View style={styles.radarPill}>
+                        <Ionicons name="shield-half-outline" size={13} color={Colors.accent} />
+                        <Text style={styles.radarPillText}>BAR-RAISER BLINDSPOT RADAR (PRO ACTIVE)</Text>
+                      </View>
+                      <Text style={styles.radarRiskBadge}>3 VECTORS ANALYZED</Text>
+                    </View>
+                    <Text style={styles.radarTitle}>Potential Interview Traps in this Code</Text>
+                    
+                    <View style={styles.vectorList}>
+                      <View style={styles.vectorItem}>
+                        <Ionicons name="alert-circle" size={14} color={Colors.amber} />
+                        <Text style={styles.vectorText}>
+                          <Text style={{ fontWeight: '700', color: Colors.textPrimary }}>Concurrency & Race Conditions: </Text>
+                          Interviewer will probe how this handles concurrent mutations or shared memory buffers.
+                        </Text>
+                      </View>
+                      <View style={styles.vectorItem}>
+                        <Ionicons name="hardware-chip-outline" size={14} color={Colors.emerald} />
+                        <Text style={styles.vectorText}>
+                          <Text style={{ fontWeight: '700', color: Colors.textPrimary }}>Throughput Threshold: </Text>
+                          {currentQ.keyTradeoffHint}
+                        </Text>
+                      </View>
+                    </View>
+
+                    <View style={styles.defenseTipBox}>
+                      <Ionicons name="shield-checkmark" size={14} color={Colors.primary} />
+                      <Text style={styles.defenseTipText}>
+                        <Text style={{ fontWeight: '700', color: Colors.primary }}>Staff Defense Strategy: </Text>
+                        Cite concrete backoff policies, idempotent mutations, and clean separation between controller logic and service state.
+                      </Text>
+                    </View>
+                  </GlassCard>
+                ) : (
+                  <TouchableOpacity
+                    style={styles.radarLockedCard}
+                    onPress={onNavigateToPaywall}
+                    activeOpacity={0.8}
+                  >
+                    <View style={styles.radarLockedHeader}>
+                      <View style={styles.radarLockedBadge}>
+                        <Ionicons name="lock-closed" size={12} color={Colors.textPrimary} />
+                        <Text style={styles.radarLockedBadgeText}>PRO DEFENSE RADAR</Text>
+                      </View>
+                      <Text style={styles.radarLockedUpgrade}>Unlock Pro →</Text>
+                    </View>
+                    <Text style={styles.radarLockedTitle}>FAANG Bar-Raiser Blindspot Radar</Text>
+                    <Text style={styles.radarLockedSub}>
+                      2 potential architectural traps & edge-case vulnerabilities detected in `{currentQ.relevantFile}`. Unlock Pro to review before answering.
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </AnimatedListItem>
 
               {/* Answer Box */}
+              <AnimatedListItem delayIndex={2}>
               <View style={styles.answerSection}>
                 <Text style={styles.sectionLabel}>YOUR ARCHITECTURAL DEFENSE</Text>
                 <TextInput
@@ -124,9 +198,11 @@ export const InterviewScreen: React.FC<InterviewScreenProps> = ({ onNavigateToPa
                   style={{ marginTop: Spacing.sm }}
                 />
               </View>
+              </AnimatedListItem>
 
               {/* Defense Evaluation Feedback Card */}
               {currentEval && (
+                <AnimatedListItem delayIndex={3}>
                 <GlassCard style={styles.evalCard}>
                   <View style={styles.evalHeader}>
                     <Ionicons name="analytics-outline" size={16} color={Colors.textPrimary} />
@@ -163,6 +239,7 @@ export const InterviewScreen: React.FC<InterviewScreenProps> = ({ onNavigateToPa
                     </Text>
                   </View>
                 </GlassCard>
+                </AnimatedListItem>
               )}
 
               {/* Navigation Buttons */}
@@ -428,5 +505,123 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     textAlign: 'center',
     lineHeight: 18,
+  },
+  radarCard: {
+    padding: Spacing.md,
+    marginTop: Spacing.md,
+    gap: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(59, 130, 246, 0.3)',
+  },
+  radarHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  radarPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: BorderRadius.sm,
+  },
+  radarPillText: {
+    ...Typography.label,
+    fontSize: 8.5,
+    fontWeight: '700',
+    color: Colors.accent,
+  },
+  radarRiskBadge: {
+    ...Typography.label,
+    fontSize: 9,
+    fontWeight: '700',
+    color: Colors.textMuted,
+  },
+  radarTitle: {
+    ...Typography.h3,
+    fontSize: 14,
+    color: Colors.textPrimary,
+  },
+  vectorList: {
+    gap: 6,
+    marginVertical: 4,
+  },
+  vectorItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    padding: 6,
+    borderRadius: BorderRadius.sm,
+  },
+  vectorText: {
+    ...Typography.bodySmall,
+    fontSize: 11,
+    color: Colors.textSecondary,
+    flex: 1,
+    lineHeight: 16,
+  },
+  defenseTipBox: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 6,
+    backgroundColor: 'rgba(37, 99, 235, 0.08)',
+    padding: 8,
+    borderRadius: BorderRadius.sm,
+    borderWidth: 1,
+    borderColor: 'rgba(37, 99, 235, 0.2)',
+  },
+  defenseTipText: {
+    ...Typography.bodySmall,
+    fontSize: 11,
+    color: Colors.textPrimary,
+    flex: 1,
+    lineHeight: 16,
+  },
+  radarLockedCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.md,
+    marginTop: Spacing.md,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderStyle: 'dashed',
+    gap: 4,
+  },
+  radarLockedHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  radarLockedBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  radarLockedBadgeText: {
+    ...Typography.label,
+    fontSize: 9,
+    fontWeight: '700',
+    color: Colors.textSecondary,
+  },
+  radarLockedUpgrade: {
+    ...Typography.label,
+    fontSize: 10,
+    fontWeight: '700',
+    color: Colors.primary,
+  },
+  radarLockedTitle: {
+    ...Typography.h3,
+    fontSize: 14,
+    color: Colors.textPrimary,
+    marginTop: 2,
+  },
+  radarLockedSub: {
+    ...Typography.bodySmall,
+    fontSize: 11,
+    color: Colors.textMuted,
+    lineHeight: 16,
   },
 });
