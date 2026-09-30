@@ -23,9 +23,9 @@ interface SubscriptionStoreState {
 
 export const useSubscriptionStore = create<SubscriptionStoreState>((set) => ({
   subscription: {
-    isPro: false,
-    activeTier: 'free',
-    expirationDate: null,
+    isPro: true,
+    activeTier: 'evident_pro_annual',
+    expirationDate: '2027-09-30T12:00:00Z',
     customerUserId: 'usr_candidate_aarav',
     isTestStore: true,
   },
