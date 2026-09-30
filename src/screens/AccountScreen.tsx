@@ -120,41 +120,72 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
           </View>
         </GlassCard>
 
-        {/* Subscription & Entitlements Card */}
+        {/* Pro Membership & RevenueCat Entitlements Section */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>SUBSCRIPTION & ENTITLEMENTS</Text>
+          <Text style={styles.sectionTitle}>EVIDENT PRO MEMBERSHIP</Text>
         </View>
 
         <GlassCard style={styles.subscriptionCard}>
           <View style={styles.subTopRow}>
             <View style={styles.subBadge}>
-              <Ionicons name="sparkles" size={14} color={Colors.primary} />
-              <Text style={styles.subBadgeText}>REVENUECAT POWERED</Text>
+              <Ionicons name="shield-checkmark" size={14} color={Colors.primary} />
+              <Text style={styles.subBadgeText}>REVENUECAT PRO ACTIVE</Text>
             </View>
-            <Text style={styles.subStatusText}>{isPro ? 'PRO ACTIVE' : 'FREE TIER'}</Text>
+            <View style={styles.proActivePill}>
+              <Text style={styles.proActivePillText}>ANNUAL PASS</Text>
+            </View>
           </View>
 
-          <Text style={styles.subTitle}>
-            {isPro ? 'Annual Executive Career Pass' : 'Standard Free Access'}
-          </Text>
+          <Text style={styles.subTitle}>Executive Career Pass Active</Text>
           <Text style={styles.subDescription}>
-            {isPro
-              ? 'Living Career Memory • ED25519 Merkle Seal • L5/L6 Seniority & Equity Calibrator Active.'
-              : 'Upgrade to unlock cryptographic Merkle provenance seals and unlimited continuous sync.'}
+            Full cryptographic provenance, automated code crawling, and senior interview defense unlocked.
           </Text>
+
+          {/* Pro Benefits Checklist */}
+          <View style={styles.proFeaturesList}>
+            <View style={styles.proFeatureRow}>
+              <Ionicons name="checkmark-circle" size={16} color={Colors.emerald} />
+              <View style={styles.proFeatureTextGroup}>
+                <Text style={styles.proFeatureTitle}>Cryptographic Merkle Seal (ED25519 & SHA-256)</Text>
+                <Text style={styles.proFeatureSub}>Mathematically guarantees zero AI hallucination to senior hiring teams.</Text>
+              </View>
+            </View>
+
+            <View style={styles.proFeatureRow}>
+              <Ionicons name="checkmark-circle" size={16} color={Colors.emerald} />
+              <View style={styles.proFeatureTextGroup}>
+                <Text style={styles.proFeatureTitle}>FAANG Bar-Raiser Architectural Radar</Text>
+                <Text style={styles.proFeatureSub}>Dynamic interview defense testing concurrency, scale, and failure modes.</Text>
+              </View>
+            </View>
+
+            <View style={styles.proFeatureRow}>
+              <Ionicons name="checkmark-circle" size={16} color={Colors.emerald} />
+              <View style={styles.proFeatureTextGroup}>
+                <Text style={styles.proFeatureTitle}>Market Equity & Seniority Calibrator</Text>
+                <Text style={styles.proFeatureSub}>L5/Senior compensation bands ($185k–$240k) calibrated to repository density.</Text>
+              </View>
+            </View>
+
+            <View style={styles.proFeatureRow}>
+              <Ionicons name="checkmark-circle" size={16} color={Colors.emerald} />
+              <View style={styles.proFeatureTextGroup}>
+                <Text style={styles.proFeatureTitle}>Continuous 100+ Repository Indexing</Text>
+                <Text style={styles.proFeatureSub}>Automated AST syntax extraction across Python, TypeScript, and JavaScript.</Text>
+              </View>
+            </View>
+          </View>
 
           <View style={styles.subFooterRow}>
             <Text style={styles.renewalText}>
-              {isPro ? 'Renews: Sep 30, 2027 • $49.99/yr' : 'Free Sandbox Tier'}
+              Renews: Sep 30, 2027 • $49.99/yr
             </Text>
             <TouchableOpacity
               style={styles.managePlanBtn}
               onPress={onNavigateToPaywall}
               activeOpacity={0.7}
             >
-              <Text style={styles.managePlanBtnText}>
-                {isPro ? 'Manage Tier' : 'Upgrade to Pro'}
-              </Text>
+              <Text style={styles.managePlanBtnText}>Manage Subscription</Text>
               <Ionicons name="chevron-forward" size={14} color={Colors.primary} />
             </TouchableOpacity>
           </View>
@@ -485,10 +516,18 @@ const styles = StyleSheet.create({
     fontSize: 9,
     fontWeight: '700',
   },
-  subStatusText: {
+  proActivePill: {
+    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    borderRadius: BorderRadius.sm,
+    borderWidth: 1,
+    borderColor: 'rgba(16, 185, 129, 0.2)',
+  },
+  proActivePillText: {
     ...Typography.label,
     color: Colors.emerald,
-    fontSize: 10,
+    fontSize: 9.5,
     fontWeight: '800',
   },
   subTitle: {
@@ -503,6 +542,36 @@ const styles = StyleSheet.create({
     color: Colors.textSecondary,
     fontSize: 12,
     lineHeight: 17,
+  },
+  proFeaturesList: {
+    gap: Spacing.sm,
+    marginTop: Spacing.sm,
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+    padding: Spacing.md,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    borderColor: 'rgba(15, 23, 42, 0.05)',
+  },
+  proFeatureRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+  },
+  proFeatureTextGroup: {
+    flex: 1,
+  },
+  proFeatureTitle: {
+    ...Typography.h3,
+    fontSize: 11.5,
+    fontWeight: '700',
+    color: Colors.textPrimary,
+  },
+  proFeatureSub: {
+    ...Typography.bodySmall,
+    fontSize: 10,
+    color: Colors.textSecondary,
+    lineHeight: 14,
+    marginTop: 1,
   },
   subFooterRow: {
     flexDirection: 'row',

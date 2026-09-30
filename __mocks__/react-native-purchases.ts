@@ -23,17 +23,17 @@ const Purchases = {
         entitlements: {
           active: activeEntitlements,
         },
-        originalAppUserId: 'usr_candidate_aarav',
+        originalAppUserId: 'usr_candidate_nika619',
       },
     };
   }),
   restorePurchases: jest.fn(async () => ({
     entitlements: { active: activeEntitlements },
-    originalAppUserId: 'usr_candidate_aarav',
+    originalAppUserId: 'usr_candidate_nika619',
   })),
   getCustomerInfo: jest.fn(async () => ({
     entitlements: { active: activeEntitlements },
-    originalAppUserId: 'usr_candidate_aarav',
+    originalAppUserId: 'usr_candidate_nika619',
   })),
   addCustomerInfoUpdateListener: jest.fn(() => {}),
   _reset: () => {

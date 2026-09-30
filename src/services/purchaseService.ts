@@ -79,7 +79,7 @@ export class PurchaseService {
       isPro: true,
       activeTier: 'evident_pro_annual',
       expirationDate: '2027-09-30T12:00:00Z',
-      customerUserId: 'usr_candidate_aarav',
+      customerUserId: 'usr_candidate_nika619',
       isTestStore: true,
     };
   }
@@ -98,7 +98,7 @@ export class PurchaseService {
       isPro: true,
       activeTier: pkg.tier,
       expirationDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
-      customerUserId: 'usr_candidate_aarav',
+      customerUserId: 'usr_candidate_nika619',
       isTestStore: true,
     };
 
@@ -124,7 +124,7 @@ export class PurchaseService {
       isPro: false,
       activeTier: 'free',
       expirationDate: null,
-      customerUserId: 'usr_candidate_aarav',
+      customerUserId: 'usr_candidate_nika619',
       isTestStore: true,
     };
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(newState));

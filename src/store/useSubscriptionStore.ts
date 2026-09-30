@@ -26,7 +26,7 @@ export const useSubscriptionStore = create<SubscriptionStoreState>((set) => ({
     isPro: true,
     activeTier: 'evident_pro_annual',
     expirationDate: '2027-09-30T12:00:00Z',
-    customerUserId: 'usr_candidate_aarav',
+    customerUserId: 'usr_candidate_nika619',
     isTestStore: true,
   },
   offerings: EVIDENT_OFFERINGS,
