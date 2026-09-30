@@ -4,7 +4,7 @@
  * filterable evidence list, and entry points into Graph Explorer and Opportunity Matching.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -12,14 +12,18 @@ import {
   ScrollView,
   TouchableOpacity,
   SafeAreaView,
+  TextInput,
+  Animated,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme';
 import { useEvidenceStore } from '../store/useEvidenceStore';
 import { GlassCard } from '../components/GlassCard';
 import { EvidenceBadge } from '../components/EvidenceBadge';
 import { EvidenceInspectorModal } from '../components/EvidenceInspectorModal';
 import { InteractiveGraphExplorer } from '../components/InteractiveGraphExplorer';
+import { AnimatedListItem } from '../components/AnimatedListItem';
 import { EvidenceItem, EvidenceStatus } from '../domain/types';
 
 interface EvidenceScreenProps {
@@ -39,6 +43,27 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({
 
   const [inspectItem, setInspectItem] = useState<EvidenceItem | null>(null);
   const [graphModalVisible, setGraphModalVisible] = useState<boolean>(false);
+  const [githubUser, setGithubUser] = useState<string>('');
+
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const fadeAnim1 = useRef(new Animated.Value(0)).current;
+  const fadeAnim2 = useRef(new Animated.Value(0)).current;
+  const fadeAnim3 = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, { toValue: 1.3, duration: 4000, useNativeDriver: true }),
+        Animated.timing(pulseAnim, { toValue: 1, duration: 4000, useNativeDriver: true }),
+      ])
+    ).start();
+
+    Animated.stagger(150, [
+      Animated.timing(fadeAnim1, { toValue: 1, duration: 800, useNativeDriver: true }),
+      Animated.timing(fadeAnim2, { toValue: 1, duration: 800, useNativeDriver: true }),
+      Animated.timing(fadeAnim3, { toValue: 1, duration: 800, useNativeDriver: true }),
+    ]).start();
+  }, []);
 
   const distinctSkills = Array.from(new Set(evidence.map((e) => e.skillName)));
 
@@ -51,9 +76,21 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Hero Telemetry Card */}
-        <View style={styles.heroSection}>
-          <Text style={styles.candidateGreeting}>CANDIDATE: {candidateName.toUpperCase()}</Text>
-          <Text style={styles.heroTitle}>Living Career Evidence</Text>
+        <Animated.View style={{ opacity: fadeAnim1, transform: [{ translateY: fadeAnim1.interpolate({ inputRange: [0, 1], outputRange: [20, 0] }) }] }}>
+          <LinearGradient
+            colors={['#E0F2FE', '#F0FDF4', Colors.bgSurface]}
+            locations={[0, 0.5, 1]}
+            style={styles.heroSection}
+          >
+            <Animated.View style={[styles.glowOrbCyan, { transform: [{ scale: pulseAnim }] }]} />
+            <Animated.View style={[styles.glowOrbViolet, { transform: [{ scale: pulseAnim }] }]} />
+            <View style={styles.candidateBadge}>
+            <Text style={styles.candidateGreeting}>
+              {candidateName ? `CANDIDATE: ${candidateName.toUpperCase()}` : 'CONNECT A CANDIDATE'}
+            </Text>
+          </View>
+          <Text style={styles.heroTitle}>Living Career</Text>
+          <Text style={styles.heroTitleHighlight}>Intelligence.</Text>
           <Text style={styles.heroSubtitle}>
             Your repositories, commits, and source files mapped into verifiable technical provenance.
           </Text>
@@ -77,18 +114,25 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({
 
           {/* Action Row */}
           <View style={styles.heroActionRow}>
-            <TouchableOpacity
-              style={styles.graphExplorerBtn}
-              onPress={() => setGraphModalVisible(true)}
-              activeOpacity={0.8}
-            >
-              <Ionicons name="git-network-outline" size={16} color={Colors.textPrimary} />
-              <Text style={styles.graphExplorerText}>Explore Evidence Graph</Text>
-            </TouchableOpacity>
+            <View style={styles.githubInputContainer}>
+              <Ionicons name="logo-github" size={14} color={Colors.textSecondary} />
+              <TextInput
+                style={styles.githubInput}
+                value={githubUser}
+                onChangeText={setGithubUser}
+                placeholder="GitHub Username or URL"
+                placeholderTextColor={Colors.textMuted}
+                autoCapitalize="none"
+              />
+            </View>
 
             <TouchableOpacity
               style={styles.syncBtn}
-              onPress={triggerSync}
+              onPress={() => {
+                if (githubUser.trim()) {
+                  triggerSync(githubUser);
+                }
+              }}
               disabled={isSyncing}
               activeOpacity={0.7}
             >
@@ -102,30 +146,47 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({
               </Text>
             </TouchableOpacity>
           </View>
-        </View>
+          
+          <TouchableOpacity
+            style={styles.graphExplorerBtn}
+            onPress={() => setGraphModalVisible(true)}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="git-network-outline" size={16} color={Colors.textPrimary} />
+            <Text style={styles.graphExplorerText}>Explore Evidence Graph</Text>
+          </TouchableOpacity>
+        </LinearGradient>
+        </Animated.View>
 
         {/* What are you applying for? CTA Card */}
-        <TouchableOpacity
-          style={styles.applyPromptCard}
-          onPress={onNavigateToOpportunity}
-          activeOpacity={0.85}
-        >
-          <View style={styles.applyPromptContent}>
-            <View style={styles.promptBadge}>
-              <Text style={styles.promptBadgeText}>TARGET MATCHING</Text>
+        <Animated.View style={{ opacity: fadeAnim2, transform: [{ translateY: fadeAnim2.interpolate({ inputRange: [0, 1], outputRange: [20, 0] }) }] }}>
+          <TouchableOpacity
+            onPress={onNavigateToOpportunity}
+            activeOpacity={0.85}
+            style={{ marginTop: Spacing.md }}
+          >
+            <LinearGradient
+              colors={['#FFFFFF', '#F1F5F9']}
+              style={styles.applyPromptCard}
+            >
+            <View style={styles.applyPromptContent}>
+              <View style={styles.promptBadge}>
+                <Text style={styles.promptBadgeText}>TARGET MATCHING</Text>
+              </View>
+              <Text style={styles.applyPromptTitle}>What are you applying for?</Text>
+              <Text style={styles.applyPromptSubtext}>
+                Paste any internship or job description to match against your actual code.
+              </Text>
             </View>
-            <Text style={styles.applyPromptTitle}>What are you applying for?</Text>
-            <Text style={styles.applyPromptSubtext}>
-              Paste any internship or job description to match against your actual code.
-            </Text>
-          </View>
-          <View style={styles.applyArrow}>
-            <Ionicons name="arrow-forward" size={20} color={Colors.primaryText} />
-          </View>
+            <View style={styles.applyArrow}>
+              <Ionicons name="arrow-forward" size={16} color={Colors.textInverse} />
+            </View>
+          </LinearGradient>
         </TouchableOpacity>
+        </Animated.View>
 
         {/* Connected Repositories Section */}
-        <View style={styles.section}>
+        <Animated.View style={[styles.section, { opacity: fadeAnim3, transform: [{ translateY: fadeAnim3.interpolate({ inputRange: [0, 1], outputRange: [20, 0] }) }] }]}>
           <Text style={styles.sectionTitle}>CONNECTED REPOSITORIES</Text>
           <ScrollView
             horizontal
@@ -153,7 +214,7 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({
               </GlassCard>
             ))}
           </ScrollView>
-        </View>
+        </Animated.View>
 
         {/* Evidence Items Section */}
         <View style={styles.section}>
@@ -192,14 +253,14 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({
 
           {/* Evidence Cards List */}
           <View style={styles.evidenceList}>
-            {filteredEvidence.map((ev) => (
-              <TouchableOpacity
-                key={ev.id}
-                style={styles.evidenceCard}
-                onPress={() => setInspectItem(ev)}
-                activeOpacity={0.8}
-              >
-                <View style={styles.cardHeader}>
+            {filteredEvidence.map((ev, index) => (
+              <AnimatedListItem key={ev.id} delayIndex={index}>
+                <TouchableOpacity
+                  style={styles.evidenceCard}
+                  onPress={() => setInspectItem(ev)}
+                  activeOpacity={0.8}
+                >
+                  <View style={styles.cardHeader}>
                   <Text style={styles.evidenceSkill}>{ev.skillName}</Text>
                   <EvidenceBadge status={ev.evidenceStatus} />
                 </View>
@@ -223,7 +284,8 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({
 
                   <Text style={styles.whyLink}>Inspect Provenance →</Text>
                 </View>
-              </TouchableOpacity>
+                </TouchableOpacity>
+              </AnimatedListItem>
             ))}
           </View>
         </View>
@@ -251,7 +313,7 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: Colors.bgPrimary,
+    backgroundColor: 'transparent',
   },
   container: {
     flex: 1,
@@ -260,27 +322,70 @@ const styles = StyleSheet.create({
   heroSection: {
     backgroundColor: Colors.bgSurface,
     borderRadius: BorderRadius.xl,
-    padding: Spacing.lg,
+    padding: Spacing.xl,
     marginTop: Spacing.md,
     borderWidth: 1,
     borderColor: Colors.borderSubtle,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 12,
+    elevation: 2,
+  },
+  glowOrbCyan: {
+    position: 'absolute',
+    top: -80,
+    left: -40,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: '#38BDF8',
+    opacity: 0.2,
+  },
+  glowOrbViolet: {
+    position: 'absolute',
+    bottom: -80,
+    right: -40,
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    backgroundColor: '#818CF8',
+    opacity: 0.15,
+  },
+
+  candidateBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: BorderRadius.sm,
+    marginBottom: 6,
   },
   candidateGreeting: {
     ...Typography.label,
-    color: Colors.textMuted,
-    fontSize: 9.5,
-    marginBottom: 4,
-    letterSpacing: 1.2,
+    color: Colors.textSecondary,
+    fontSize: 10,
+    letterSpacing: 1.5,
   },
   heroTitle: {
     ...Typography.h1,
     color: Colors.textPrimary,
+    fontSize: 28,
+  },
+  heroTitleHighlight: {
+    ...Typography.h1,
+    color: Colors.primary,
+    fontSize: 32,
+    lineHeight: 38,
   },
   heroSubtitle: {
     ...Typography.bodySmall,
     color: Colors.textSecondary,
-    marginTop: 4,
-    marginBottom: Spacing.md,
+    marginTop: 8,
+    marginBottom: Spacing.lg,
+    fontSize: 13,
+    lineHeight: 18,
   },
   metricsRow: {
     flexDirection: 'row',
@@ -301,13 +406,14 @@ const styles = StyleSheet.create({
     ...Typography.h2,
     color: Colors.textPrimary,
     fontWeight: '800',
+    fontSize: 22,
   },
   metricLabel: {
     ...Typography.label,
     color: Colors.textMuted,
-    fontSize: 8,
-    marginTop: 2,
-    letterSpacing: 0.8,
+    fontSize: 9,
+    marginTop: 4,
+    letterSpacing: 1.0,
   },
   metricDivider: {
     width: 1,
@@ -319,17 +425,34 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
     marginTop: Spacing.md,
   },
-  graphExplorerBtn: {
+  githubInputContainer: {
     flex: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 7,
+    backgroundColor: Colors.bgElevated,
+    paddingHorizontal: 10,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    borderColor: Colors.borderSubtle,
+  },
+  githubInput: {
+    ...Typography.bodySmall,
+    color: Colors.textPrimary,
+    flex: 1,
+    paddingVertical: 8,
+  },
+  graphExplorerBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 7,
     backgroundColor: Colors.bgElevated,
     paddingVertical: 10,
+    marginTop: Spacing.sm,
     borderRadius: BorderRadius.md,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.18)',
+    borderColor: Colors.borderSubtle,
   },
   graphExplorerText: {
     ...Typography.label,
@@ -358,50 +481,60 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: Colors.bgElevated,
     borderRadius: BorderRadius.lg,
     padding: Spacing.md,
-    marginTop: Spacing.md,
+    backgroundColor: Colors.bgSurface,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.14)',
+    borderColor: Colors.borderSubtle,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
   },
   applyPromptContent: {
     flex: 1,
     paddingRight: Spacing.md,
   },
   promptBadge: {
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: 'rgba(37, 99, 235, 0.1)',
     alignSelf: 'flex-start',
-    paddingVertical: 2,
-    paddingHorizontal: 7,
+    paddingVertical: 3,
+    paddingHorizontal: 8,
     borderRadius: BorderRadius.sm,
-    marginBottom: 4,
+    marginBottom: 6,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(37, 99, 235, 0.2)',
   },
   promptBadgeText: {
     ...Typography.label,
-    color: Colors.textSecondary,
-    fontSize: 8.5,
-    letterSpacing: 0.8,
+    color: Colors.primary,
+    fontSize: 9,
+    letterSpacing: 1.0,
   },
   applyPromptTitle: {
     ...Typography.h3,
     color: Colors.textPrimary,
+    fontSize: 16,
   },
   applyPromptSubtext: {
     ...Typography.bodySmall,
     color: Colors.textSecondary,
-    fontSize: 11,
-    marginTop: 2,
+    fontSize: 12,
+    marginTop: 4,
+    lineHeight: 16,
   },
   applyArrow: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: Colors.primary,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#818CF8',
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#4F46E5',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    elevation: 5,
   },
   section: {
     marginTop: Spacing.xl,

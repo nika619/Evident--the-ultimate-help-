@@ -3,3 +3,4 @@ export * from './OpportunityScreen';
 export * from './ApplicationScreen';
 export * from './InterviewScreen';
 export * from './PaywallScreen';
+export * from './OnboardingScreen';

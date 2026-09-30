@@ -15,6 +15,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme';
 import { useOpportunityStore } from '../store/useOpportunityStore';
 import { EvidenceBadge } from '../components/EvidenceBadge';
@@ -34,6 +35,7 @@ export const OpportunityScreen: React.FC<OpportunityScreenProps> = ({
   const coverage = useOpportunityStore((s) => s.coverage);
   const isAnalyzing = useOpportunityStore((s) => s.isAnalyzing);
   const runAnalysis = useOpportunityStore((s) => s.runAnalysis);
+  const setOpportunity = useOpportunityStore((s) => s.setOpportunity);
 
   const [isEditingJD, setIsEditingJD] = useState(false);
   const [jdText, setJdText] = useState(opportunity.descriptionRaw);
@@ -42,7 +44,11 @@ export const OpportunityScreen: React.FC<OpportunityScreenProps> = ({
     <SafeAreaView style={styles.safeArea}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Opportunity Card Header */}
-        <View style={styles.targetCard}>
+        <LinearGradient
+          colors={['#E0F2FE', '#FFFFFF']}
+          style={styles.targetCard}
+        >
+          <View style={styles.glowOrbCyan} />
           <View style={styles.targetBadge}>
             <Text style={styles.targetBadgeText}>ACTIVE TARGET</Text>
           </View>
@@ -79,13 +85,13 @@ export const OpportunityScreen: React.FC<OpportunityScreenProps> = ({
                 title="Re-Match Against Proof Graph"
                 size="small"
                 onPress={() => {
-                  runAnalysis();
+                  setOpportunity({ ...opportunity, descriptionRaw: jdText });
                   setIsEditingJD(false);
                 }}
               />
             </View>
           )}
-        </View>
+        </LinearGradient>
 
         {/* Evidence Coverage Matrix (Honest & Transparent) */}
         {coverage && (
@@ -120,11 +126,11 @@ export const OpportunityScreen: React.FC<OpportunityScreenProps> = ({
                   <Text style={styles.statLabel}>PARTIAL</Text>
                 </View>
 
-                <View style={[styles.statBox, { borderColor: Colors.rose }]}>
-                  <Text style={[styles.statNum, { color: Colors.rose }]}>
+                <View style={[styles.statBox, { borderColor: Colors.borderSubtle }]}>
+                  <Text style={[styles.statNum, { color: Colors.textMuted }]}>
                     {coverage.notFoundCount}
                   </Text>
-                  <Text style={styles.statLabel}>GAP DETECTED</Text>
+                  <Text style={styles.statLabel}>GROWTH VECTOR</Text>
                 </View>
               </View>
 
@@ -190,7 +196,7 @@ export const OpportunityScreen: React.FC<OpportunityScreenProps> = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: Colors.bgPrimary,
+    backgroundColor: 'transparent',
   },
   container: {
     flex: 1,
@@ -199,25 +205,41 @@ const styles = StyleSheet.create({
   targetCard: {
     backgroundColor: Colors.bgSurface,
     borderRadius: BorderRadius.xl,
-    padding: Spacing.lg,
+    padding: Spacing.xl,
     marginTop: Spacing.md,
     borderWidth: 1,
     borderColor: Colors.borderSubtle,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 12,
+    elevation: 2,
+  },
+  glowOrbCyan: {
+    position: 'absolute',
+    top: -50,
+    right: -50,
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    backgroundColor: '#38BDF8',
+    opacity: 0.15,
   },
   targetBadge: {
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: 'rgba(37, 99, 235, 0.1)',
     alignSelf: 'flex-start',
-    paddingVertical: 2,
-    paddingHorizontal: 7,
+    paddingVertical: 3,
+    paddingHorizontal: 8,
     borderRadius: BorderRadius.sm,
-    marginBottom: 6,
+    marginBottom: Spacing.sm,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(37, 99, 235, 0.2)',
   },
   targetBadgeText: {
     ...Typography.label,
-    color: Colors.textSecondary,
-    fontSize: 8.5,
+    color: Colors.primary,
+    fontSize: 9,
     letterSpacing: 0.8,
   },
   targetTitle: {

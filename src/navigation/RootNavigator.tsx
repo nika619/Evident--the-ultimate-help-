@@ -6,6 +6,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme';
 import {
   EvidenceScreen,
@@ -13,6 +14,7 @@ import {
   ApplicationScreen,
   InterviewScreen,
   PaywallScreen,
+  OnboardingScreen,
 } from '../screens';
 import { Header } from '../components/Header';
 import { useEvidenceStore } from '../store/useEvidenceStore';
@@ -23,6 +25,14 @@ export const RootNavigator: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabKey>('evidence');
   const [paywallVisible, setPaywallVisible] = useState<boolean>(false);
   const triggerSync = useEvidenceStore((s) => s.triggerContinuousSync);
+  const hasCompletedOnboarding = useEvidenceStore((s) => s.hasCompletedOnboarding);
+
+  const switchTab = (tab: TabKey) => {
+    if (activeTab !== tab) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      setActiveTab(tab);
+    }
+  };
 
   const renderActiveScreen = () => {
     switch (activeTab) {
@@ -51,6 +61,10 @@ export const RootNavigator: React.FC = () => {
     }
   };
 
+  if (!hasCompletedOnboarding) {
+    return <OnboardingScreen />;
+  }
+
   return (
     <View style={styles.container}>
       {/* Top Header */}
@@ -66,7 +80,7 @@ export const RootNavigator: React.FC = () => {
       <View style={styles.tabBar}>
         <TouchableOpacity
           style={styles.tabItem}
-          onPress={() => setActiveTab('evidence')}
+          onPress={() => switchTab('evidence')}
           activeOpacity={0.7}
         >
           <Ionicons
@@ -86,7 +100,7 @@ export const RootNavigator: React.FC = () => {
 
         <TouchableOpacity
           style={styles.tabItem}
-          onPress={() => setActiveTab('opportunity')}
+          onPress={() => switchTab('opportunity')}
           activeOpacity={0.7}
         >
           <Ionicons
@@ -106,7 +120,7 @@ export const RootNavigator: React.FC = () => {
 
         <TouchableOpacity
           style={styles.tabItem}
-          onPress={() => setActiveTab('application')}
+          onPress={() => switchTab('application')}
           activeOpacity={0.7}
         >
           <Ionicons
@@ -126,7 +140,7 @@ export const RootNavigator: React.FC = () => {
 
         <TouchableOpacity
           style={styles.tabItem}
-          onPress={() => setActiveTab('interview')}
+          onPress={() => switchTab('interview')}
           activeOpacity={0.7}
         >
           <Ionicons
@@ -156,14 +170,15 @@ export const RootNavigator: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.bgPrimary,
+    backgroundColor: 'transparent',
   },
   screenContainer: {
     flex: 1,
+    backgroundColor: 'transparent',
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: Colors.bgSurface,
+    backgroundColor: 'rgba(255, 255, 255, 0.4)', // Slightly frosted glass for bottom tab
     borderTopWidth: 1,
     borderTopColor: Colors.borderSubtle,
     paddingVertical: Spacing.sm,
