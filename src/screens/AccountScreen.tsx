@@ -27,11 +27,15 @@ import { EvidentButton } from '../components/EvidentButton';
 interface AccountScreenProps {
   onNavigateToPaywall: () => void;
   onGoBack: () => void;
+  onOpenTutorial?: () => void;
+  onOpenLanding?: () => void;
 }
 
 export const AccountScreen: React.FC<AccountScreenProps> = ({
   onNavigateToPaywall,
   onGoBack,
+  onOpenTutorial,
+  onOpenLanding,
 }) => {
   const candidateName = useEvidenceStore((s) => s.candidateName);
   const projects = useEvidenceStore((s) => s.projects);
@@ -253,6 +257,42 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
         </View>
 
         <GlassCard style={styles.legalCard}>
+          {onOpenTutorial && (
+            <>
+              <TouchableOpacity
+                style={styles.legalRow}
+                onPress={onOpenTutorial}
+                activeOpacity={0.7}
+              >
+                <View style={styles.legalRowLeft}>
+                  <Ionicons name="compass-outline" size={20} color={Colors.primary} />
+                  <Text style={[styles.legalRowTitle, { color: Colors.primary, fontWeight: '700' }]}>
+                    Take 5-Stop Interactive Tour
+                  </Text>
+                </View>
+                <Ionicons name="chevron-forward" size={18} color={Colors.primary} />
+              </TouchableOpacity>
+              <View style={styles.legalDivider} />
+            </>
+          )}
+
+          {onOpenLanding && (
+            <>
+              <TouchableOpacity
+                style={styles.legalRow}
+                onPress={onOpenLanding}
+                activeOpacity={0.7}
+              >
+                <View style={styles.legalRowLeft}>
+                  <Ionicons name="sparkles-outline" size={20} color={Colors.accent} />
+                  <Text style={styles.legalRowTitle}>Evident Welcome & Thesis Showcase</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={18} color={Colors.textMuted} />
+              </TouchableOpacity>
+              <View style={styles.legalDivider} />
+            </>
+          )}
+
           <TouchableOpacity
             style={styles.legalRow}
             onPress={() => setActiveLegalModal('help')}
