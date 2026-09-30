@@ -1,33 +1,58 @@
 /**
  * Evident Header Component
- * Studio minimalist top bar with quiet luxury telemetry and Pro status.
+ * Studio minimalist mobile top bar with back navigation, screen titles,
+ * quiet luxury telemetry, and Pro status.
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme';
 import { useSubscriptionStore } from '../store/useSubscriptionStore';
 import { useEvidenceStore } from '../store/useEvidenceStore';
 
 interface HeaderProps {
+  canGoBack?: boolean;
+  onGoBack?: () => void;
+  title?: string;
   onPressPro?: () => void;
   onPressSync?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onPressPro, onPressSync }) => {
+export const Header: React.FC<HeaderProps> = ({
+  canGoBack = false,
+  onGoBack,
+  title,
+  onPressPro,
+  onPressSync,
+}) => {
   const isPro = useSubscriptionStore((s) => s.subscription.isPro);
   const isSyncing = useEvidenceStore((s) => s.isSyncing);
 
   return (
     <View style={styles.container}>
-      <View style={styles.brandRow}>
-        <View style={styles.logoPill}>
-          <View style={styles.solidDot} />
-          <Text style={styles.brandName}>EVIDENT</Text>
+      {canGoBack ? (
+        <View style={styles.backRow}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={onGoBack}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="chevron-back" size={22} color={Colors.textPrimary} />
+            <Text style={styles.screenTitleText} numberOfLines={1}>
+              {title || 'Back'}
+            </Text>
+          </TouchableOpacity>
         </View>
-        <Text style={styles.tagline}>CODE-GROUNDED CAREER INTELLIGENCE</Text>
-      </View>
+      ) : (
+        <View style={styles.brandRow}>
+          <View style={styles.logoPill}>
+            <View style={styles.solidDot} />
+            <Text style={styles.brandName}>EVIDENT</Text>
+          </View>
+          <Text style={styles.tagline}>CODE-GROUNDED CAREER INTELLIGENCE</Text>
+        </View>
+      )}
 
       <View style={styles.actionsRow}>
         <TouchableOpacity
@@ -104,10 +129,28 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     marginTop: 2,
   },
+  backRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    marginRight: Spacing.sm,
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingVertical: 4,
+  },
+  screenTitleText: {
+    ...Typography.h3,
+    color: Colors.textPrimary,
+    fontSize: 16,
+    fontWeight: '800',
+  },
   actionsRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.sm,
+    gap: Spacing.xs,
   },
   syncButton: {
     flexDirection: 'row',
@@ -115,7 +158,7 @@ const styles = StyleSheet.create({
     gap: 5,
     backgroundColor: Colors.bgElevated,
     paddingVertical: 5,
-    paddingHorizontal: 9,
+    paddingHorizontal: 8,
     borderRadius: BorderRadius.md,
     borderWidth: 1,
     borderColor: Colors.borderSubtle,
@@ -123,7 +166,7 @@ const styles = StyleSheet.create({
   syncText: {
     ...Typography.label,
     color: Colors.textSecondary,
-    fontSize: 10,
+    fontSize: 9.5,
     fontWeight: '600',
   },
   proBadge: {
@@ -131,24 +174,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
     paddingVertical: 5,
-    paddingHorizontal: 10,
+    paddingHorizontal: 9,
     borderRadius: BorderRadius.md,
+  },
+  proActive: {
+    backgroundColor: Colors.primary,
   },
   proFree: {
     backgroundColor: Colors.bgSurface,
     borderWidth: 1,
     borderColor: Colors.borderSubtle,
   },
-  proActive: {
-    backgroundColor: 'rgba(37, 99, 235, 0.1)',
-    borderWidth: 1,
-    borderColor: 'rgba(37, 99, 235, 0.3)',
-  },
   proText: {
     ...Typography.label,
+    fontSize: 9.5,
+    fontWeight: '800',
     color: Colors.textPrimary,
-    fontSize: 10,
-    fontWeight: '700',
   },
   proTextActive: {
     color: Colors.primaryText,
