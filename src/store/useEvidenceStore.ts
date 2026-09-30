@@ -35,7 +35,7 @@ interface EvidenceState {
 
 export const useEvidenceStore = create<EvidenceState>((set, get) => ({
   hasCompletedOnboarding: false,
-  candidateName: 'Aarav (Verified)',
+  candidateName: 'Mayank Tiwari (@nika619)',
   projects: GOLDEN_PROJECTS,
   evidence: GOLDEN_EVIDENCE,
   selectedEvidence: null,
