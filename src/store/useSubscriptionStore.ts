@@ -19,9 +19,11 @@ interface SubscriptionStoreState {
   purchasePlan: (pkg: PlanPackage) => Promise<boolean>;
   restorePurchases: () => Promise<boolean>;
   resetToFree: () => Promise<void>;
+  setProTier: (isPro: boolean) => Promise<void>;
+  toggleProTier: () => Promise<boolean>;
 }
 
-export const useSubscriptionStore = create<SubscriptionStoreState>((set) => ({
+export const useSubscriptionStore = create<SubscriptionStoreState>((set, get) => ({
   subscription: {
     isPro: true,
     activeTier: 'evident_pro_annual',
@@ -68,4 +70,28 @@ export const useSubscriptionStore = create<SubscriptionStoreState>((set) => ({
     const updated = await PurchaseService.resetToFreeTier();
     set({ subscription: updated });
   },
+
+  setProTier: async (isPro: boolean) => {
+    if (isPro) {
+      const updated = await PurchaseService.purchasePlan(EVIDENT_OFFERINGS[0]);
+      set({ subscription: updated });
+    } else {
+      const updated = await PurchaseService.resetToFreeTier();
+      set({ subscription: updated });
+    }
+  },
+
+  toggleProTier: async () => {
+    const current = get().subscription.isPro;
+    if (current) {
+      const updated = await PurchaseService.resetToFreeTier();
+      set({ subscription: updated });
+      return false;
+    } else {
+      const updated = await PurchaseService.purchasePlan(EVIDENT_OFFERINGS[0]);
+      set({ subscription: updated });
+      return true;
+    }
+  },
 }));
+
