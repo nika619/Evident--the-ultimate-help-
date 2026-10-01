@@ -37,9 +37,18 @@ export const useSubscriptionStore = create<SubscriptionStoreState>((set, get) =>
 
   initializeSubscription: async () => {
     set({ isLoading: true });
-    await PurchaseService.initialize();
+    await PurchaseService.initialize((isPro) => {
+      set((s) => ({
+        subscription: {
+          ...s.subscription,
+          isPro,
+          activeTier: isPro ? 'evident_pro_annual' : 'free',
+        },
+      }));
+    });
+    const liveOfferings = await PurchaseService.fetchLiveOfferings();
     const state = await PurchaseService.getSubscriptionState();
-    set({ subscription: state, isLoading: false });
+    set({ subscription: state, offerings: liveOfferings, isLoading: false });
   },
 
   purchasePlan: async (pkg: PlanPackage) => {
