@@ -6,6 +6,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, BackHandler, Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme';
@@ -33,7 +34,8 @@ export type ScreenKey =
   | 'application'
   | 'interview'
   | 'history'
-  | 'account';
+  | 'account'
+  | 'pro';
 
 const SCREEN_TITLES: Record<ScreenKey, string> = {
   home: 'Home',
@@ -43,12 +45,14 @@ const SCREEN_TITLES: Record<ScreenKey, string> = {
   application: 'Application Studio',
   interview: 'Defense Arena',
   history: 'Audit History',
-  account: 'Account & Legal',
+  account: 'Account & Settings',
+  pro: 'Evident Pro ⚡',
 };
 
 export const RootNavigator: React.FC = () => {
+  const insets = useSafeAreaInsets();
+  const bottomPadding = Math.max(insets.bottom, Platform.OS === 'android' ? 32 : 10);
   const [navigationStack, setNavigationStack] = useState<ScreenKey[]>(['home']);
-  const [paywallVisible, setPaywallVisible] = useState<boolean>(false);
   const [tutorialVisible, setTutorialVisible] = useState<boolean>(false);
   const triggerSync = useEvidenceStore((s) => s.triggerContinuousSync);
   const hasCompletedOnboarding = useEvidenceStore((s) => s.hasCompletedOnboarding);
@@ -100,7 +104,7 @@ export const RootNavigator: React.FC = () => {
             onNavigateToInterview={() => navigateTo('interview')}
             onNavigateToHistory={() => navigateTo('history')}
             onNavigateToAccount={() => navigateTo('account')}
-            onNavigateToPaywall={() => setPaywallVisible(true)}
+            onNavigateToPaywall={() => navigateTo('pro')}
             onOpenTutorial={() => setTutorialVisible(true)}
             onOpenLanding={() => navigateTo('landing')}
           />
@@ -129,11 +133,11 @@ export const RootNavigator: React.FC = () => {
         return (
           <ApplicationScreen
             onNavigateToInterview={() => navigateTo('interview')}
-            onNavigateToPaywall={() => setPaywallVisible(true)}
+            onNavigateToPaywall={() => navigateTo('pro')}
           />
         );
       case 'interview':
-        return <InterviewScreen onNavigateToPaywall={() => setPaywallVisible(true)} />;
+        return <InterviewScreen onNavigateToPaywall={() => navigateTo('pro')} />;
       case 'history':
         return (
           <HistoryScreen
@@ -145,12 +149,14 @@ export const RootNavigator: React.FC = () => {
       case 'account':
         return (
           <AccountScreen
-            onNavigateToPaywall={() => setPaywallVisible(true)}
+            onNavigateToPaywall={() => navigateTo('pro')}
             onGoBack={goBack}
             onOpenTutorial={() => setTutorialVisible(true)}
             onOpenLanding={() => navigateTo('landing')}
           />
         );
+      case 'pro':
+        return <PaywallScreen onClose={goBack} />;
       case 'evidence':
       default:
         return (
@@ -174,15 +180,15 @@ export const RootNavigator: React.FC = () => {
         canGoBack={canGoBack}
         onGoBack={goBack}
         title={SCREEN_TITLES[currentScreen]}
-        onPressPro={() => setPaywallVisible(true)}
+        onPressPro={() => navigateTo('pro')}
         onPressSync={triggerSync}
       />
 
       {/* Main Screen Body */}
       <View style={styles.screenContainer}>{renderActiveScreen()}</View>
 
-      {/* 5-Tab Pure Mobile Bottom Bar */}
-      <View style={styles.tabBar}>
+      {/* 5-Tab Pure Mobile Bottom Bar with Apple Glassmorphism */}
+      <View style={[styles.tabBar, { paddingBottom: bottomPadding + 6 }]}>
         <TouchableOpacity
           style={styles.tabItem}
           onPress={() => switchTab('home')}
@@ -284,11 +290,6 @@ export const RootNavigator: React.FC = () => {
         </TouchableOpacity>
       </View>
 
-      {/* RevenueCat Pro Paywall Modal */}
-      {paywallVisible && (
-        <PaywallScreen onClose={() => setPaywallVisible(false)} />
-      )}
-
       {/* 5-Stop Guided Trip Tutorial Modal */}
       <InteractiveTutorial
         visible={tutorialVisible}
@@ -313,18 +314,24 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.88)',
+    backgroundColor: 'rgba(255, 255, 255, 0.82)',
     borderTopWidth: 1,
-    borderTopColor: 'rgba(15, 23, 42, 0.08)',
-    paddingVertical: Platform.OS === 'ios' ? Spacing.sm : 6,
+    borderTopColor: 'rgba(255, 255, 255, 0.95)',
+    paddingVertical: Platform.OS === 'ios' ? Spacing.sm : 7,
     paddingHorizontal: Spacing.sm,
     justifyContent: 'space-around',
     alignItems: 'center',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 16,
+    elevation: 8,
     ...(Platform.OS === 'web'
       ? ({
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          boxShadow: '0 -4px 20px rgba(15, 23, 42, 0.04)',
+          backdropFilter: 'blur(28px) saturate(190%)',
+          WebkitBackdropFilter: 'blur(28px) saturate(190%)',
+          boxShadow:
+            '0 -8px 28px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
         } as any)
       : {}),
   },
@@ -339,11 +346,13 @@ const styles = StyleSheet.create({
     ...Typography.label,
     color: Colors.textMuted,
     fontSize: 9.5,
-    marginTop: 2,
-    fontWeight: '600',
+    marginTop: 3,
+    fontWeight: '700',
+    letterSpacing: 0.4,
   },
   tabLabelActive: {
     color: Colors.primary,
     fontWeight: '800',
   },
 });
+
