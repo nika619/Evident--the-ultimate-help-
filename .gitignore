@@ -13,6 +13,15 @@ veda
 .vscode/
 *.swp
 .DS_Store
+
+# Environment & Secrets (NEVER push)
 .env
 .env.local
 .env*.local
+
+# Local demo recordings & raw screenshot captures
+*.mp4
+screen_*.png
+current_screen.png
+record_evident_demo.ps1
+DEMO_VIDEO_GUIDE.html
