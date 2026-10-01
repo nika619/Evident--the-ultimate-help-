@@ -96,6 +96,19 @@ export const ApplicationScreen: React.FC<ApplicationScreenProps> = ({
     }
   };
 
+  const handleCopyBullets = async () => {
+    const formatted = groundedBullets.map((b) => `• ${b.text}`).join('\n\n');
+    if (Platform.OS === 'web' && typeof navigator !== 'undefined' && navigator.clipboard) {
+      await navigator.clipboard.writeText(formatted);
+    } else {
+      Share.share({ message: formatted, title: 'Evident Grounded Resume Bullets' });
+    }
+    Alert.alert(
+      'Copied to Clipboard 📋',
+      'Your evidence-grounded resume bullets are ready to paste into your resume or application!'
+    );
+  };
+
   const handleExportProofPack = () => {
     if (!isPro) {
       onNavigateToPaywall();
@@ -157,8 +170,20 @@ export const ApplicationScreen: React.FC<ApplicationScreenProps> = ({
         {/* Grounded Resume Bullets (THE HERO EXPERIENCE) */}
         <View style={styles.section}>
           <View style={styles.bulletSectionHeader}>
-            <Text style={styles.sectionTitle}>EVIDENCE-BACKED RESUME CLAIMS</Text>
-            {groundedBullets.length > 0 && <Text style={styles.truthNotice}>Audited against Git history</Text>}
+            <View>
+              <Text style={styles.sectionTitle}>EVIDENCE-BACKED RESUME CLAIMS</Text>
+              {groundedBullets.length > 0 && <Text style={styles.truthNotice}>Audited against Git history</Text>}
+            </View>
+            {groundedBullets.length > 0 && (
+              <TouchableOpacity
+                style={styles.copyAllBulletsBtn}
+                onPress={handleCopyBullets}
+                activeOpacity={0.7}
+              >
+                <Ionicons name="copy-outline" size={13} color={Colors.primary} />
+                <Text style={styles.copyAllBulletsText}>Copy Bullets</Text>
+              </TouchableOpacity>
+            )}
           </View>
 
           {groundedBullets.length === 0 ? (
@@ -194,7 +219,7 @@ export const ApplicationScreen: React.FC<ApplicationScreenProps> = ({
                     activeOpacity={0.7}
                   >
                     <Ionicons name="search-outline" size={13} color={Colors.textSecondary} />
-                    <Text style={styles.whyButtonText}>Why this claim? (Inspect Source)</Text>
+                    <Text style={styles.whyButtonText}>Why this claim? ›</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -235,7 +260,7 @@ export const ApplicationScreen: React.FC<ApplicationScreenProps> = ({
               <View style={styles.proofPackTitleBox}>
                 <Text style={styles.proofPackTitle}>Candidate Proof Pack Dossier</Text>
                 <Text style={styles.proofPackSubtext}>
-                  Privacy-safe 1-page application brief citing public links, files, and verified skills.
+                  1-page dossier citing verified files, commits, and AST claims.
                 </Text>
               </View>
             </View>
@@ -442,6 +467,23 @@ const styles = StyleSheet.create({
     ...Typography.label,
     color: Colors.emerald,
     fontSize: 9,
+  },
+  copyAllBulletsBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'rgba(37, 99, 235, 0.08)',
+    paddingVertical: 5,
+    paddingHorizontal: 9,
+    borderRadius: BorderRadius.sm,
+    borderWidth: 1,
+    borderColor: 'rgba(37, 99, 235, 0.2)',
+  },
+  copyAllBulletsText: {
+    ...Typography.label,
+    color: Colors.primary,
+    fontSize: 10,
+    fontWeight: '700',
   },
   bulletList: {
     gap: Spacing.md,

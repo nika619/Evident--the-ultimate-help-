@@ -15,6 +15,7 @@ import {
   Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors, Typography, Spacing, BorderRadius } from '../theme';
 
 interface LoadingScreenProps {
@@ -23,33 +24,72 @@ interface LoadingScreenProps {
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const LOADING_STEPS = [
-  'Initializing cryptographic proof engine...',
-  'Connecting to @nika619 verified repositories...',
-  'Calculating SHA-256 Merkle root...',
-  'Validating zero-hallucination code claims...',
-  'Living career intelligence ready.',
+interface EngineStep {
+  icon: keyof typeof Ionicons.glyphMap;
+  title: string;
+  sub: string;
+  tag: string;
+  tagColor: string;
+}
+
+const ENGINE_STEPS: EngineStep[] = [
+  {
+    icon: 'hardware-chip-outline',
+    title: 'Connecting verified repositories...',
+    sub: 'Mining 15 production repositories for authorship',
+    tag: 'GIT-CONNECT',
+    tagColor: Colors.primary,
+  },
+  {
+    icon: 'git-network-outline',
+    title: 'Analyzing AST commit trees...',
+    sub: 'Extracting cryptographic proof-graphs across commit trees',
+    tag: 'AST-INDEX',
+    tagColor: Colors.purple,
+  },
+  {
+    icon: 'shield-checkmark-outline',
+    title: 'Enforcing zero-hallucination boundaries...',
+    sub: 'Auditing candidate claims against verifiable diffs',
+    tag: 'ZERO-HALLUCINATION',
+    tagColor: Colors.emerald,
+  },
+  {
+    icon: 'lock-closed-outline',
+    title: 'Sealing SHA-256 Merkle root...',
+    sub: 'Baking tamper-proof cryptographic provenance receipts',
+    tag: 'MERKLE-ROOT',
+    tagColor: Colors.accent,
+  },
+  {
+    icon: 'checkmark-circle-outline',
+    title: 'Provenance cockpit live!',
+    sub: 'All career intelligence mathematically grounded',
+    tag: 'READY',
+    tagColor: Colors.emerald,
+  },
 ];
 
 export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onFinish }) => {
   const [stepIndex, setStepIndex] = useState(0);
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(0.92)).current;
+  const scaleAnim = useRef(new Animated.Value(0.9)).current;
   const progressAnim = useRef(new Animated.Value(0)).current;
-  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const bobAnim = useRef(new Animated.Value(0)).current;
+  const wiggleAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     // 1. Entrance animation
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 500,
+        duration: 450,
         useNativeDriver: true,
       }),
       Animated.spring(scaleAnim, {
         toValue: 1,
-        friction: 7,
-        tension: 40,
+        friction: 6,
+        tension: 50,
         useNativeDriver: true,
       }),
       Animated.timing(progressAnim, {
@@ -59,29 +99,46 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onFinish }) => {
       }),
     ]).start();
 
-    // 2. Pulse loop for glowing app icon
+    // 2. Playful bobbing animation for the 3D icon
     Animated.loop(
       Animated.sequence([
-        Animated.timing(pulseAnim, { toValue: 1.06, duration: 1200, useNativeDriver: true }),
-        Animated.timing(pulseAnim, { toValue: 1, duration: 1200, useNativeDriver: true }),
+        Animated.timing(bobAnim, {
+          toValue: -8,
+          duration: 900,
+          useNativeDriver: true,
+        }),
+        Animated.timing(bobAnim, {
+          toValue: 0,
+          duration: 900,
+          useNativeDriver: true,
+        }),
       ])
     ).start();
 
-    // 3. Step messages
+    // 3. Playful subtle rotation wiggle
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(wiggleAnim, { toValue: 1, duration: 800, useNativeDriver: true }),
+        Animated.timing(wiggleAnim, { toValue: -1, duration: 800, useNativeDriver: true }),
+        Animated.timing(wiggleAnim, { toValue: 0, duration: 600, useNativeDriver: true }),
+      ])
+    ).start();
+
+    // 4. Step messages
     const stepInterval = setInterval(() => {
       setStepIndex((prev) => {
-        if (prev < LOADING_STEPS.length - 1) {
+        if (prev < ENGINE_STEPS.length - 1) {
           return prev + 1;
         }
         return prev;
       });
     }, 450);
 
-    // 4. Finish after loading
+    // 5. Finish after loading
     const timer = setTimeout(() => {
       Animated.timing(fadeAnim, {
         toValue: 0,
-        duration: 400,
+        duration: 350,
         useNativeDriver: true,
       }).start(() => {
         onFinish();
@@ -99,6 +156,13 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onFinish }) => {
     outputRange: ['0%', '100%'],
   });
 
+  const tilt = wiggleAnim.interpolate({
+    inputRange: [-1, 1],
+    outputRange: ['-3deg', '3deg'],
+  });
+
+  const currentStep = ENGINE_STEPS[stepIndex];
+
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
       {/* Background Ambient Glow */}
@@ -112,12 +176,12 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onFinish }) => {
           },
         ]}
       >
-        {/* Glowing 3D App Icon Container */}
+        {/* Sleek Floating 3D App Icon */}
         <Animated.View
           style={[
             styles.iconWrapper,
             {
-              transform: [{ scale: pulseAnim }],
+              transform: [{ translateY: bobAnim }, { rotate: tilt }],
             },
           ]}
         >
@@ -127,6 +191,9 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onFinish }) => {
             style={styles.appIcon}
             resizeMode="cover"
           />
+          <View style={styles.playfulSparklePill}>
+            <Text style={styles.playfulSparkleText}>PROOF OVER CLAIMS</Text>
+          </View>
         </Animated.View>
 
         {/* Brand Typography */}
@@ -135,14 +202,54 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onFinish }) => {
           <Text style={styles.brandTagline}>CODE-GROUNDED CAREER INTELLIGENCE</Text>
         </View>
 
+        {/* Engineered Step Card */}
+        <View style={styles.stepCard}>
+          <View
+            style={[
+              styles.stepIconBadge,
+              {
+                backgroundColor: `${currentStep.tagColor}15`,
+                borderColor: `${currentStep.tagColor}35`,
+              },
+            ]}
+          >
+            <Ionicons name={currentStep.icon} size={20} color={currentStep.tagColor} />
+          </View>
+          <View style={styles.stepTextBox}>
+            <View style={styles.stepHeaderRow}>
+              <Text style={styles.stepTitle} numberOfLines={1}>
+                {currentStep.title}
+              </Text>
+              <View
+                style={[
+                  styles.stepTagPill,
+                  { backgroundColor: `${currentStep.tagColor}15` },
+                ]}
+              >
+                <Text style={[styles.stepTagText, { color: currentStep.tagColor }]}>
+                  {currentStep.tag}
+                </Text>
+              </View>
+            </View>
+            <Text style={styles.stepSub} numberOfLines={2}>
+              {currentStep.sub}
+            </Text>
+          </View>
+        </View>
+
         {/* Progress Bar & Telemetry */}
         <View style={styles.progressContainer}>
           <View style={styles.progressBarTrack}>
             <Animated.View style={[styles.progressBarFill, { width: progressWidth }]} />
           </View>
 
-          <Text style={styles.stepText}>{LOADING_STEPS[stepIndex]}</Text>
-          <Text style={styles.versionPill}>v1.1.0 • PRODUCTION</Text>
+          <View style={styles.progressFooterRow}>
+            <View style={styles.liveIndicator}>
+              <View style={styles.greenPulseDot} />
+              <Text style={styles.liveIndicatorText}>ZERO HALLUCINATION ENGINE</Text>
+            </View>
+            <Text style={styles.versionPill}>v1.1.0</Text>
+          </View>
         </View>
       </Animated.View>
     </Animated.View>
@@ -241,19 +348,116 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     borderRadius: 2,
   },
-  stepText: {
+  playfulSparklePill: {
+    position: 'absolute',
+    bottom: -10,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: BorderRadius.sm,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: 'rgba(37, 99, 235, 0.2)',
+  },
+  playfulSparkleText: {
     ...Typography.label,
+    fontSize: 8.5,
+    color: Colors.primary,
+    fontWeight: '800',
+    letterSpacing: 0.8,
+  },
+  stepCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: BorderRadius.lg,
+    width: '100%',
+    marginBottom: Spacing.xl,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: 'rgba(15, 23, 42, 0.08)',
+  },
+  stepIconBadge: {
+    width: 38,
+    height: 38,
+    borderRadius: BorderRadius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+  },
+  stepTextBox: {
+    flex: 1,
+  },
+  stepHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  stepTitle: {
+    ...Typography.body,
+    fontWeight: '700',
+    fontSize: 12.5,
+    color: '#0F172A',
+    flex: 1,
+  },
+  stepTagPill: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.xs,
+  },
+  stepTagText: {
+    ...Typography.monoSmall,
+    fontSize: 8.5,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  stepSub: {
+    ...Typography.bodySmall,
     fontSize: 10.5,
-    color: Colors.textSecondary,
-    marginTop: 4,
-    textAlign: 'center',
-    fontWeight: '600',
+    color: '#475569',
+    marginTop: 2,
+  },
+  progressFooterRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 6,
+  },
+  liveIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  greenPulseDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: '#10B981',
+  },
+  liveIndicatorText: {
+    ...Typography.label,
+    fontSize: 8.5,
+    color: '#10B981',
+    fontWeight: '800',
+    letterSpacing: 0.5,
   },
   versionPill: {
     ...Typography.label,
     fontSize: 8.5,
-    color: Colors.textMuted,
+    color: '#94A3B8',
     letterSpacing: 1,
-    marginTop: 8,
   },
 });

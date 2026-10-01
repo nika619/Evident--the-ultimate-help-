@@ -84,7 +84,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         {/* Mobile Header Banner */}
         <Animated.View style={{ opacity: fadeAnim }}>
-          <GlassCard style={styles.heroCard}>
+          <GlassCard style={styles.heroCard} variant="elevated">
             <View style={styles.heroTopRow}>
               <View style={styles.verifiedBadge}>
                 <View style={styles.greenDot} />
@@ -273,7 +273,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </View>
 
         <TouchableOpacity onPress={onNavigateToOpportunity} activeOpacity={0.9}>
-          <GlassCard style={styles.targetCard}>
+          <GlassCard style={styles.targetCard} variant="elevated">
             <View style={styles.targetCardHeader}>
               <View style={styles.targetBadge}>
                 <Ionicons name="briefcase-outline" size={13} color={Colors.primary} />
@@ -310,7 +310,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </TouchableOpacity>
         </View>
 
-        <GlassCard style={styles.sealCard}>
+        <GlassCard style={styles.sealCard} variant="tinted">
           <View style={styles.sealHeader}>
             <Ionicons name="finger-print-outline" size={18} color={Colors.primary} />
             <Text style={styles.sealTitle}>CRYPTOGRAPHIC MERKLE SEAL</Text>
@@ -318,7 +318,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               <Text style={styles.proPillText}>PRO ACTIVE</Text>
             </View>
           </View>
-          <Text style={styles.sealHash} numberOfLines={1}>
+          <Text style={styles.sealHash} numberOfLines={1} ellipsizeMode="middle">
             Root: {merkleRoot}
           </Text>
           <Text style={styles.sealSub}>
@@ -338,10 +338,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           {topProjects.map((p, idx) => (
             <AnimatedListItem key={p.id} delayIndex={idx}>
               <TouchableOpacity onPress={onNavigateToEvidence} activeOpacity={0.85}>
-                <GlassCard style={styles.repoCard}>
+                <GlassCard style={styles.repoCard} variant="default">
                   <View style={styles.repoHeader}>
                     <Ionicons name="folder-outline" size={16} color={Colors.primary} />
-                    <Text style={styles.repoName}>{p.name}</Text>
+                    <Text style={styles.repoName} numberOfLines={1} ellipsizeMode="tail">
+                      {p.name}
+                    </Text>
+                    <View style={styles.gitBranchPill}>
+                      <Ionicons name="git-branch-outline" size={10} color={Colors.textSecondary} />
+                      <Text style={styles.gitBranchText}>main</Text>
+                    </View>
                     <View style={styles.langPill}>
                       <Text style={styles.langPillText}>{p.primaryLanguage || 'Code'}</Text>
                     </View>
@@ -350,9 +356,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                     {p.description || 'Verified production engineering repository.'}
                   </Text>
                   <View style={styles.repoFooter}>
-                    <Text style={styles.repoCommitsText}>
-                      {p.candidateCommits || 14} verified commits by candidate
-                    </Text>
+                    <View style={styles.repoCommitGroup}>
+                      <View style={styles.shaMiniBadge}>
+                        <Text style={styles.shaMiniBadgeText}>git:{(p.id.slice(0, 7)) || '8f2a1b9'}</Text>
+                      </View>
+                      <Text style={styles.repoCommitsText}>
+                        {p.candidateCommits || 14} verified commits
+                      </Text>
+                    </View>
                     <Ionicons name="chevron-forward" size={14} color={Colors.textMuted} />
                   </View>
                 </GlassCard>
@@ -616,14 +627,100 @@ const styles = StyleSheet.create({
     fontSize: 8.5,
     fontWeight: '800',
   },
+  daemonTickerBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: Colors.terminalBg,
+    borderRadius: BorderRadius.md,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 7,
+    marginTop: Spacing.sm,
+    marginBottom: 4,
+    borderWidth: 1,
+    borderColor: Colors.terminalBorder,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  daemonTickerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 7,
+    flex: 1,
+  },
+  greenPulseDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: Colors.terminalGreen,
+    shadowColor: Colors.terminalGreen,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 4,
+  },
+  daemonTickerText: {
+    ...Typography.code,
+    fontSize: 10.5,
+    color: Colors.terminalText,
+  },
+  astVersionPill: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    paddingVertical: 1.5,
+    paddingHorizontal: 6,
+    borderRadius: BorderRadius.xs,
+  },
+  astVersionPillText: {
+    ...Typography.code,
+    fontSize: 9,
+    color: Colors.terminalPrompt,
+    fontWeight: '700',
+  },
+  gitBranchPill: {
+    flexShrink: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    backgroundColor: 'rgba(15, 23, 42, 0.05)',
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.xs,
+  },
+  gitBranchText: {
+    ...Typography.code,
+    fontSize: 9,
+    color: Colors.textSecondary,
+    fontWeight: '600',
+  },
+  repoCommitGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  shaMiniBadge: {
+    backgroundColor: 'rgba(37, 99, 235, 0.08)',
+    paddingHorizontal: 5,
+    paddingVertical: 1.5,
+    borderRadius: BorderRadius.xs,
+    borderWidth: 1,
+    borderColor: 'rgba(37, 99, 235, 0.18)',
+  },
+  shaMiniBadgeText: {
+    ...Typography.code,
+    fontSize: 8.5,
+    color: Colors.primary,
+    fontWeight: '700',
+  },
   sealHash: {
-    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-    fontSize: 10,
+    ...Typography.shaText,
+    fontSize: 10.5,
     color: '#0284C7',
     backgroundColor: '#E0F2FE',
-    paddingHorizontal: 8,
-    paddingVertical: 5,
-    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: BorderRadius.sm,
     borderWidth: 1,
     borderColor: '#BAE6FD',
   },
@@ -643,7 +740,7 @@ const styles = StyleSheet.create({
   repoHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 6,
     marginBottom: 4,
   },
   repoName: {
@@ -652,8 +749,10 @@ const styles = StyleSheet.create({
     color: Colors.textPrimary,
     fontWeight: '700',
     flex: 1,
+    flexShrink: 1,
   },
   langPill: {
+    flexShrink: 0,
     backgroundColor: Colors.bgElevated,
     paddingHorizontal: 6,
     paddingVertical: 2,

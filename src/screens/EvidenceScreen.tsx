@@ -187,7 +187,13 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({
 
         {/* Connected Repositories Section */}
         <Animated.View style={[styles.section, { opacity: fadeAnim3, transform: [{ translateY: fadeAnim3.interpolate({ inputRange: [0, 1], outputRange: [20, 0] }) }] }]}>
-          <Text style={styles.sectionTitle}>CONNECTED REPOSITORIES</Text>
+          <View style={styles.codebaseHeaderRow}>
+            <Text style={styles.sectionTitle}>CONNECTED REPOSITORIES</Text>
+            <View style={styles.privacyPill}>
+              <Ionicons name="shield-checkmark" size={10} color={Colors.emerald} />
+              <Text style={styles.privacyPillText}>100% Client-Side AST • IP Guarded</Text>
+            </View>
+          </View>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -196,8 +202,12 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({
             {projects.map((proj) => (
               <GlassCard key={proj.id} style={styles.repoCard}>
                 <View style={styles.repoCardHeader}>
-                  <Text style={styles.repoName}>{proj.name}</Text>
-                  <Text style={styles.repoLang}>{proj.primaryLanguage}</Text>
+                  <Text style={styles.repoName} numberOfLines={1} ellipsizeMode="tail">
+                    {proj.name}
+                  </Text>
+                  <View style={styles.repoLangBadge}>
+                    <Text style={styles.repoLang} numberOfLines={1}>{proj.primaryLanguage || 'Code'}</Text>
+                  </View>
                 </View>
                 <Text style={styles.repoDesc} numberOfLines={2}>
                   {proj.description}
@@ -268,21 +278,27 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({
                 <Text style={styles.evidenceClaim}>{ev.claim}</Text>
 
                 <View style={styles.cardFooter}>
-                  <View style={styles.sourcePill}>
-                    <Ionicons name="folder-outline" size={12} color={Colors.textMuted} />
-                    <Text style={styles.sourceText}>{ev.projectName}</Text>
-                  </View>
-
-                  {ev.sourceLocation.filePath && (
-                    <View style={styles.filePill}>
-                      <Ionicons name="code-slash" size={11} color={Colors.textSecondary} />
-                      <Text style={styles.fileText}>
-                        {ev.sourceLocation.filePath.split('/').pop()}
+                  <View style={styles.metaRow}>
+                    <View style={styles.sourcePill}>
+                      <Ionicons name="folder-outline" size={12} color={Colors.textMuted} />
+                      <Text style={styles.sourceText} numberOfLines={1}>
+                        {ev.projectName}
                       </Text>
                     </View>
-                  )}
 
-                  <Text style={styles.whyLink}>Inspect Provenance →</Text>
+                    {ev.sourceLocation.filePath && (
+                      <View style={styles.filePill}>
+                        <Ionicons name="code-slash" size={10} color={Colors.textSecondary} />
+                        <Text style={styles.fileText} numberOfLines={1}>
+                          {ev.sourceLocation.filePath.split('/').pop()}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+
+                  <View style={styles.inspectBtn}>
+                    <Text style={styles.inspectBtnText}>Inspect ›</Text>
+                  </View>
                 </View>
                 </TouchableOpacity>
               </AnimatedListItem>
@@ -539,33 +555,73 @@ const styles = StyleSheet.create({
   section: {
     marginTop: Spacing.xl,
   },
+  codebaseHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: Spacing.sm,
+  },
+  privacyPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'rgba(16, 185, 129, 0.08)',
+    paddingVertical: 2,
+    paddingHorizontal: 7,
+    borderRadius: BorderRadius.xs,
+    borderWidth: 1,
+    borderColor: 'rgba(16, 185, 129, 0.2)',
+  },
+  privacyPillText: {
+    ...Typography.label,
+    fontSize: 8.5,
+    color: Colors.emerald,
+    fontWeight: '700',
+  },
   sectionTitle: {
     ...Typography.label,
     color: Colors.textMuted,
     fontSize: 11,
-    marginBottom: Spacing.sm,
   },
   repoScroll: {
     flexDirection: 'row',
   },
   repoCard: {
-    width: 220,
+    width: 260,
     marginRight: Spacing.md,
+    overflow: 'hidden',
   },
   repoCardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 4,
+    gap: 8,
+    marginBottom: 6,
   },
   repoName: {
-    ...Typography.h3,
+    ...Typography.body,
+    fontWeight: '700',
     color: Colors.textPrimary,
+    fontSize: 13,
+    flex: 1,
+    flexShrink: 1,
+    marginRight: 4,
+  },
+  repoLangBadge: {
+    flexShrink: 0,
+    backgroundColor: 'rgba(37, 99, 235, 0.08)',
+    paddingHorizontal: 7,
+    paddingVertical: 2.5,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(37, 99, 235, 0.15)',
+    alignSelf: 'center',
   },
   repoLang: {
-    ...Typography.label,
-    color: Colors.textSecondary,
-    fontSize: 10,
+    ...Typography.monoSmall,
+    color: Colors.primary,
+    fontSize: 8.5,
+    fontWeight: '700',
   },
   repoDesc: {
     ...Typography.bodySmall,
@@ -655,37 +711,62 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderTopWidth: 1,
     borderTopColor: Colors.borderSubtle,
-    paddingTop: 6,
+    paddingTop: 8,
+    marginTop: 4,
+    gap: 8,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    flex: 1,
+    minWidth: 0,
+    overflow: 'hidden',
   },
   sourcePill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
+    flexShrink: 1,
+    maxWidth: '60%',
   },
   sourceText: {
-    ...Typography.label,
+    ...Typography.code,
     color: Colors.textMuted,
     fontSize: 10,
   },
   filePill: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 3,
     backgroundColor: Colors.codeBg,
     paddingVertical: 2,
     paddingHorizontal: 6,
-    borderRadius: BorderRadius.sm,
+    borderRadius: BorderRadius.xs,
     borderWidth: 1,
     borderColor: Colors.borderSubtle,
+    flexShrink: 0,
   },
   fileText: {
     ...Typography.code,
     color: Colors.textSecondary,
-    fontSize: 10,
-  },
-  whyLink: {
-    ...Typography.label,
-    color: Colors.textSecondary,
     fontSize: 9.5,
+  },
+  inspectBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(37, 99, 235, 0.08)',
+    paddingHorizontal: 8,
+    paddingVertical: 3.5,
+    borderRadius: BorderRadius.sm,
+    borderWidth: 1,
+    borderColor: 'rgba(37, 99, 235, 0.16)',
+    flexShrink: 0,
+  },
+  inspectBtnText: {
+    ...Typography.label,
+    color: Colors.primary,
+    fontSize: 9.5,
+    fontWeight: '700',
   },
 });
