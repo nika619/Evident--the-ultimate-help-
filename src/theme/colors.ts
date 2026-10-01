@@ -7,13 +7,34 @@
  */
 
 export const Colors = {
-  // Backgrounds & Surfaces (Bright Cool Minimalist)
+  // Backgrounds & Surfaces (Bright Cool Minimalist with Apple Glassmorphism)
   bgPrimary: '#F8FAFC',         // Very soft sky-tinted white
   bgSurface: '#FFFFFF',         // Pure crisp white cards
   bgElevated: '#F1F5F9',        // Slightly cooler gray
-  bgGlass: 'rgba(255, 255, 255, 0.85)',
-  bgGlassBorder: 'rgba(0, 0, 0, 0.04)',
-  bgGlassBorderActive: 'rgba(0, 0, 0, 0.08)',
+  bgGlass: 'rgba(255, 255, 255, 0.82)',
+  bgGlassBorder: 'rgba(255, 255, 255, 0.92)',
+  bgGlassBorderActive: 'rgba(14, 165, 233, 0.35)',
+
+  // Apple Specular Glass System
+  appleGlassBg: 'rgba(255, 255, 255, 0.78)',
+  appleGlassBgElevated: 'rgba(255, 255, 255, 0.88)',
+  appleGlassBorderTop: 'rgba(255, 255, 255, 0.95)',
+  appleGlassBorderSubtle: 'rgba(15, 23, 42, 0.06)',
+  appleGlassBorderBottom: 'rgba(255, 255, 255, 0.3)',
+
+  // Coder Vibes & Terminal Aesthetics
+  terminalBg: '#0B0F17',
+  terminalBorder: 'rgba(255, 255, 255, 0.12)',
+  terminalGreen: '#10B981',
+  terminalPrompt: '#38BDF8',
+  terminalText: '#E2E8F0',
+  terminalMuted: '#64748B',
+  coderCyan: '#0EA5E9',
+  coderPurple: '#8B5CF6',
+  coderYellow: '#F59E0B',
+  coderRed: '#F43F5E',
+  gitCommitBadge: 'rgba(37, 99, 235, 0.08)',
+  gitCommitBorder: 'rgba(37, 99, 235, 0.2)',
 
   // Primary Accent (Vibrant, Optimistic, Cool)
   primary: '#2563EB',           // Crisp Stripe Blue
@@ -47,10 +68,10 @@ export const Colors = {
   blueBg: 'rgba(59, 130, 246, 0.1)',
   blueBorder: 'rgba(59, 130, 246, 0.2)',
 
-  // Typography (Sharp, cool grays)
+  // Typography (Sharp, high-contrast cool grays)
   textPrimary: '#0F172A',       // Very dark slate, not pure black
-  textSecondary: '#64748B',     // Cool slate gray
-  textMuted: '#94A3B8',         // Light cool gray
+  textSecondary: '#334155',     // Dark slate (slate-700) for sharp readability
+  textMuted: '#64748B',         // Medium slate (slate-500) for secondary details
   textInverse: '#FFFFFF',
 
   // Interactive & Code

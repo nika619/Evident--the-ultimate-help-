@@ -6,3 +6,4 @@ export * from './InteractiveGraphExplorer';
 export * from './EvidentButton';
 export * from './InteractiveTutorial';
 export * from './CloudCursorBackground';
+export * from './AmbientAuroraBackground';
