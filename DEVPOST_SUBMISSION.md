@@ -37,7 +37,7 @@ We utilized RevenueCat's Test Store environment to successfully implement and ve
 - RevenueCat (`react-native-purchases`)
 
 ## Try it out (Next Gen Award)
-**Code Repository:** [INSERT_YOUR_GITHUB_LINK_HERE]
+**Code Repository:** https://github.com/nika619/Evident--the-ultimate-help-
 **Demo Video:** [INSERT_YOUR_YOUTUBE_LINK_HERE]
 *(Note: Submitted under the Next Gen Award track; fully functional via the open-source repository)*
 
