@@ -38,6 +38,8 @@ export const InterviewScreen: React.FC<InterviewScreenProps> = ({ onNavigateToPa
   const evaluateCurrent = useInterviewStore((s) => s.evaluateCurrentQuestion);
   const nextQuestion = useInterviewStore((s) => s.nextQuestion);
   const previousQuestion = useInterviewStore((s) => s.previousQuestion);
+  const defenseMode = useInterviewStore((s) => s.defenseMode);
+  const setDefenseMode = useInterviewStore((s) => s.setDefenseMode);
 
   const isPro = useSubscriptionStore((s) => s.subscription.isPro);
 
@@ -49,8 +51,9 @@ export const InterviewScreen: React.FC<InterviewScreenProps> = ({ onNavigateToPa
   const currentAnswer = currentQ ? userAnswers[currentQ.id] || '' : '';
   const currentEval = currentQ ? evaluations[currentQ.id] : undefined;
 
-  // Free tier preview: allow 1 question, prompt Pro for remaining
-  const isLocked = !isPro && currentIndex >= 1;
+  const isSystemDesign = defenseMode === 'system_design';
+  // Free tier preview: allow 1 question on code provenance; System Design Arena is 100% Pro
+  const isLocked = (!isPro && isSystemDesign) || (!isPro && currentIndex >= 1);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -60,7 +63,9 @@ export const InterviewScreen: React.FC<InterviewScreenProps> = ({ onNavigateToPa
           <View style={styles.badgeRow}>
             <View style={styles.arenaBadge}>
               <Ionicons name="chatbubbles-outline" size={13} color={Colors.textSecondary} />
-              <Text style={styles.arenaBadgeText}>DEFENSE SIMULATOR</Text>
+              <Text style={styles.arenaBadgeText}>
+                {isSystemDesign ? 'SYSTEM DESIGN LIVE ARENA' : 'DEFENSE SIMULATOR'}
+              </Text>
             </View>
             {questions.length > 0 && (
               <Text style={styles.progressText}>
@@ -68,21 +73,91 @@ export const InterviewScreen: React.FC<InterviewScreenProps> = ({ onNavigateToPa
               </Text>
             )}
           </View>
-          <AnimatedTextReveal text="Architectural Code Defense" style={styles.headerTitle} stagger={40} />
+          <AnimatedTextReveal
+            text={isSystemDesign ? 'AI System Design Arena' : 'Architectural Code Defense'}
+            style={styles.headerTitle}
+            stagger={40}
+          />
           <Text style={styles.headerSubtitle}>
-            Can you explain and defend the code choices appearing in your application?
+            {isSystemDesign
+              ? 'Simulate Staff/Principal bar-raiser trade-offs, scaling bottlenecks, and failure modes.'
+              : 'Can you explain and defend the code choices appearing in your application?'}
           </Text>
+        </View>
+
+        {/* Defense Arena Mode Switcher */}
+        <View style={styles.modeSwitcherContainer}>
+          <TouchableOpacity
+            style={[
+              styles.modeSegmentBtn,
+              defenseMode === 'code_provenance' && styles.modeSegmentBtnActive,
+            ]}
+            onPress={() => setDefenseMode('code_provenance')}
+            activeOpacity={0.7}
+          >
+            <Ionicons
+              name="code-slash-outline"
+              size={13}
+              color={defenseMode === 'code_provenance' ? Colors.textPrimary : Colors.textMuted}
+            />
+            <Text
+              style={[
+                styles.modeSegmentText,
+                defenseMode === 'code_provenance' && styles.modeSegmentTextActive,
+              ]}
+            >
+              Code Provenance
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.modeSegmentBtn,
+              defenseMode === 'system_design' && styles.modeSegmentBtnActivePro,
+            ]}
+            onPress={() => setDefenseMode('system_design')}
+            activeOpacity={0.7}
+          >
+            <Ionicons
+              name="hardware-chip-outline"
+              size={13}
+              color={defenseMode === 'system_design' ? '#FFFFFF' : Colors.primary}
+            />
+            <Text
+              style={[
+                styles.modeSegmentText,
+                defenseMode === 'system_design' && styles.modeSegmentTextActivePro,
+              ]}
+            >
+              System Design Arena ⚡
+            </Text>
+          </TouchableOpacity>
         </View>
 
         {isLocked ? (
           <GlassCard style={styles.lockedCard}>
-            <Ionicons name="lock-closed" size={32} color={Colors.textPrimary} />
-            <Text style={styles.lockedTitle}>Unlock Deep Interview Defense</Text>
+            {isSystemDesign && (
+              <View style={styles.arenaProBadge}>
+                <Ionicons name="sparkles" size={13} color={Colors.primary} />
+                <Text style={styles.arenaProBadgeText}>REVENUECAT PRO SUITE</Text>
+              </View>
+            )}
+            <Ionicons
+              name={isSystemDesign ? 'hardware-chip-outline' : 'lock-closed'}
+              size={36}
+              color={Colors.primary}
+              style={{ marginVertical: 6 }}
+            />
+            <Text style={styles.lockedTitle}>
+              {isSystemDesign ? 'Unlock System Design Arena' : 'Unlock Deep Interview Defense'}
+            </Text>
             <Text style={styles.lockedSubtitle}>
-              Pro tier provides unlimited architectural probing, trade-off evaluations, and commit citations across all your repositories.
+              {isSystemDesign
+                ? 'Simulate Staff/Principal level distributed architecture grilling, 100k TPS scaling budgets, and partition tolerance tailored to your repositories.'
+                : 'Pro tier provides unlimited architectural probing, trade-off evaluations, and commit citations across all your repositories.'}
             </Text>
             <EvidentButton
-              title="Unlock Pro Defense (RevenueCat)"
+              title="Unlock Pro Arena (RevenueCat)"
               size="medium"
               onPress={onNavigateToPaywall}
               style={{ marginTop: Spacing.md }}
@@ -623,5 +698,68 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: Colors.textMuted,
     lineHeight: 16,
+  },
+  modeSwitcherContainer: {
+    flexDirection: 'row',
+    backgroundColor: Colors.bgElevated,
+    borderRadius: BorderRadius.md,
+    padding: 3,
+    marginBottom: Spacing.md,
+    borderWidth: 1,
+    borderColor: 'rgba(15, 23, 42, 0.06)',
+  },
+  modeSegmentBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5,
+    paddingVertical: 8,
+    borderRadius: BorderRadius.sm,
+  },
+  modeSegmentBtnActive: {
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  modeSegmentBtnActivePro: {
+    backgroundColor: Colors.primary,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  modeSegmentText: {
+    ...Typography.label,
+    color: Colors.textMuted,
+    fontSize: 10.5,
+    fontWeight: '700',
+  },
+  modeSegmentTextActive: {
+    color: Colors.textPrimary,
+  },
+  modeSegmentTextActivePro: {
+    color: '#FFFFFF',
+  },
+  arenaProBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    backgroundColor: 'rgba(37, 99, 235, 0.08)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: BorderRadius.sm,
+    marginBottom: 4,
+  },
+  arenaProBadgeText: {
+    ...Typography.label,
+    fontSize: 9,
+    color: Colors.primary,
+    fontWeight: '800',
+    letterSpacing: 0.5,
   },
 });

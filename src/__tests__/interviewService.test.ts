@@ -50,4 +50,18 @@ describe('InterviewService', () => {
     expect(evaluation.tradeoffAwareness).toBe('Omitted');
     expect(evaluation.feedbackNotes).toContain('too concise');
   });
+
+  it('generates Staff/Principal AI System Design Live Defense Arena scenarios (Pro Tier)', () => {
+    const sdQuestions = InterviewService.generateSystemDesignArenaQuestions(GOLDEN_PROJECTS, GOLDEN_EVIDENCE);
+
+    expect(sdQuestions.length).toBeGreaterThanOrEqual(4);
+    expect(sdQuestions.some((q) => q.id === 'sd_sepsis_telemetry')).toBe(true);
+    expect(sdQuestions.some((q) => q.id === 'sd_evident_merkle')).toBe(true);
+    expect(sdQuestions.some((q) => q.targetedSkill.includes('Distributed'))).toBe(true);
+
+    // Verify system design scenario contains architectural challenge
+    const sepsisQ = sdQuestions.find((q) => q.id === 'sd_sepsis_telemetry')!;
+    expect(sepsisQ.question).toContain('System Design Arena:');
+    expect(sepsisQ.keyTradeoffHint).toContain('event-time sliding windows');
+  });
 });

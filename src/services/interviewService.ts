@@ -140,6 +140,65 @@ export class InterviewService {
   }
 
   /**
+   * Generates Staff/Principal level System Design Live Defense Arena scenarios (Pro Tier)
+   */
+  public static generateSystemDesignArenaQuestions(
+    projects: ProjectSource[],
+    evidence: EvidenceItem[]
+  ): DefenseQuestion[] {
+    return [
+      {
+        id: 'sd_sepsis_telemetry',
+        projectId: 'proj_sepsis',
+        projectName: 'SepsisGuard-AI-Real-Time-Sepsis-Intelligence-MCP',
+        question:
+          'System Design Arena: Your clinical telemetry engine scales to 500 ICU facilities (10,000,000 vital readings/sec). Design the distributed stream-processing architecture. How do you guarantee sub-second p99 latency without dropping clinical alarm frames?',
+        intent: 'explore_tradeoff',
+        relevantFile: 'server.py (MCP Streaming)',
+        relevantCommit: 'a71e290',
+        targetedSkill: 'Distributed Stream Processing & Fault-Tolerance',
+        keyTradeoffHint: 'Kafka event-time sliding windows & partition keying vs memory pressure under network split.',
+      },
+      {
+        id: 'sd_evident_merkle',
+        projectId: 'proj_evident',
+        projectName: 'Evident--the-ultimate-help-',
+        question:
+          'System Design Arena: Evident must verify 100,000 candidate repository proof trees simultaneously during high-volume hiring sprints. Design a geo-replicated, tamper-proof Merkle verification cluster with sub-second response times.',
+        intent: 'explore_tradeoff',
+        relevantFile: 'src/services/proofPackService.ts',
+        relevantCommit: '98047cc',
+        targetedSkill: 'Cryptographic Distributed Ledgers & Scalability',
+        keyTradeoffHint: 'Read-through caching of immutable AST subtrees vs disk I/O under extreme peak concurrency.',
+      },
+      {
+        id: 'sd_nids_dataplane',
+        projectId: 'proj_nids',
+        projectName: 'nids-project',
+        question:
+          'System Design Arena: Deploy your Random Forest intrusion model into a 100 Gbps cloud gateway. How do you architect packet classification between kernel-bypass eBPF/XDP and userspace worker pools without packet loss?',
+        intent: 'explore_tradeoff',
+        relevantFile: 'model/train_rf.py',
+        relevantCommit: 'e31b09f',
+        targetedSkill: 'Kernel-Bypass Systems & High-Speed Data Plane',
+        keyTradeoffHint: 'Tree quantization in eBPF maps vs userspace zero-copy ring buffers under DDoS spikes.',
+      },
+      {
+        id: 'sd_cache_invalidation',
+        projectId: 'proj_evident',
+        projectName: 'Evident--the-ultimate-help-',
+        question:
+          'System Design Arena: Design an active-active multi-region caching layer for candidate proof dossiers. When a candidate pushes a new git commit, how do you invalidate global recruiter caches within 50ms while preventing cache stampedes?',
+        intent: 'explore_tradeoff',
+        relevantFile: 'src/store/useEvidenceStore.ts',
+        relevantCommit: '8628cfc',
+        targetedSkill: 'Distributed Caching & Eventual Consistency',
+        keyTradeoffHint: 'Redis distributed locks with probabilistic early expiration vs pub/sub invalidation.',
+      },
+    ];
+  }
+
+  /**
    * Evaluates a candidate's answer against known trade-offs and code artifacts
    */
   public static evaluateAnswer(question: DefenseQuestion, answerText: string): DefenseEvaluation {

@@ -9,15 +9,19 @@ import { DefenseQuestion, DefenseEvaluation } from '../domain/types';
 import { InterviewService } from '../services/interviewService';
 import { useEvidenceStore } from './useEvidenceStore';
 
+export type DefenseMode = 'code_provenance' | 'system_design';
+
 interface InterviewState {
   questions: DefenseQuestion[];
   currentQuestionIndex: number;
   userAnswers: Record<string, string>;
   evaluations: Record<string, DefenseEvaluation>;
   isEvaluating: boolean;
+  defenseMode: DefenseMode;
 
   // Actions
   initialize: () => void;
+  setDefenseMode: (mode: DefenseMode) => void;
   setAnswer: (questionId: string, answer: string) => void;
   evaluateCurrentQuestion: () => void;
   nextQuestion: () => void;
@@ -31,11 +35,29 @@ export const useInterviewStore = create<InterviewState>((set, get) => ({
   userAnswers: {},
   evaluations: {},
   isEvaluating: false,
+  defenseMode: 'code_provenance',
 
   initialize: () => {
     const { projects, evidence } = useEvidenceStore.getState();
-    const questions = InterviewService.generateQuestions(projects, evidence);
+    const mode = get().defenseMode;
+    const questions =
+      mode === 'system_design'
+        ? InterviewService.generateSystemDesignArenaQuestions(projects, evidence)
+        : InterviewService.generateQuestions(projects, evidence);
     set({
+      questions,
+      currentQuestionIndex: 0,
+    });
+  },
+
+  setDefenseMode: (mode: DefenseMode) => {
+    const { projects, evidence } = useEvidenceStore.getState();
+    const questions =
+      mode === 'system_design'
+        ? InterviewService.generateSystemDesignArenaQuestions(projects, evidence)
+        : InterviewService.generateQuestions(projects, evidence);
+    set({
+      defenseMode: mode,
       questions,
       currentQuestionIndex: 0,
     });
