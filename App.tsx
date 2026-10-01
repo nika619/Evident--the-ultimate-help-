@@ -18,7 +18,7 @@ import { useOpportunityStore } from './src/store/useOpportunityStore';
 import { useInterviewStore } from './src/store/useInterviewStore';
 import { useSubscriptionStore } from './src/store/useSubscriptionStore';
 import { LinearGradient } from 'expo-linear-gradient';
-import { CloudCursorBackground } from './src/components/CloudCursorBackground';
+import { AmbientAuroraBackground } from './src/components/AmbientAuroraBackground';
 import { LoadingScreen } from './src/screens/LoadingScreen';
 
 export default function App() {
@@ -28,36 +28,29 @@ export default function App() {
   const initializeInterview = useInterviewStore((s) => s.initialize);
   const initializeSubscription = useSubscriptionStore((s) => s.initializeSubscription);
 
-  // Dynamic Background State centered on mount
-  const pointerX = useRef(new Animated.Value(150)).current;
-  const pointerY = useRef(new Animated.Value(150)).current;
-
   useEffect(() => {
     initializeEvidence();
     initializeOpportunity();
     initializeInterview();
     initializeSubscription();
-  }, []);
 
-  const handlePointerMove = (e: any) => {
-    // Calculate relative coordinates in the appContainer
-    Animated.spring(pointerX, {
-      toValue: e.nativeEvent.pageX - 200, // Center the 400x400 orb
-      useNativeDriver: true,
-      speed: 30,
-      bounciness: 0,
-    }).start();
-    Animated.spring(pointerY, {
-      toValue: e.nativeEvent.pageY - 200,
-      useNativeDriver: true,
-      speed: 30,
-      bounciness: 0,
-    }).start();
-  };
+    // On Web: inject Google Fonts for Apple/Linear-grade typography combo (Inter + JetBrains Mono)
+    if (Platform.OS === 'web' && typeof document !== 'undefined') {
+      const fontId = 'evident-typography-fonts';
+      if (!document.getElementById(fontId)) {
+        const link = document.createElement('link');
+        link.id = fontId;
+        link.rel = 'stylesheet';
+        link.href =
+          'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap';
+        document.head.appendChild(link);
+      }
+    }
+  }, []);
 
   return (
     <SafeAreaProvider>
-      <View style={styles.outerShell} onPointerMove={handlePointerMove}>
+      <View style={styles.outerShell}>
         {Platform.OS === 'web' && (
           <LinearGradient
             colors={['#0B0F17', '#111827', '#1E293B']}
@@ -67,9 +60,9 @@ export default function App() {
           />
         )}
         <View style={styles.appContainer}>
-          {/* Dynamic Cursor Glow Background */}
+          {/* Autonomous 3D Ambient Light Aurora (Mobile & Web Native - No Pointer Tracking) */}
           <View style={styles.dynamicBackground}>
-            <CloudCursorBackground pointerX={pointerX} pointerY={pointerY} />
+            <AmbientAuroraBackground />
           </View>
 
           <StatusBar style="dark" />
