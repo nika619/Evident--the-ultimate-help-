@@ -13,3 +13,6 @@ veda
 .vscode/
 *.swp
 .DS_Store
+.env
+.env.local
+.env*.local
