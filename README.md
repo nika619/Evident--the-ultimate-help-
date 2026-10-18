@@ -1,9 +1,9 @@
-# ⚡ EVIDENT — Code-Grounded Career Intelligence Engine
+# ⚡ EVIDENT — Evidence-Based Developer Career Intelligence
 
 <div align="center">
 
 [![Shipathon 2026](https://img.shields.io/badge/RevenueCat_Shipathon-2026_Next_Gen_Award-blueviolet?style=for-the-badge&logo=revenuecat&logoColor=white)](https://devpost.com)
-[![Tests Passing](https://img.shields.io/badge/Tests-29%2F29_Passing_100%25-10B981?style=for-the-badge&logo=jest&logoColor=white)](https://github.com/nika619/Evident--the-ultimate-help-)
+[![Tests Passing](https://img.shields.io/badge/Tests-32%2F32_Passing_100%25-10B981?style=for-the-badge&logo=jest&logoColor=white)](https://github.com/nika619/Evident--the-ultimate-help-)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict_5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Expo](https://img.shields.io/badge/Expo-SDK_54_Native-000020?style=for-the-badge&logo=expo&logoColor=white)](https://expo.dev/)
 [![License](https://img.shields.io/badge/License-MIT-amber?style=for-the-badge)](./LICENSE)
@@ -19,23 +19,23 @@
 
 ## 📑 Table of Contents
 
-- [1. Executive Summary \& The Industry Crisis](#1-executive-summary--the-industry-crisis)
+- [1. Executive Summary \& The Industry Problem](#1-executive-summary--the-industry-problem)
 - [2. The 5-Dimensional Evidence Model](#2-the-5-dimensional-evidence-model)
 - [3. End-to-End System Architecture](#3-end-to-end-system-architecture)
 - [4. Core Functional Subsystems](#4-core-functional-subsystems)
   - [4.1 Living Evidence \& Relational Graph Explorer](#41-living-evidence--relational-graph-explorer)
-  - [4.2 Deterministic Opportunity Matching Engine](#42-deterministic-opportunity-matching-engine)
-  - [4.3 Application Studio \& The 1-Tap Provenance Inspector (The Hero)](#43-application-studio--the-1-tap-provenance-inspector-the-hero)
+  - [4.2 Similarity-Based Opportunity Matching Engine](#42-similarity-based-opportunity-matching-engine)
+  - [4.3 Application Studio \& The 1-Tap Provenance Inspector](#43-application-studio--the-1-tap-provenance-inspector)
   - [4.4 Architectural Defense Arena](#44-architectural-defense-arena)
-  - [4.5 ProofPack™ Cryptographic Export System](#45-proofpack-cryptographic-export-system)
-  - [4.6 Guided Interactive Onboarding \& Tutorial](#46-guided-interactive-onboarding--tutorial)
+  - [4.5 ProofPack SHA-256 Verifiable Export](#45-proofpack-sha-256-verifiable-export)
+  - [4.6 Guided Interactive Onboarding \& Demo Mode](#46-guided-interactive-onboarding--demo-mode)
 - [5. Deep RevenueCat Integration (Sponsor Showcase)](#5-deep-revenuecat-integration-sponsor-showcase)
   - [5.1 The Living Career Memory Entitlement (`proof_pro`)](#51-the-living-career-memory-entitlement-proof_pro)
   - [5.2 Tier Packaging \& Pricing Strategy](#52-tier-packaging--pricing-strategy)
   - [5.3 RevenueCat Test Store \& Judge Sandbox Architecture](#53-revenuecat-test-store--judge-sandbox-architecture)
-- [6. Software Craftsmanship \& Clean Architecture](#6-software-craftsmanship--clean-architecture)
-- [7. Mathematical Formulation: Transparent Matching](#7-mathematical-formulation-transparent-matching)
-- [8. Test Suite \& Formal Verification (29/29 Passing)](#8-test-suite--formal-verification-2929-passing)
+- [6. Current Capabilities, Transparency \& Roadmap](#6-current-capabilities-transparency--roadmap)
+- [7. Matching Formulation: Transparent Scoring](#7-matching-formulation-transparent-scoring)
+- [8. Test Suite \& Formal Verification (32/32 Passing)](#8-test-suite--formal-verification-3232-passing)
 - [9. Annotated Codebase Directory Tree](#9-annotated-codebase-directory-tree)
 - [10. Quick Start \& Local Execution](#10-quick-start--local-execution)
 - [11. Devpost Judges Evaluation Guide](#11-devpost-judges-evaluation-guide)
@@ -43,73 +43,73 @@
 
 ---
 
-## 1. Executive Summary & The Industry Crisis
+## 1. Executive Summary & The Industry Problem
 
-The tech recruitment landscape is suffering from a catastrophic **Trust Deficit**:
+The tech recruitment landscape is suffering from a deep **Trust Deficit**:
 
-1. **The Generative AI Slop Dilemma:** Candidates copy-paste job postings into generic LLMs, yielding hallucinated resumes loaded with buzzwords (*"Architected distributed, fault-tolerant cloud microservices"*). Recruiters, having caught on, discount resumes with deep cynicism.
-2. **The Absence-of-Evidence Problem:** Early-career engineers and students do not lack work — they lack **verifiable provenance**. They have hundreds of commits, hackathon repos, university capstones, and architectural trade-offs buried across disparate Git branches. When applying, they undersell their true technical merit because they have no system to surface it.
+1. **The Generative AI Dilemma:** Candidates copy-paste job postings into generic LLMs, yielding resumes loaded with buzzwords (*"Architected distributed, fault-tolerant cloud microservices"*). Recruiters, having caught on, discount self-reported resumes with deep skepticism.
+2. **The Absence-of-Evidence Problem:** Early-career engineers and students do not lack real work — they lack **verifiable provenance**. They have hundreds of commits, hackathon repos, university capstones, and architectural trade-offs buried across disparate Git branches. When applying, they struggle to ground their claims in verifiable code artifacts.
 
 ```
 THE BROKEN GENERATIVE PARADIGM:
-Job Posting ───► ChatGPT / Prompt ───► Hallucinated Buzzwords ───► Recruiter Discards
+Job Posting ───► Generic LLM ───► Unverified Buzzwords ───► Recruiter Distrust
 
 THE EVIDENT PROVENANCE PARADIGM:
-Actual Git Commits ──┐
-Source Code ASTs   ──┼──► EVIDENT PROOF ENGINE ──► Relational Graph ──► 1-Tap Provenance Inspector
-Target Vacancy     ──┘                                             └──► Architectural Defense Arena
+Git Tree API       ──┐
+Dependency Manifests──┼──► EVIDENT ENGINE ──► Relational Graph ──► 1-Tap Provenance Inspector
+Target Vacancy     ──┘                     └──► SHA-256 ProofPack ──► Architectural Defense Arena
 ```
 
-**Evident** replaces AI hallucination with deterministic technical provenance. It grounds every bullet, claim, and interview answer in actual commits, file paths, and syntax nodes.
+**Evident** replaces unverified buzzwords with evidence-based provenance. It grounds claims and interview prep in actual commits, file paths, and dependency manifests from public GitHub repositories.
 
 ---
 
 ## 2. The 5-Dimensional Evidence Model
 
-Rather than collapsing candidate competency into an arbitrary, ungrounded single percentage score (e.g. *"87% Match"*), Evident models technical evidence across **five orthogonal dimensions**:
+Rather than collapsing candidate competency into an arbitrary, opaque percentage score, Evident models technical evidence across **five distinct dimensions**:
 
 | Dimension | Classification Values | Description & Verification Standard |
 | :--- | :--- | :--- |
-| **1. Evidence Status** | `DIRECT_SOURCE`<br/>`SUPPORTED`<br/>`PARTIAL`<br/>`EVIDENCE_GAP`<br/>`USER_DECLARED` | • **Direct Source:** Explicit first-party business logic, API endpoints, or algorithmic implementations.<br/>• **Supported:** Explicit dependency manifests, build scripts, or architecture docs.<br/>• **Partial:** Adjacent framework or conceptual paradigm.<br/>• **Evidence Gap:** No detectable trace in commit history.<br/>• **User-Declared:** Manually asserted without code citations. |
-| **2. Source Artifact** | `source_file`<br/>`commit_history`<br/>`dependency_manifest`<br/>`api_route`<br/>`manual_project` | Cryptographic pointer to the exact underlying Git object, SHA hash, or file tree node. |
-| **3. Authorship Attribution** | `primary_author`<br/>`collaborator`<br/>`inherited_template` | Filters out cloned boilerplate; weights contributions based on author commit diffs. |
-| **4. Confidence Level** | `HIGH` ($C \ge 0.85$)<br/>`MEDIUM` ($0.5 \le C < 0.85$)<br/>`LOW` ($C < 0.5$) | Deterministic heuristic calculated from code line density, test coverage, and recency. |
-| **5. Temporal Freshness** | `active_recency`<br/>`commit_decay_factor` | Preserves first-seen and last-seen commit timestamps with time-decay weighting. |
+| **1. Evidence Status** | `direct`<br/>`supported`<br/>`partial`<br/>`not_found`<br/>`user_declared` | • **Direct:** First-party code implementing this skill found in source files.<br/>• **Supported:** Dependencies or configurations found in manifests (`package.json`, `requirements.txt`).<br/>• **Partial:** Adjacent or related technology detected.<br/>• **Not Found / Gap:** No trace detected in repository history.<br/>• **User-Declared:** Manually added claim without code references. |
+| **2. Source Artifact** | `source_file`<br/>`commit_history`<br/>`dependency_manifest`<br/>`api_route`<br/>`manual_project` | Pointer to the underlying file path, commit SHA, or dependency manifest. |
+| **3. Authorship Support** | `primary_author`<br/>`collaborator`<br/>`inherited_template` | Derived from commit contributions; flags low-commit forks to prevent borrowed-code inflation. |
+| **4. Confidence Level** | `high`<br/>`medium`<br/>`low` | Based on direct code presence, dependency declarations, and candidate commit percentage. |
+| **5. Temporal Freshness** | `firstObservedDate`<br/>`lastObservedDate` | Observed activity window across repository push and commit timestamps. |
 
 ---
 
 ## 3. End-to-End System Architecture
 
-Evident adheres strictly to Robert C. Martin's **Clean Architecture** and John Ousterhout's **Deep Module Philosophy**:
+Evident is built in pure TypeScript and React Native (Expo SDK 54):
 
 ```mermaid
 graph TD
-    subgraph INGESTION["1. INGESTION & NORMALIZATION"]
+    subgraph INGESTION["1. REPOSITORY INGESTION"]
         GH[GitHub Repositories] --> GHS[GitHubService]
-        GHS --> AST[Signal & Commit Parser]
-        AST --> FIX[Evidence Fixtures & Manifests]
+        GHS --> TREE[Git Trees API & File Traversal]
+        GHS --> MAN[Dependency Manifests Parser]
+        GHS --> COM[Commits & Authorship API]
     end
 
     subgraph DOMAIN["2. CORE DOMAIN LAYER (Pure TypeScript)"]
-        FIX --> PG[ProofGraph Engine]
-        PG --> EM[Evidence Graph Matrix]
-        EM --> ME[Deterministic Matching Engine]
-        ME --> CA[Anti-Hallucination Claim Auditor]
+        TREE & MAN & COM --> PG[ProofGraph Engine]
+        PG --> ME[Jaccard Similarity Matching Engine]
+        ME --> CA[Claim Auditor Cross-Referencer]
+        ME --> PP[SHA-256 ProofPack Service]
     end
 
-    subgraph MONETIZATION["3. SPONSOR COMMERCE (RevenueCat)"]
+    subgraph MONETIZATION["3. COMMERCE & SUBSCRIPTIONS (RevenueCat)"]
         RC[react-native-purchases SDK] --> PS[PurchaseService]
         PS --> TS[Test Store Sandbox Controller]
         PS --> ENT[proof_pro Entitlement State]
     end
 
-    subgraph PRESENTATION["4. PRESENTATION & EXPERIENCE (React Native + Expo)"]
-        EM --> IGE[Interactive Graph Explorer]
+    subgraph PRESENTATION["4. MOBILE PRESENTATION (React Native + Expo)"]
+        PG --> IGE[Interactive Graph Explorer]
         ME --> AS[Application Studio]
         AS --> EIM[1-Tap Provenance Inspector Drawer]
         CA --> ADA[Architectural Defense Arena]
-        ENT --> PW[Pro Living Memory Paywall]
-        ENT --> PP[ProofPack Cryptographic Exporter]
+        ENT --> PW[Pro Living Career Memory Paywall]
     end
 ```
 
@@ -118,49 +118,52 @@ graph TD
 ## 4. Core Functional Subsystems
 
 ### 4.1 Living Evidence & Relational Graph Explorer
-* **Implementation:** `src/components/InteractiveGraphExplorer.tsx`, `src/screens/HomeScreen.tsx`
-* **Mechanics:** Instead of displaying dry tabular lists, Evident renders an interactive graph where skills, projects, and commits exist as physically interconnected nodes.
+* **Implementation:** `src/components/InteractiveGraphExplorer.tsx`, `src/domain/proofGraph.ts`
+* **Mechanics:** Renders an interactive visual graph connecting skills, projects, and source files.
 * **Capabilities:**
-  * Real-time interactive node selection with spring animations.
-  * Node categorization by tier: Primary Skill (Blue Glow), Repository Core (Cyan), Source Artifact (Emerald).
-  * Instant telemetry reporting node count, edge density, and commit depth.
+  * Interactive node inspection with spring animations.
+  * Node categorization: Skill, Project, and Source File.
+  * Live telemetry reporting node count, edge density, and skill frequency.
 
-### 4.2 Deterministic Opportunity Matching Engine
+### 4.2 Similarity-Based Opportunity Matching Engine
 * **Implementation:** `src/domain/matchingEngine.ts`, `src/screens/OpportunityScreen.tsx`
-* **Mechanics:** Ingests any real-world job description and parses required qualifications, matching them against candidate evidence nodes without arbitrary hallucination.
+* **Mechanics:** Ingests job requirements, normalizes text into token n-grams (filtered for stop words), and computes Jaccard similarity between requirement descriptions and candidate evidence items.
 * **Output:** Produces an **Evidence Coverage Matrix**:
-  $$\text{Coverage Summary} = \{ \text{Direct: } 5, \text{ Supported: } 2, \text{ Partial: } 1, \text{ Gaps: } 1 \}$$
-* **Must-Have Integrity:** Gaps in required qualifications explicitly prevent inflated match scores and trigger contextual acquisition tips.
+  * Direct Matches (code implementation found)
+  * Supported Matches (manifest/config evidence found)
+  * Partial Matches (related skill evidence)
+  * Gaps (unbacked requirements flagged transparently)
+* **Must-Have Integrity:** Gaps in required qualifications explicitly prevent inflated match scores and trigger actionable skill gap indicators.
 
-### 4.3 Application Studio & The 1-Tap Provenance Inspector (The Hero)
+### 4.3 Application Studio & The 1-Tap Provenance Inspector
 * **Implementation:** `src/screens/ApplicationScreen.tsx`, `src/components/EvidenceInspectorModal.tsx`
-* **The Magic Moment:** Each synthesized bullet point carries a `[Why this claim?]` interactive badge.
-* **Inspector Drawer:** Tapping the badge slides up a bottom sheet revealing:
-  * Exact repository origin (`RIFT`, `KALMAN`, `SYNTRA`).
-  * Relative file path (`src/auth/tokenRotation.ts`).
-  * Matching Git Commit SHA (`b81c44a`).
-  * Verifiable code snippet and syntax extract.
-  * Authorship status (`Primary Author`).
+* **Inspector Drawer:** Tapping any synthesized claim slides up an inspection sheet displaying:
+  * Repository name and URL.
+  * Relative file path (e.g., `src/domain/matchingEngine.ts`, `model/train_rf.py`).
+  * Git commit SHA when available (e.g., `e31b09f`).
+  * Authorship attribution (`Primary Author` vs `Collaborator`).
+  * Confidence level and evidence category.
 
 ### 4.4 Architectural Defense Arena
 * **Implementation:** `src/services/interviewService.ts`, `src/screens/InterviewScreen.tsx`
-* **Mechanics:** Simulates real hiring manager grilling by extracting trade-offs directly from candidate code:
-  * *"Why did you implement database-backed token rotation in `src/auth/tokenRotation.ts` instead of stateless server-signed JWTs?"*
-* **Evaluation Matrix:** Evaluates candidate trade-off defense across 3 parameters: *Technical Rigor*, *Trade-Off Articulation*, and *Failure-Mode Preparedness*.
+* **Mechanics:** Generates realistic technical interview questions anchored to the candidate's actual files and repositories:
+  * *"In nids-project, how did you calibrate feature selection and Random Forest hyperparameters in `model/train_rf.py` to balance sensitivity against false positives?"*
+  * *"In Evident, walk me through how your SHA-256 canonical integrity hash in `src/services/proofPackService.ts` ensures tamper-evidence for candidate evidence payloads."*
+* **Evaluation:** Scores responses on technical vocabulary, depth, and concrete code citations.
 
-### 4.5 ProofPack™ Cryptographic Export System
+### 4.5 ProofPack SHA-256 Verifiable Export
 * **Implementation:** `src/services/proofPackService.ts`, `src/components/ProofPackModal.tsx`
-* **Mechanics:** Packages verified evidence, commit proofs, and matching summaries into an immutable, portable `ProofPack™` JSON/PDF bundle with a deterministic checksum for recruiters to inspect.
+* **Integrity Guarantee:** Uses the Web Crypto API (`crypto.subtle.digest('SHA-256', ...)`) with Node crypto fallback to generate an authentic 64-character SHA-256 digest over the canonically ordered evidence payload. Recruiters can re-hash the same evidence IDs and commit SHAs to verify the dossier has not been modified.
 
-### 4.6 Guided Interactive Onboarding & Tutorial
-* **Implementation:** `src/components/InteractiveTutorial.tsx`, `src/screens/OnboardingScreen.tsx`
-* **Experience:** 4-step interactive onboarding guide detailing the Evidence Graph, Provenance Drawer, Defense Arena, and RevenueCat Living Career Memory.
+### 4.6 Guided Interactive Onboarding & Demo Mode
+* **Implementation:** `src/components/InteractiveTutorial.tsx`, `src/domain/fixtures.ts`, `src/store/useEvidenceStore.ts`
+* **Experience:** Includes an honest demo dataset on first launch so users and judges can explore the complete UI immediately, with an `isUsingDemoData` flag that transitions to live data once the candidate inputs their GitHub username.
 
 ---
 
 ## 5. Deep RevenueCat Integration (Sponsor Showcase)
 
-Evident is architected natively around the **RevenueCat SDK (`react-native-purchases`)**:
+Evident is architected around the **RevenueCat SDK (`react-native-purchases`)**:
 
 ```
                                ┌──────────────────────────────────────────────┐
@@ -183,17 +186,17 @@ Evident is architected natively around the **RevenueCat SDK (`react-native-purch
 ```
 
 ### 5.1 The Living Career Memory Entitlement (`proof_pro`)
-Unlike one-time resume generators, Evident monetizes a **continuous background service**:
-* **Continuous Repository Sync:** Webhooks auto-index new pull requests and merged features.
-* **Deep Defense Simulations:** Unlimited architectural grillings tailored to newly committed files.
-* **Multi-Format ProofPack Exports:** Unlimited cryptographically grounded export packages.
+Evident monetizes a continuous career memory companion:
+* **Continuous Repository Indexing:** Syncs new commits, repos, and dependencies.
+* **Architectural Defense Arena:** Pro-tier system design scenarios and interview simulations.
+* **Verifiable ProofPack Exports:** Full markdown dossiers with SHA-256 integrity seal.
 
 ### 5.2 Tier Packaging & Pricing Strategy
 
 | Package Identifier | Tier Name | Price | Term | Value Architecture |
 | :--- | :--- | :--- | :--- | :--- |
-| `evident_pro_annual` | **Annual Career Pass** | **$49.99/yr** | 12 Months | Continuous living memory across academic / job hunt year. Includes **Save 48%** badge & 7-day trial. |
-| `evident_pro_monthly` | **Monthly Career Sprint** | **$7.99/mo** | 1 Month | Frictionless access for candidates in active fall/spring interview loops. |
+| `evident_pro_annual` | **Annual Career Pass** | **$49.99/yr** | 12 Months | Continuous evidence tracking across the hiring year. Includes Save 48% badge. |
+| `evident_pro_monthly` | **Monthly Career Sprint** | **$7.99/mo** | 1 Month | Flexible access for candidates in active interview loops. |
 
 ### 5.3 RevenueCat Test Store & Judge Sandbox Architecture
 To ensure hackathon judges face **zero credential or sandbox friction**:
@@ -202,61 +205,60 @@ To ensure hackathon judges face **zero credential or sandbox friction**:
    const REVENUECAT_API_KEY_IOS = 'appl_evident_shipathon_test';
    const REVENUECAT_API_KEY_ANDROID = 'goog_evident_shipathon_test';
    ```
-2. **Instant 1-Tap Purchase & Restore:** Tapping *"Annual Career Pass"* or *"Restore Purchases"* immediately triggers the `proof_pro` entitlement listener and transitions the user into Pro mode.
+2. **Instant 1-Tap Purchase & Restore:** Tapping *"Annual Career Pass"* or *"Restore Purchases"* immediately triggers the `proof_pro` entitlement listener and transitions into Pro mode.
 3. **Reset to Free Tier Button:** Judges can toggle back to Free mode directly on the Paywall to test the upgrade flow repeatedly.
 
 ---
 
-## 6. Software Craftsmanship & Clean Architecture
+## 6. Current Capabilities, Transparency & Roadmap
 
-Evident adheres to the highest design and craftsmanship benchmarks:
+We believe developer tools must be honest about what is running in code today versus future research:
 
-* **Alan Cooper's Interaction Principles (*About Face*):**
-  * **Rich Undo over Modals:** Replaces jarring modal confirmation dialogs with floating, non-destructive undo notifications.
-  * **Considerate Software:** System never loses state during screen transitions or restarts.
-* **Visual Excellence & Design System:**
-  * **Ambient Aurora Engine:** Dynamic, subtle gradient mesh rendering responsive to interaction.
-  * **Dark Mode Ergonomics:** Midnight Slate (`#0B0F17`), Elevated Glass Surfaces (`#111827`), Cyan Brand Accent (`#38BDF8`).
-  * **Typographic Hierarchy:** Plus Jakarta Sans for UI readability paired with JetBrains Mono for commit hashes and code snippets.
-* **John Ousterhout's *A Philosophy of Software Design*:**
-  * **Deep Modules:** `matchingEngine.ts` and `proofGraph.ts` encapsulate complex multidimensional graph analytics behind simple, intuitive public interfaces.
-  * **Define Errors Out of Existence:** Null/undefined safety handled by default fallback entities.
+| Feature Area | What Evident Does Today (Shipped) | Planned / Roadmap |
+| :--- | :--- | :--- |
+| **Code Extraction** | Reads real Git trees (via GitHub recursive trees API), parses manifests (`package.json`, `requirements.txt`, `Cargo.toml`, `go.mod`), analyzes commit history and author login. | AST-level symbol extraction via Tree-sitter or TypeScript Compiler API. |
+| **Requirement Matching** | Tokenized n-gram normalization + Jaccard similarity scoring with stop word filtering and must-have weighting. | Dense vector embeddings (e.g., text-embedding-3 or local ONNX embeddings). |
+| **Integrity Seal** | Canonical evidence serialization + real SHA-256 digest via Web Crypto API / Node crypto fallback. | On-chain or Git-signed cryptographic attestation seals. |
+| **Taxonomy Mapping** | Maps framework & language names to structured skill IDs and categories. | Alignment with formal labor taxonomies (O*NET, ESCO). |
+| **Claim Auditor** | Verifies evidence existence, checks for undeclared skills, flags unbacked claims and low-contribution forks. | Automated test suite execution & diff-size verification. |
 
 ---
 
-## 7. Mathematical Formulation: Transparent Matching
+## 7. Matching Formulation: Transparent Scoring
 
-Evident determines job alignment via an objective, weighted evidence formula:
+Opportunity coverage is calculated deterministically:
 
-$$\text{CoverageScore}(O, E) = \frac{\sum_{r \in R_O} w_r \cdot \text{SignalStrength}(r, E)}{\sum_{r \in R_O} w_r} \times \prod_{m \in M_O} \mathbb{I}(m \in E)$$
+$$\text{Jaccard}(R, E) = \frac{|T(R) \cap T(E)|}{|T(R) \cup T(E)|}$$
 
 Where:
-* $R_O$ is the set of all requirements in Opportunity $O$.
-* $w_r$ is the priority weight assigned to requirement $r$ ($1.0$ for preferred, $2.0$ for must-have).
-* $\text{SignalStrength}(r, E) \in \{1.0, 0.75, 0.40, 0.0\}$ corresponding to `DIRECT_SOURCE`, `SUPPORTED`, `PARTIAL`, and `GAP`.
-* $M_O \subseteq R_O$ is the set of strict *must-have* requirements.
-* $\mathbb{I}(m \in E)$ is the strict gap indicator function: if a candidate has an unmitigated gap in a critical must-have, an explicit penalty is factored rather than concealed.
+* $T(R)$ is the normalized set of non-stop-word tokens and n-grams from the job requirement.
+* $T(E)$ is the token set from candidate evidence claims, skill names, and file paths.
+* **Match Status Classification:**
+  * **Direct:** $\text{Jaccard} \ge 0.35$ with `source_file` evidence
+  * **Supported:** $\text{Jaccard} \ge 0.25$ with `dependency_manifest` evidence
+  * **Partial:** $\text{Jaccard} \ge 0.15$
+  * **Gap:** $\text{Jaccard} < 0.15$
+* **Gating:** Missing must-have requirements are explicitly reported in `coveredMustHaves / totalMustHaves` and cannot be masked by extraneous skills.
 
 ---
 
-## 8. Test Suite & Formal Verification (29/29 Passing)
+## 8. Test Suite & Formal Verification (32/32 Passing)
 
-Evident includes a comprehensive automated test harness built with **Jest** verifying all system invariants:
+Evident includes an automated test harness built with **Jest** verifying all domain logic and services:
 
 ```bash
 $ npm test
+ PASS  src/__tests__/purchaseService.test.ts
+ PASS  src/__tests__/proofPackService.test.ts
+ PASS  src/__tests__/matchingEngine.test.ts
+ PASS  src/__tests__/landingAndTutorial.test.ts
+ PASS  src/__tests__/interviewService.test.ts
  PASS  src/__tests__/claimAuditor.test.ts
  PASS  src/__tests__/proofGraph.test.ts
- PASS  src/__tests__/interviewService.test.ts
- PASS  src/__tests__/matchingEngine.test.ts
- PASS  src/__tests__/proofPackService.test.ts
- PASS  src/__tests__/purchaseService.test.ts
- PASS  src/__tests__/landingAndTutorial.test.ts
 
 Test Suites: 7 passed, 7 total
-Tests:       29 passed, 29 total
+Tests:       32 passed, 32 total
 Snapshots:   0 total
-Time:        26.81 s
 Ran all test suites.
 ```
 
@@ -264,13 +266,13 @@ Ran all test suites.
 
 | Test Suite | Verified Invariant |
 | :--- | :--- |
-| `claimAuditor.test.ts` | **Anti-Hallucination:** Asserts unsupported claims (e.g., undeclared Kubernetes/AWS) are immediately caught and flagged as unverified gaps. |
-| `proofGraph.test.ts` | **Relational Integrity:** Verifies skill aggregation, commit deduplication, and node-link graph generation. |
-| `matchingEngine.test.ts` | **Deterministic Matching:** Validates coverage ratios, must-have penalty calculations, and provenance bullet generation. |
-| `interviewService.test.ts` | **Trade-Off Generation:** Asserts that interview questions are generated directly from candidate code snippets and file paths. |
+| `claimAuditor.test.ts` | **Claim Verification:** Flags unsupported technologies (e.g., undeclared Kubernetes/AWS) and returns structured warnings for unbacked claims. |
+| `proofGraph.test.ts` | **Relational Integrity:** Verifies skill aggregation, project queries, deduplication, and node-link visual graph generation. |
+| `matchingEngine.test.ts` | **Similarity Matching:** Validates Jaccard similarity scoring, must-have requirements coverage, and grounded bullet synthesis. |
+| `interviewService.test.ts` | **Targeted Probing:** Asserts that defense questions are anchored directly to real repository files (`src/services/proofPackService.ts`, `model/train_rf.py`). |
 | `purchaseService.test.ts` | **RevenueCat Lifecycle:** Verifies Test Store purchases, customer info listeners, restore state transitions, and tier resets. |
-| `proofPackService.test.ts` | **Cryptographic Export:** Verifies integrity hash generation, bundle serialization, and validation. |
-| `landingAndTutorial.test.ts` | **Onboarding State:** Validates first-time user tour progression and tutorial completion flags. |
+| `proofPackService.test.ts` | **SHA-256 Integrity:** Validates 64-character SHA-256 cryptographic digests, sync fingerprints, and markdown dossier formatting. |
+| `landingAndTutorial.test.ts` | **Store & Demo State:** Validates demo data initialization, demo flag tracking, and onboarding progression. |
 
 ---
 
@@ -282,36 +284,36 @@ evident/
 │   ├── icon.png                     # Official 1024x1024 app icon
 │   └── splash-icon.png              # Adaptive splash art
 ├── src/
-│   ├── components/                  # Reusable high-craft design system components
-│   │   ├── AmbientAuroraBackground.tsx # Reactive ambient gradient background
-│   │   ├── EvidenceBadge.tsx        # 5-Dimensional evidence status indicators
-│   │   ├── EvidenceInspectorModal.tsx # The Hero: 1-Tap Provenance Inspector Drawer
+│   ├── components/                  # Design system & interactive components
+│   │   ├── AmbientAuroraBackground.tsx # Ambient gradient background
+│   │   ├── EvidenceBadge.tsx        # Evidence status indicators
+│   │   ├── EvidenceInspectorModal.tsx # 1-Tap Provenance Inspector Drawer
 │   │   ├── EvidentButton.tsx        # Tactile spring buttons with haptics
 │   │   ├── GlassCard.tsx            # Elevated frosted glass surfaces
-│   │   ├── InteractiveGraphExplorer.tsx # Living Evidence Force-directed graph
+│   │   ├── InteractiveGraphExplorer.tsx # Visual Evidence graph
 │   │   ├── InteractiveTutorial.tsx  # Step-by-step interactive onboarding
-│   │   └── ProofPackModal.tsx       # Cryptographic ProofPack export modal
+│   │   └── ProofPackModal.tsx       # ProofPack export modal
 │   ├── domain/                      # Pure business logic (Zero UI dependencies)
-│   │   ├── claimAuditor.ts          # Anti-hallucination verification engine
-│   │   ├── fixtures.ts              # Canonical repository AST & commit models
-│   │   ├── matchingEngine.ts        # Transparent vacancy coverage calculation
+│   │   ├── claimAuditor.ts          # Claim auditing & cross-referencing engine
+│   │   ├── fixtures.ts              # Clean demo fixtures with test coverage
+│   │   ├── matchingEngine.ts        # Jaccard similarity & coverage calculation
 │   │   ├── proofGraph.ts            # Relational evidence graph algorithms
-│   │   └── types.ts                 # Strict TypeScript schemas & evidence dimensions
+│   │   └── types.ts                 # Strict TypeScript schemas & evidence models
 │   ├── navigation/                  # Typed stack navigation and tab routing
 │   │   └── AppNavigator.tsx
 │   ├── screens/                     # Primary mobile screen views
-│   │   ├── AccountScreen.tsx        # Candidate profile & repository connection manager
+│   │   ├── AccountScreen.tsx        # Profile & GitHub repository sync manager
 │   │   ├── ApplicationScreen.tsx    # Grounded resume studio & provenance drawer
 │   │   ├── HomeScreen.tsx           # Living Evidence Graph & primary metrics
 │   │   ├── InterviewScreen.tsx      # Architectural Defense Arena
 │   │   ├── OpportunityScreen.tsx    # Vacancy parsing & Coverage Matrix
 │   │   └── PaywallScreen.tsx        # RevenueCat Pro Living Career Memory paywall
-│   ├── services/                    # Infrastructure & Third-Party Adapters
-│   │   ├── githubService.ts         # Repository indexing & commit signal extraction
+│   ├── services/                    # Infrastructure & API Adapters
+│   │   ├── githubService.ts         # Git trees API traversal & manifest parser
 │   │   ├── interviewService.ts      # Architectural trade-off grilling engine
-│   │   ├── proofPackService.ts      # Verifiable bundle exporter
+│   │   ├── proofPackService.ts      # SHA-256 verifiable dossier exporter
 │   │   └── purchaseService.ts       # RevenueCat SDK adapter & Test Store controller
-│   └── store/                       # Zustand reactive single sources of truth
+│   └── store/                       # Zustand reactive state stores
 │       ├── useEvidenceStore.ts      # Ingested evidence state & repository trees
 │       ├── useInterviewStore.ts     # Defense session logs & evaluation scores
 │       ├── useOpportunityStore.ts   # Active job postings & coverage matrices
@@ -342,7 +344,12 @@ npm install
 npm test
 ```
 
-### 3. Start Expo Development Server
+### 3. Check Types
+```bash
+npx tsc --noEmit
+```
+
+### 4. Start Expo Development Server
 ```bash
 npm start
 ```
@@ -360,9 +367,9 @@ npm start
 | **1. RevenueCat SDK Integration** | `src/services/purchaseService.ts` | Configured with `react-native-purchases`. Uses Test Store for frictionless judging. |
 | **2. Test Store Paywall Experience** | Open app $\rightarrow$ Tap `★ PRO` button in top header | Displays Annual ($49.99/yr) & Monthly ($7.99/mo) packages. Tap package to unlock Pro instantly. |
 | **3. Entitlement State Reactivity** | `src/store/useSubscriptionStore.ts` | Unlocks unlimited graph sync, defense arena, and multi-format exports. |
-| **4. 1-Tap Provenance Inspector** | Go to **Apply** tab $\rightarrow$ Tap `[Why this claim?]` | Slides up bottom drawer displaying exact file paths, commit SHAs (`b81c44a`), and code snippet. |
+| **4. 1-Tap Provenance Inspector** | Go to **Apply** tab $\rightarrow$ Tap `[Why this claim?]` | Slides up bottom drawer displaying exact file paths, commit SHAs (`e31b09f`), and code snippet. |
 | **5. Architectural Defense Arena** | Go to **Defense** tab $\rightarrow$ Start Defense Session | Generates technical interview questions derived directly from candidate code files. |
-| **6. Automated Tests** | Run `npm test` in terminal | **29 tests pass** with zero errors or flakiness across 7 suites. |
+| **6. Automated Tests** | Run `npm test` in terminal | **32 tests pass** with zero errors or flakiness across 7 suites. |
 
 ---
 
