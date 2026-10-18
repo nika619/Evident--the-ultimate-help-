@@ -90,13 +90,13 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
     {
       id: 'hist_4',
       type: 'sync',
-      title: 'Repository Ingestion: Evident--the-ultimate-help-',
+      title: 'Repository Ingestion: Evident',
       subtitle: 'Extracted source file artifacts, package manifests, and commit history',
       timestamp: 'Today, 09:12 PM',
       status: 'VERIFIED',
       badgeColor: Colors.emerald,
       hashOrScore: '14 Commits • TypeScript Primary',
-      meta: 'github.com/nika619/Evident--the-ultimate-help-',
+      meta: 'github.com/nika619/Evident.',
     },
     {
       id: 'hist_5',

@@ -364,7 +364,7 @@ evident/
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/nika619/Evident--the-ultimate-help-.git
+git clone https://github.com/nika619/Evident..git
 cd evident
 npm install
 ```

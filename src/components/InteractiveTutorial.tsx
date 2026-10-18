@@ -185,7 +185,7 @@ export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
             <View style={styles.demoRepoPills}>
               <View style={styles.repoPill}>
                 <Ionicons name="git-branch-outline" size={12} color={Colors.primary} />
-                <Text style={styles.repoPillText}>Evident--the-ultimate-help- (TypeScript)</Text>
+                <Text style={styles.repoPillText}>Evident (TypeScript)</Text>
               </View>
               <View style={styles.repoPill}>
                 <Ionicons name="git-branch-outline" size={12} color={Colors.emerald} />

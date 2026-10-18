@@ -18,7 +18,7 @@ export const DEMO_PROJECTS: ProjectSource[] = [
     id: 'proj_evident',
     name: 'evident',
     description: 'Evidence-based skill matching engine for developer portfolios.',
-    repoUrl: 'https://github.com/nika619/Evident--the-ultimate-help-',
+    repoUrl: 'https://github.com/nika619/Evident.',
     primaryLanguage: 'TypeScript',
     languages: ['TypeScript', 'JavaScript'],
     frameworks: ['React Native', 'Expo', 'Zustand', 'Jest'],
@@ -83,7 +83,7 @@ export const DEMO_EVIDENCE: EvidenceItem[] = [
     sourceType: 'source_file',
     sourceLocation: {
       filePath: 'src/domain/matchingEngine.ts',
-      url: 'https://github.com/nika619/Evident--the-ultimate-help-/blob/main/src/domain/matchingEngine.ts',
+      url: 'https://github.com/nika619/Evident./blob/main/src/domain/matchingEngine.ts',
     },
     evidenceStatus: 'direct',
     authorshipSupport: 'primary_author',
@@ -101,7 +101,7 @@ export const DEMO_EVIDENCE: EvidenceItem[] = [
     sourceType: 'source_file',
     sourceLocation: {
       filePath: 'src/services/proofPackService.ts',
-      url: 'https://github.com/nika619/Evident--the-ultimate-help-/blob/main/src/services/proofPackService.ts',
+      url: 'https://github.com/nika619/Evident./blob/main/src/services/proofPackService.ts',
       commitHash: '98047cc',
     },
     evidenceStatus: 'direct',
@@ -120,7 +120,7 @@ export const DEMO_EVIDENCE: EvidenceItem[] = [
     sourceType: 'source_file',
     sourceLocation: {
       filePath: 'App.tsx',
-      url: 'https://github.com/nika619/Evident--the-ultimate-help-/blob/main/App.tsx',
+      url: 'https://github.com/nika619/Evident./blob/main/App.tsx',
       commitHash: '8628cfc',
     },
     evidenceStatus: 'direct',
@@ -139,7 +139,7 @@ export const DEMO_EVIDENCE: EvidenceItem[] = [
     sourceType: 'source_file',
     sourceLocation: {
       filePath: 'src/__tests__/matchingEngine.test.ts',
-      url: 'https://github.com/nika619/Evident--the-ultimate-help-/blob/main/src/__tests__/matchingEngine.test.ts',
+      url: 'https://github.com/nika619/Evident./blob/main/src/__tests__/matchingEngine.test.ts',
     },
     evidenceStatus: 'direct',
     authorshipSupport: 'primary_author',
