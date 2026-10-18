@@ -1,9 +1,7 @@
 /**
- * Evident Proof Graph
- * Logical relational graph representing student technical provenance.
- *
- * Connects:
- * ProjectSource <───> SourceFile / Commit <───> EvidenceItem <───> Skill
+ * Proof Graph
+ * Relational graph connecting projects, skills, evidence, and source files.
+ * Used by the interactive graph explorer and by matching/auditing logic.
  */
 
 import { ProjectSource, EvidenceItem } from './types';
@@ -77,14 +75,15 @@ export class ProofGraph {
   }
 
   /**
-   * Generates graph nodes and edges for the Interactive Visualizer
+   * Generates nodes and edges for the graph visualizer.
+   * Creates project → skill edges via evidence, and project → file edges.
    */
   public generateVisualGraph(): { nodes: GraphNode[]; edges: GraphEdge[] } {
     const nodes: GraphNode[] = [];
     const edges: GraphEdge[] = [];
     const addedNodeIds = new Set<string>();
 
-    // 1. Project Nodes
+    // Project nodes
     this.projects.forEach((proj) => {
       nodes.push({
         id: proj.id,
@@ -95,7 +94,7 @@ export class ProofGraph {
       addedNodeIds.add(proj.id);
     });
 
-    // 2. Skill Nodes & Edges
+    // Skill nodes + edges (from evidence)
     this.evidence.forEach((ev) => {
       if (!addedNodeIds.has(ev.skillId)) {
         nodes.push({
@@ -106,7 +105,6 @@ export class ProofGraph {
         addedNodeIds.add(ev.skillId);
       }
 
-      // Edge from Project to Skill
       const edgeId = `${ev.projectId}->${ev.skillId}`;
       if (!edges.some((e) => e.id === edgeId)) {
         edges.push({
@@ -117,8 +115,8 @@ export class ProofGraph {
         });
       }
 
-      // 3. File Node if present
-      if (ev.sourceLocation.filePath) {
+      // File nodes
+      if (ev.sourceLocation.filePath && ev.sourceLocation.filePath !== '(repository-wide)') {
         const fileNodeId = `file_${ev.sourceLocation.filePath}`;
         if (!addedNodeIds.has(fileNodeId)) {
           nodes.push({

@@ -1,18 +1,22 @@
 /**
- * Evident Evidence Store
- * Manages connected projects, extracted evidence items, continuous sync,
- * and inspector modal selection.
+ * Evidence Store
+ * Manages connected projects, extracted evidence, sync state,
+ * and evidence inspector selection.
+ *
+ * On first launch, loads demo data so the app isn't empty.
+ * After the user connects their GitHub, replaces demo data with real data.
  */
 
 import { create } from 'zustand';
 import { ProjectSource, EvidenceItem, EvidenceStatus } from '../domain/types';
 import { ProofGraph } from '../domain/proofGraph';
 import { GithubService } from '../services/githubService';
-import { GOLDEN_PROJECTS, GOLDEN_EVIDENCE } from '../domain/fixtures';
+import { DEMO_PROJECTS, DEMO_EVIDENCE } from '../domain/fixtures';
 
 interface EvidenceState {
   hasCompletedOnboarding: boolean;
   hasSeenTutorial: boolean;
+  isUsingDemoData: boolean;
   candidateName: string;
   projects: ProjectSource[];
   evidence: EvidenceItem[];
@@ -38,21 +42,22 @@ interface EvidenceState {
 export const useEvidenceStore = create<EvidenceState>((set, get) => ({
   hasCompletedOnboarding: false,
   hasSeenTutorial: false,
-  candidateName: 'Mayank Tiwari (@nika619)',
-  projects: GOLDEN_PROJECTS,
-  evidence: GOLDEN_EVIDENCE,
+  isUsingDemoData: true,
+  candidateName: 'Demo User',
+  projects: DEMO_PROJECTS,
+  evidence: DEMO_EVIDENCE,
   selectedEvidence: null,
   activeFilter: 'all',
   isSyncing: false,
   syncError: null,
-  lastSyncedTimestamp: '2026-09-30T12:00:00Z',
-  graph: new ProofGraph(GOLDEN_PROJECTS, GOLDEN_EVIDENCE),
+  lastSyncedTimestamp: '',
+  graph: new ProofGraph(DEMO_PROJECTS, DEMO_EVIDENCE),
 
   clearSyncError: () => set({ syncError: null }),
 
   initialize: () => {
-    const currentProjects = get().projects.length > 0 ? get().projects : GOLDEN_PROJECTS;
-    const currentEvidence = get().evidence.length > 0 ? get().evidence : GOLDEN_EVIDENCE;
+    const currentProjects = get().projects.length > 0 ? get().projects : DEMO_PROJECTS;
+    const currentEvidence = get().evidence.length > 0 ? get().evidence : DEMO_EVIDENCE;
     const graph = new ProofGraph(currentProjects, currentEvidence);
     set({
       projects: currentProjects,
@@ -97,24 +102,27 @@ export const useEvidenceStore = create<EvidenceState>((set, get) => ({
 
   triggerContinuousSync: async (inputUrlOrUsername?: string) => {
     const targetUser = inputUrlOrUsername || get().candidateName;
-    if (!targetUser) return { success: false, error: 'No user provided' };
-    
+    if (!targetUser || targetUser === 'Demo User') {
+      return { success: false, error: 'Please enter a GitHub username or URL.' };
+    }
+
     set({ isSyncing: true, syncError: null });
-    
+
     try {
       const { projects, evidence, extractedUsername } = await GithubService.fetchCandidateData(targetUser);
-      
+
       set({
+        isUsingDemoData: false,
         candidateName: extractedUsername,
-        projects: projects,
-        evidence: evidence,
+        projects,
+        evidence,
         graph: new ProofGraph(projects, evidence),
         isSyncing: false,
         syncError: null,
         lastSyncedTimestamp: new Date().toISOString(),
       });
 
-      // Synchronize downstream matching engines and interview simulators
+      // Propagate to downstream stores
       try {
         const { useOpportunityStore } = require('./useOpportunityStore');
         const { useInterviewStore } = require('./useInterviewStore');
@@ -126,7 +134,7 @@ export const useEvidenceStore = create<EvidenceState>((set, get) => ({
 
       return { success: true };
     } catch (error: any) {
-      const errorMsg = error?.message || 'Sync failed. Profile not found or network error.';
+      const errorMsg = error?.message || 'Sync failed. Check the username and try again.';
       console.warn('Sync failed:', errorMsg);
       set({ isSyncing: false, syncError: errorMsg });
       return { success: false, error: errorMsg };
@@ -141,6 +149,7 @@ export const useEvidenceStore = create<EvidenceState>((set, get) => ({
         projects: newProjects,
         evidence: newEvidence,
         graph: new ProofGraph(newProjects, newEvidence),
+        isUsingDemoData: false,
       };
     });
   },
