@@ -3,11 +3,11 @@
  */
 
 import { InterviewService } from '../services/interviewService';
-import { GOLDEN_PROJECTS, GOLDEN_EVIDENCE } from '../domain/fixtures';
+import { DEMO_PROJECTS, DEMO_EVIDENCE } from '../domain/fixtures';
 
 describe('InterviewService', () => {
   it('generates targeted defense questions anchored to real candidate files', () => {
-    const questions = InterviewService.generateQuestions(GOLDEN_PROJECTS, GOLDEN_EVIDENCE);
+    const questions = InterviewService.generateQuestions(DEMO_PROJECTS, DEMO_EVIDENCE);
 
     expect(questions.length).toBeGreaterThanOrEqual(3);
 
@@ -24,7 +24,7 @@ describe('InterviewService', () => {
   });
 
   it('evaluates candidate defense with trade-off detection and code citation tips', () => {
-    const questions = InterviewService.generateQuestions(GOLDEN_PROJECTS, GOLDEN_EVIDENCE);
+    const questions = InterviewService.generateQuestions(DEMO_PROJECTS, DEMO_EVIDENCE);
     const firstQ = questions[0];
 
     // Strong response with architectural trade-off explanation
@@ -40,7 +40,7 @@ describe('InterviewService', () => {
   });
 
   it('flags vague or overly brief candidate answers', () => {
-    const questions = InterviewService.generateQuestions(GOLDEN_PROJECTS, GOLDEN_EVIDENCE);
+    const questions = InterviewService.generateQuestions(DEMO_PROJECTS, DEMO_EVIDENCE);
     const firstQ = questions[0];
 
     const weakAnswer = 'I used jwt library.';
@@ -51,8 +51,8 @@ describe('InterviewService', () => {
     expect(evaluation.feedbackNotes).toContain('too concise');
   });
 
-  it('generates Staff/Principal AI System Design Live Defense Arena scenarios (Pro Tier)', () => {
-    const sdQuestions = InterviewService.generateSystemDesignArenaQuestions(GOLDEN_PROJECTS, GOLDEN_EVIDENCE);
+  it('generates System Design Live Defense Arena scenarios (Pro Tier)', () => {
+    const sdQuestions = InterviewService.generateSystemDesignArenaQuestions(DEMO_PROJECTS, DEMO_EVIDENCE);
 
     expect(sdQuestions.length).toBeGreaterThanOrEqual(4);
     expect(sdQuestions.some((q) => q.id === 'sd_sepsis_telemetry')).toBe(true);

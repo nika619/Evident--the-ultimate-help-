@@ -3,19 +3,19 @@
  */
 
 import { ProofGraph } from '../domain/proofGraph';
-import { GOLDEN_PROJECTS, GOLDEN_EVIDENCE } from '../domain/fixtures';
-import { ProjectSource, EvidenceItem } from '../domain/types';
+import { DEMO_PROJECTS, DEMO_EVIDENCE } from '../domain/fixtures';
+import { ProjectSource } from '../domain/types';
 
 describe('ProofGraph', () => {
   let graph: ProofGraph;
 
   beforeEach(() => {
-    graph = new ProofGraph(GOLDEN_PROJECTS, GOLDEN_EVIDENCE);
+    graph = new ProofGraph(DEMO_PROJECTS, DEMO_EVIDENCE);
   });
 
-  it('initializes with candidate golden projects and evidence', () => {
-    expect(graph.getProjects().length).toBe(GOLDEN_PROJECTS.length);
-    expect(graph.getEvidence().length).toBe(GOLDEN_EVIDENCE.length);
+  it('initializes with candidate projects and evidence', () => {
+    expect(graph.getProjects().length).toBe(DEMO_PROJECTS.length);
+    expect(graph.getEvidence().length).toBe(DEMO_EVIDENCE.length);
   });
 
   it('correctly retrieves evidence items for a specific project', () => {
@@ -45,7 +45,7 @@ describe('ProofGraph', () => {
 
     // Verify project nodes exist
     const projectNodes = visual.nodes.filter((n) => n.type === 'project');
-    expect(projectNodes.length).toBe(GOLDEN_PROJECTS.length);
+    expect(projectNodes.length).toBe(DEMO_PROJECTS.length);
 
     // Verify skill nodes exist
     const skillNodes = visual.nodes.filter((n) => n.type === 'skill');
@@ -73,7 +73,7 @@ describe('ProofGraph', () => {
     };
 
     graph.addProject(newProj);
-    expect(graph.getProjects().length).toBe(GOLDEN_PROJECTS.length + 1);
+    expect(graph.getProjects().length).toBe(DEMO_PROJECTS.length + 1);
     expect(graph.getProjects().some((p) => p.id === 'proj_custom')).toBe(true);
   });
 

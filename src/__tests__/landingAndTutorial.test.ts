@@ -1,20 +1,19 @@
 /**
- * Tests for Evident Landing Screen & Interactive Trip Tutorial
+ * Tests for Evident Landing Screen & Interactive Tutorial Workflows
  */
 
 import { useEvidenceStore } from '../store/useEvidenceStore';
-import { GOLDEN_PROJECTS, GOLDEN_EVIDENCE } from '../domain/fixtures';
 
 describe('Landing & Interactive Tutorial Workflows', () => {
   beforeEach(() => {
     useEvidenceStore.getState().initialize();
   });
 
-  it('initializes candidate store with 15 verified repositories and authentic evidence', () => {
+  it('initializes candidate store with demo repositories and authentic evidence', () => {
     const state = useEvidenceStore.getState();
-    expect(state.projects.length).toBe(15);
-    expect(state.evidence.length).toBeGreaterThanOrEqual(15);
-    expect(state.candidateName).toContain('nika619');
+    expect(state.projects.length).toBe(3);
+    expect(state.evidence.length).toBeGreaterThanOrEqual(8);
+    expect(state.isUsingDemoData).toBe(true);
   });
 
   it('tracks tutorial completion state in evidence store', () => {
@@ -41,9 +40,9 @@ describe('Landing & Interactive Tutorial Workflows', () => {
     const store = useEvidenceStore.getState();
     store.initialize();
 
-    expect(store.projects[0].name).toBe('Evident--the-ultimate-help-');
+    expect(store.projects[0].name).toBe('evident');
     expect(store.projects[1].name).toBe('nids-project');
-    expect(store.evidence.some((e) => e.id === 'ev_evident_merkle')).toBe(true);
-    expect(store.evidence.some((e) => e.id === 'ev_nids_rf')).toBe(true);
+    expect(store.evidence.some((e) => e.id === 'demo_ev_proofpack')).toBe(true);
+    expect(store.evidence.some((e) => e.id === 'demo_ev_ml')).toBe(true);
   });
 });
