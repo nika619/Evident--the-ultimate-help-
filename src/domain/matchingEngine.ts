@@ -1,9 +1,14 @@
 /**
- * Evident Matching Engine
- * Performs honest, evidence-grounded matching between Opportunity Requirements
- * and the candidate's verifiable Proof Graph.
+ * Matching Engine
+ * Computes coverage between a job opportunity's requirements and
+ * the candidate's evidence items using n-gram similarity scoring.
  *
- * Replaces fake "87% fit" percentages with an auditable Evidence Coverage Matrix.
+ * Scoring approach:
+ * - Tokenizes requirement text and evidence text into normalized terms
+ * - Computes Jaccard similarity between token sets
+ * - Applies weighted scoring: direct name match > token overlap > partial match
+ * - Classifies match status based on score thresholds (not hardcoded lookups)
+ * - Must-have gaps are explicitly surfaced, never hidden
  */
 
 import {
@@ -14,11 +19,24 @@ import {
   EvidenceCoverage,
   GroundedResumeBullet,
   ProjectSource,
+  EvidenceStatus,
 } from './types';
+
+// Stop words filtered during tokenization
+const STOP_WORDS = new Set([
+  'a', 'an', 'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
+  'of', 'with', 'by', 'from', 'as', 'is', 'was', 'are', 'were', 'been',
+  'be', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would',
+  'could', 'should', 'may', 'might', 'shall', 'can', 'need', 'must',
+  'experience', 'using', 'including', 'such', 'ability', 'knowledge',
+  'understanding', 'strong', 'proficiency', 'proficient', 'familiar',
+  'deep', 'demonstrated', 'proven', 'excellent', 'good', 'working',
+]);
 
 export class MatchingEngine {
   /**
-   * Matches an entire Opportunity against candidate Evidence Items
+   * Matches an opportunity against candidate evidence.
+   * Returns matches, coverage stats, ranked projects, and grounded bullets.
    */
   public static matchOpportunity(
     opportunity: Opportunity,
@@ -38,7 +56,7 @@ export class MatchingEngine {
     const rawRequirements = opportunity?.requirements || [];
     const requirements = rawRequirements.length > 0
       ? rawRequirements
-      : this.deriveRequirementsFromOpportunity(opportunity, evidenceItems);
+      : this.deriveRequirementsFromDescription(opportunity);
 
     const matches: RequirementMatch[] = requirements.map((req) =>
       this.evaluateRequirement(req, evidenceItems)
@@ -48,65 +66,63 @@ export class MatchingEngine {
     const rankedProjects = this.rankProjects(matches, projects, evidenceItems);
     const groundedBullets = this.synthesizeGroundedBullets(matches, evidenceItems);
 
-    return {
-      matches,
-      coverage,
-      rankedProjects,
-      groundedBullets,
-    };
+    return { matches, coverage, rankedProjects, groundedBullets };
   }
 
   /**
-   * Automatically generates baseline requirements if custom JD lacked structured fields
+   * Derives baseline requirements from job description text when
+   * structured requirements aren't provided.
    */
-  private static deriveRequirementsFromOpportunity(
-    opportunity: Opportunity,
-    evidence: EvidenceItem[]
+  private static deriveRequirementsFromDescription(
+    opportunity: Opportunity
   ): OpportunityRequirement[] {
-    const title = (opportunity?.title || 'Software Engineering Role').toLowerCase();
     const desc = (opportunity?.descriptionRaw || '').toLowerCase();
+    const title = (opportunity?.title || '').toLowerCase();
+    const combined = `${title} ${desc}`;
 
-    const derived: OpportunityRequirement[] = [
-      {
-        id: 'req_core_lang',
-        category: 'technical_core',
-        name: 'Core System Programming',
-        description: 'Proficiency in primary backend, systems, or application languages.',
-        isMustHave: true,
-      },
-      {
-        id: 'req_arch',
-        category: 'architecture',
-        name: 'Modular Architecture & APIs',
-        description: 'Experience authoring resilient services, endpoints, and data layers.',
-        isMustHave: true,
-      },
-      {
-        id: 'req_reliability',
-        category: 'infrastructure',
-        name: 'Deployment & System Reliability',
-        description: 'Experience maintaining production repos, Docker, or CI/CD pipelines.',
-        isMustHave: false,
-      },
+    const derived: OpportunityRequirement[] = [];
+
+    // Extract technology mentions as requirements
+    const techPatterns: { pattern: RegExp; name: string; category: 'technical_core' | 'infrastructure' | 'architecture' | 'tooling' }[] = [
+      { pattern: /\b(python)\b/i, name: 'Python Development', category: 'technical_core' },
+      { pattern: /\b(typescript|javascript)\b/i, name: 'TypeScript / JavaScript', category: 'technical_core' },
+      { pattern: /\b(react|react\s*native)\b/i, name: 'React / React Native', category: 'technical_core' },
+      { pattern: /\b(node\.?js|express)\b/i, name: 'Node.js Backend', category: 'technical_core' },
+      { pattern: /\b(go|golang)\b/i, name: 'Go Development', category: 'technical_core' },
+      { pattern: /\b(rust)\b/i, name: 'Rust Development', category: 'technical_core' },
+      { pattern: /\b(java|kotlin|spring)\b/i, name: 'Java / Kotlin', category: 'technical_core' },
+      { pattern: /\b(docker|container)\b/i, name: 'Docker & Containerization', category: 'infrastructure' },
+      { pattern: /\b(kubernetes|k8s|helm)\b/i, name: 'Kubernetes & Orchestration', category: 'infrastructure' },
+      { pattern: /\b(aws|gcp|azure|cloud)\b/i, name: 'Cloud Infrastructure', category: 'infrastructure' },
+      { pattern: /\b(ci\/?cd|github\s*actions|jenkins)\b/i, name: 'CI/CD Pipelines', category: 'infrastructure' },
+      { pattern: /\b(api|rest|graphql|grpc)\b/i, name: 'API Design', category: 'architecture' },
+      { pattern: /\b(sql|postgres|mysql|database)\b/i, name: 'Database & SQL', category: 'architecture' },
+      { pattern: /\b(machine\s*learning|ml|ai|deep\s*learning)\b/i, name: 'Machine Learning / AI', category: 'technical_core' },
+      { pattern: /\b(testing|test\s*suite|jest|pytest)\b/i, name: 'Testing & QA', category: 'tooling' },
+      { pattern: /\b(security|auth|cryptograph)/i, name: 'Security & Authentication', category: 'architecture' },
     ];
 
-    if (desc.includes('react') || title.includes('frontend') || title.includes('fullstack')) {
-      derived.push({
-        id: 'req_ui',
-        category: 'technical_core',
-        name: 'Modern UI & State Management',
-        description: 'Component architecture, responsive rendering, and frontend engineering.',
-        isMustHave: true,
-      });
+    let reqIndex = 0;
+    for (const { pattern, name, category } of techPatterns) {
+      if (pattern.test(combined)) {
+        derived.push({
+          id: `req_derived_${reqIndex++}`,
+          category,
+          name,
+          description: `Mentioned in job description/title.`,
+          isMustHave: reqIndex <= 3, // first 3 matches treated as must-haves
+        });
+      }
     }
 
-    if (desc.includes('python') || desc.includes('data') || desc.includes('ml')) {
+    // Always add a generic systems requirement as fallback
+    if (derived.length === 0) {
       derived.push({
-        id: 'req_python',
+        id: 'req_derived_general',
         category: 'technical_core',
-        name: 'Data & Python Tooling',
-        description: 'Numerical processing, data ingestion, and scripting.',
-        isMustHave: false,
+        name: 'Software Engineering',
+        description: 'General software development capability.',
+        isMustHave: true,
       });
     }
 
@@ -114,49 +130,47 @@ export class MatchingEngine {
   }
 
   /**
-   * Evaluates a single requirement against the evidence repository
+   * Evaluates a single requirement against evidence using similarity scoring.
+   *
+   * Scoring:
+   * - Tokenize the requirement name + description
+   * - Tokenize each evidence item's skill name + claim
+   * - Compute Jaccard similarity between token sets
+   * - Boost for exact skill name containment
+   * - Classify result based on best score
    */
   public static evaluateRequirement(
     req: OpportunityRequirement,
     evidence: EvidenceItem[]
   ): RequirementMatch {
-    const reqText = `${req.name} ${req.description}`.toLowerCase();
+    const reqTokens = this.tokenize(`${req.name} ${req.description}`);
 
-    // Search for direct and supporting evidence
-    const matchingEvidence: { item: EvidenceItem; score: number }[] = [];
+    const scored: { item: EvidenceItem; score: number }[] = [];
 
     for (const ev of evidence) {
-      let score = 0;
-      const skillName = ev.skillName.toLowerCase();
-      const claim = ev.claim.toLowerCase();
+      const evTokens = this.tokenize(`${ev.skillName} ${ev.claim}`);
+      let score = this.jaccardSimilarity(reqTokens, evTokens);
 
-      // Check skill name matches
-      if (reqText.includes(skillName) || skillName.includes(req.name.toLowerCase())) {
-        score += 10;
+      // Boost: if the skill name directly appears in the requirement text
+      const reqText = `${req.name} ${req.description}`.toLowerCase();
+      const skillLower = ev.skillName.toLowerCase();
+      if (reqText.includes(skillLower) || skillLower.includes(req.name.toLowerCase())) {
+        score += 0.3;
       }
 
-      // Check token overlap with stop words and word boundaries
-      const stopWords = new Set(['and', 'the', 'for', 'with', 'experience', 'using', 'in', 'of', 'to', 'is', 'on', 'as']);
-      const keywords = reqText.split(/[\s,&/()]+/).filter((w) => w.length >= 2 && !stopWords.has(w));
-      for (const kw of keywords) {
-        try {
-          const regex = new RegExp(`\\b${kw}\\b`, 'i');
-          if (regex.test(claim) || regex.test(skillName)) {
-            score += 3;
-          }
-        } catch {
-          // ignore invalid regex from weird symbols
-        }
+      // Boost for direct source evidence vs supported/partial
+      if (ev.evidenceStatus === 'direct') {
+        score *= 1.1;
       }
 
-      if (score > 0) {
-        matchingEvidence.push({ item: ev, score });
+      if (score > 0.05) {
+        scored.push({ item: ev, score: Math.min(score, 1.0) });
       }
     }
 
-    matchingEvidence.sort((a, b) => b.score - a.score);
+    scored.sort((a, b) => b.score - a.score);
 
-    if (matchingEvidence.length === 0) {
+    if (scored.length === 0) {
       return {
         requirementId: req.id,
         requirementName: req.name,
@@ -164,64 +178,101 @@ export class MatchingEngine {
         isMustHave: req.isMustHave,
         status: 'not_found',
         supportingEvidenceIds: [],
-        rationale: `No verifiable repository evidence detected matching ${req.name}.`,
+        rationale: `No matching evidence found for "${req.name}".`,
       };
     }
 
-    const primary = matchingEvidence[0].item;
-    const supportingIds = matchingEvidence.slice(1).map((m) => m.item.id);
+    const best = scored[0];
+    const status = this.classifyMatchStatus(best.score, best.item);
+    const supporting = scored.slice(1, 4).map((s) => s.item.id);
 
     return {
       requirementId: req.id,
       requirementName: req.name,
       category: req.category,
       isMustHave: req.isMustHave,
-      status: primary.evidenceStatus,
-      primaryEvidenceId: primary.id,
-      supportingEvidenceIds: supportingIds,
-      rationale: `${primary.claim} Observed in ${primary.projectName}.`,
-      topProjectName: primary.projectName,
+      status,
+      primaryEvidenceId: best.item.id,
+      supportingEvidenceIds: supporting,
+      rationale: `${best.item.claim} (score: ${best.score.toFixed(2)}, from ${best.item.projectName})`,
+      topProjectName: best.item.projectName,
     };
   }
 
   /**
-   * Calculates honest coverage metrics
+   * Classifies match quality into evidence status based on score + evidence type.
+   */
+  private static classifyMatchStatus(score: number, ev: EvidenceItem): EvidenceStatus {
+    if (score >= 0.25 && (ev.evidenceStatus === 'direct' || ev.sourceType === 'source_file')) {
+      return 'direct';
+    }
+    if (score >= 0.15) {
+      return 'supported';
+    }
+    if (score >= 0.08) {
+      return 'partial';
+    }
+    return 'not_found';
+  }
+
+  /**
+   * Tokenizes text into a set of normalized, stemmed-ish terms.
+   * Removes stop words, lowercases, filters short tokens.
+   */
+  private static tokenize(text: string): Set<string> {
+    const tokens = text
+      .toLowerCase()
+      .replace(/[^a-z0-9\s.#+]/g, ' ')
+      .split(/\s+/)
+      .filter((t) => t.length >= 2 && !STOP_WORDS.has(t));
+
+    return new Set(tokens);
+  }
+
+  /**
+   * Jaccard similarity: |A ∩ B| / |A ∪ B|
+   */
+  private static jaccardSimilarity(a: Set<string>, b: Set<string>): number {
+    if (a.size === 0 || b.size === 0) return 0;
+
+    let intersection = 0;
+    for (const token of a) {
+      if (b.has(token)) intersection++;
+    }
+
+    const union = a.size + b.size - intersection;
+    return union === 0 ? 0 : intersection / union;
+  }
+
+  /**
+   * Calculates coverage statistics from match results.
    */
   public static calculateCoverage(matches: RequirementMatch[]): EvidenceCoverage {
     let directCount = 0;
     let supportedCount = 0;
     let partialCount = 0;
     let notFoundCount = 0;
-
     let totalMustHaves = 0;
     let coveredMustHaves = 0;
 
     for (const match of matches) {
       if (match.isMustHave) {
-        totalMustHaves += 1;
+        totalMustHaves++;
         if (match.status === 'direct' || match.status === 'supported') {
-          coveredMustHaves += 1;
+          coveredMustHaves++;
         }
       }
 
       switch (match.status) {
-        case 'direct':
-          directCount += 1;
-          break;
-        case 'supported':
-          supportedCount += 1;
-          break;
-        case 'partial':
-          partialCount += 1;
-          break;
+        case 'direct': directCount++; break;
+        case 'supported': supportedCount++; break;
+        case 'partial': partialCount++; break;
         case 'not_found':
-        default:
-          notFoundCount += 1;
-          break;
+        default: notFoundCount++; break;
       }
     }
 
-    const summarySentence = `${directCount} directly supported, ${supportedCount} supported, ${partialCount} partial, and ${notFoundCount} growth vector${notFoundCount === 1 ? '' : 's'}. Covers ${coveredMustHaves}/${totalMustHaves} core must-haves.`;
+    const summarySentence = `${directCount} directly supported, ${supportedCount} supported, ${partialCount} partial, and ${notFoundCount} gap${notFoundCount === 1 ? '' : 's'}. Covers ${coveredMustHaves}/${totalMustHaves} must-haves.`;
 
     return {
       directCount,
@@ -235,7 +286,7 @@ export class MatchingEngine {
   }
 
   /**
-   * Ranks projects by relevance to the matched requirements
+   * Ranks projects by how many requirement matches they contribute to.
    */
   public static rankProjects(
     matches: RequirementMatch[],
@@ -247,30 +298,29 @@ export class MatchingEngine {
     relevanceReason: string;
     matchCount: number;
   }[] {
-    const projectMatchCounts = new Map<string, { count: number; skills: Set<string> }>();
+    const projectStats = new Map<string, { count: number; skills: Set<string> }>();
 
-    matches.forEach((m) => {
+    for (const m of matches) {
       if (m.primaryEvidenceId) {
         const ev = evidence.find((e) => e.id === m.primaryEvidenceId);
         if (ev) {
-          const entry = projectMatchCounts.get(ev.projectId) || { count: 0, skills: new Set() };
-          entry.count += 1;
+          const entry = projectStats.get(ev.projectId) || { count: 0, skills: new Set() };
+          entry.count++;
           entry.skills.add(m.requirementName);
-          projectMatchCounts.set(ev.projectId, entry);
+          projectStats.set(ev.projectId, entry);
         }
       }
-    });
+    }
 
     return projects
       .map((proj) => {
-        const stats = projectMatchCounts.get(proj.id) || { count: 0, skills: new Set() };
-        const skillsList = Array.from(stats.skills).join(', ');
+        const stats = projectStats.get(proj.id) || { count: 0, skills: new Set() };
         return {
           projectId: proj.id,
           projectName: proj.name,
           relevanceReason: stats.count > 0
-            ? `Directly covers ${stats.count} requirements: ${skillsList}`
-            : 'Supplementary repository demonstrating engineering breadth',
+            ? `Covers ${stats.count} requirement${stats.count > 1 ? 's' : ''}: ${Array.from(stats.skills).join(', ')}`
+            : 'No direct requirement match',
           matchCount: stats.count,
         };
       })
@@ -278,7 +328,8 @@ export class MatchingEngine {
   }
 
   /**
-   * Synthesizes grounded resume bullets strictly linked to retrieved evidence IDs
+   * Synthesizes resume bullets linked to evidence.
+   * Each bullet references specific evidence IDs for traceability.
    */
   public static synthesizeGroundedBullets(
     matches: RequirementMatch[],
@@ -293,11 +344,15 @@ export class MatchingEngine {
         if (ev && ev.evidenceStatus !== 'not_found') {
           usedEvidence.add(ev.id);
 
+          const fileRef = ev.sourceLocation?.filePath
+            ? ` (${ev.sourceLocation.filePath})`
+            : '';
+
           bullets.push({
             id: `bullet_${match.requirementId}`,
             projectId: ev.projectId,
             projectName: ev.projectName,
-            text: `${ev.claim} (${ev.sourceLocation.filePath || 'verified source artifact'}).`,
+            text: `${ev.claim}${fileRef}`,
             evidenceIds: [ev.id],
             isAudited: true,
             userVerified: false,
@@ -306,7 +361,7 @@ export class MatchingEngine {
       }
     }
 
-    // Safety fallback: if requirements produced 0 bullets but evidence exists, synthesize from top evidence
+    // Fallback: if no matches produced bullets, pull from top evidence
     if (bullets.length === 0 && evidence.length > 0) {
       for (const ev of evidence) {
         if (ev.evidenceStatus !== 'not_found' && !usedEvidence.has(ev.id)) {
@@ -315,7 +370,7 @@ export class MatchingEngine {
             id: `bullet_ev_${ev.id}`,
             projectId: ev.projectId,
             projectName: ev.projectName,
-            text: `${ev.claim} (${ev.sourceLocation?.filePath || 'verified commit history'}).`,
+            text: `${ev.claim} (${ev.sourceLocation?.filePath || ev.sourceLocation?.url || 'source'})`,
             evidenceIds: [ev.id],
             isAudited: true,
             userVerified: false,

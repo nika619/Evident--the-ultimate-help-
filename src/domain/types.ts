@@ -1,22 +1,17 @@
 /**
- * Evident Domain Types
- * Clean, framework-agnostic domain models for code-grounded career intelligence.
- *
- * Implements:
- * - 5-Dimensional Evidence Classification
- * - Provenance Traversal & Auditability
- * - Living Career Memory
+ * Domain Types
+ * Core data models for evidence-based skill matching.
  */
 
-// ─── 1. Evidence Status (Relationship degree to requirement) ─────────
+// Evidence status: how strongly the evidence supports a claim
 export type EvidenceStatus =
-  | 'direct'       // Explicit first-party implementation artifact (code, routes, logic)
-  | 'supported'    // Mentioned in docs, configs, or manifests
-  | 'partial'      // Tangential or related framework/paradigm
-  | 'not_found'    // No verifiable signal detected
-  | 'user_declared'; // Self-reported claim, unverified by repo
+  | 'direct'        // Code implementing this skill found in source files
+  | 'supported'     // Referenced in configs, docs, or dependency manifests
+  | 'partial'       // Related work in a similar domain
+  | 'not_found'     // No evidence detected
+  | 'user_declared'; // Self-reported, not verified by code
 
-// ─── 2. Source Type (Origin of the signal) ───────────────────────────
+// Where the evidence signal came from
 export type SourceType =
   | 'source_file'
   | 'commit_history'
@@ -24,17 +19,15 @@ export type SourceType =
   | 'api_route'
   | 'manual_project';
 
-// ─── 3. Authorship Support (Degree of personal contribution) ─────────
+// Contribution level
 export type AuthorshipSupport =
-  | 'primary_author'      // Directly authored in candidate commits
-  | 'collaborator'        // Contributed alongside team commits
-  | 'inherited_template'  // Present in starter boilerplate or upstream fork
-  | 'unverified';         // Contribution provenance pending confirmation
+  | 'primary_author'
+  | 'collaborator'
+  | 'inherited_template'
+  | 'unverified';
 
-// ─── 4. Confidence Level ─────────────────────────────────────────────
 export type ConfidenceLevel = 'high' | 'medium' | 'low';
 
-// ─── 5. Core Entities ────────────────────────────────────────────────
 export interface SourceLocation {
   filePath?: string;
   lineRange?: [number, number];
@@ -55,9 +48,9 @@ export interface EvidenceItem {
   evidenceStatus: EvidenceStatus;
   authorshipSupport: AuthorshipSupport;
   confidence: ConfidenceLevel;
-  firstObservedDate: string; // YYYY-MM-DD
-  lastObservedDate: string;  // Freshness tracking (e.g. 2026-09-24)
-  codeSnippet?: string;      // Snippet for internal audit drawer
+  firstObservedDate: string;
+  lastObservedDate: string;
+  codeSnippet?: string;
 }
 
 export interface CommitRecord {
@@ -84,7 +77,8 @@ export interface ProjectSource {
   evidenceIds: string[];
 }
 
-// ─── 6. Opportunity & Matching Models ────────────────────────────────
+// Opportunity & Matching
+
 export type RequirementCategory =
   | 'technical_core'
   | 'infrastructure'
@@ -131,7 +125,8 @@ export interface EvidenceCoverage {
   summarySentence: string;
 }
 
-// ─── 7. Application & Grounded Bullets ───────────────────────────────
+// Application & Bullets
+
 export interface GroundedResumeBullet {
   id: string;
   projectId: string;
@@ -139,7 +134,7 @@ export interface GroundedResumeBullet {
   text: string;
   evidenceIds: string[];
   isAudited: boolean;
-  userVerified: boolean; // User marked [✓ Accurate] or [× Not mine]
+  userVerified: boolean;
 }
 
 export interface TailoredApplication {
@@ -159,7 +154,8 @@ export interface TailoredApplication {
   createdAt: string;
 }
 
-// ─── 8. Interview Defense Arena ──────────────────────────────────────
+// Interview Defense
+
 export interface DefenseQuestion {
   id: string;
   projectId: string;
@@ -181,7 +177,8 @@ export interface DefenseEvaluation {
   codeCitationSuggestion: string;
 }
 
-// ─── 9. Subscription & Entitlements (RevenueCat) ────────────────────
+// Subscription (RevenueCat)
+
 export type SubscriptionTier = 'free' | 'evident_pro_monthly' | 'evident_pro_annual';
 
 export interface SubscriptionState {
@@ -202,7 +199,7 @@ export const FREE_TIER_LIMITS = {
 export const PRO_TIER_BENEFITS = {
   unlimitedProjects: true,
   unlimitedOpportunityScans: true,
-  continuousSync: true,           // Living Career Memory
-  deepInterviewDefense: true,     // Full architectural probing
-  exportProofPack: true,          // Export recruiter dossier
+  continuousSync: true,
+  deepInterviewDefense: true,
+  exportProofPack: true,
 } as const;
