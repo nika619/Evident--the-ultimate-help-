@@ -191,7 +191,7 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({
             <Text style={styles.sectionTitle}>CONNECTED REPOSITORIES</Text>
             <View style={styles.privacyPill}>
               <Ionicons name="shield-checkmark" size={10} color={Colors.emerald} />
-              <Text style={styles.privacyPillText}>100% Client-Side AST • IP Guarded</Text>
+              <Text style={styles.privacyPillText}>100% Client-Side • IP Guarded</Text>
             </View>
           </View>
           <ScrollView

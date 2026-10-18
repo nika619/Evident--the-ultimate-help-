@@ -1,7 +1,7 @@
 /**
  * Evident Mobile Landing Page & Welcome Showcase
  * The premier mobile welcome surface introducing candidates to the thesis,
- * live repository metrics, zero-hallucination standards, and launchpad into the cockpit.
+ * live repository metrics, evidence verification standards, and launchpad into the cockpit.
  */
 
 import React, { useRef, useEffect } from 'react';
@@ -113,13 +113,13 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({
             </View>
             <View style={styles.metricSep} />
             <View style={styles.metricItem}>
-              <Text style={styles.metricValue}>0%</Text>
-              <Text style={styles.metricLabel}>HALLUCINATION</Text>
+              <Text style={styles.metricValue}>100%</Text>
+              <Text style={styles.metricLabel}>GROUNDED</Text>
             </View>
             <View style={styles.metricSep} />
             <View style={styles.metricItem}>
               <Text style={styles.metricValue}>SHA-256</Text>
-              <Text style={styles.metricLabel}>MERKLE SEALED</Text>
+              <Text style={styles.metricLabel}>VERIFIED DIGEST</Text>
             </View>
           </View>
         </Animated.View>
@@ -195,7 +195,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({
               <View style={styles.pillarContent}>
                 <Text style={styles.pillarTitle}>Deterministic Proof Graph</Text>
                 <Text style={styles.pillarDesc}>
-                  AST syntax parsing inspects real functions, algorithms, and models across your GitHub commit trees.
+                  Syntax and manifest parsing inspects real functions, dependencies, and commits across your GitHub repositories.
                 </Text>
               </View>
             </View>
@@ -208,7 +208,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({
                 <Ionicons name="shield-checkmark-outline" size={22} color={Colors.emerald} />
               </View>
               <View style={styles.pillarContent}>
-                <Text style={styles.pillarTitle}>Zero-Hallucination Guard</Text>
+                <Text style={styles.pillarTitle}>Evidence-Backed Verification</Text>
                 <Text style={styles.pillarDesc}>
                   Every resume claim requires a verifiable source receipt: commit SHA, file path, and lines of code.
                 </Text>
@@ -238,7 +238,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({
                 <Ionicons name="chatbubbles-outline" size={22} color={Colors.gold} />
               </View>
               <View style={styles.pillarContent}>
-                <Text style={styles.pillarTitle}>FAANG Bar-Raiser Defense Arena</Text>
+                <Text style={styles.pillarTitle}>Staff Architectural Defense Arena</Text>
                 <Text style={styles.pillarDesc}>
                   Architectural questions grounded in your authentic code trade-offs. Practice answering before talking to recruiters.
                 </Text>
@@ -253,7 +253,7 @@ export const LandingScreen: React.FC<LandingScreenProps> = ({
             Built for Devpost RevenueCat Shipathon 2026 • Executive Mobile Edition
           </Text>
           <Text style={styles.footerSubText}>
-            SHA-256 Merkle Provenance Engine • TypeScript & React Native
+            SHA-256 Provenance & Verification Engine • TypeScript & React Native
           </Text>
         </View>
       </ScrollView>

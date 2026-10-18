@@ -42,29 +42,29 @@ const ENGINE_STEPS: EngineStep[] = [
   },
   {
     icon: 'git-network-outline',
-    title: 'Analyzing AST commit trees...',
-    sub: 'Extracting cryptographic proof-graphs across commit trees',
-    tag: 'AST-INDEX',
+    title: 'Analyzing repository trees...',
+    sub: 'Extracting verified file trees and dependency manifests',
+    tag: 'TREE-INDEX',
     tagColor: Colors.purple,
   },
   {
     icon: 'shield-checkmark-outline',
-    title: 'Enforcing zero-hallucination boundaries...',
-    sub: 'Auditing candidate claims against verifiable diffs',
-    tag: 'ZERO-HALLUCINATION',
+    title: 'Auditing candidate claims...',
+    sub: 'Cross-referencing claims against evidence IDs and file paths',
+    tag: 'CLAIM-AUDIT',
     tagColor: Colors.emerald,
   },
   {
     icon: 'lock-closed-outline',
-    title: 'Sealing SHA-256 Merkle root...',
-    sub: 'Baking tamper-proof cryptographic provenance receipts',
-    tag: 'MERKLE-ROOT',
+    title: 'Computing SHA-256 integrity digest...',
+    sub: 'Generating verifiable tamper-evident provenance digest',
+    tag: 'SHA256-DIGEST',
     tagColor: Colors.accent,
   },
   {
     icon: 'checkmark-circle-outline',
-    title: 'Provenance cockpit live!',
-    sub: 'All career intelligence mathematically grounded',
+    title: 'Evidence cockpit ready!',
+    sub: 'All career intelligence grounded in repository evidence',
     tag: 'READY',
     tagColor: Colors.emerald,
   },
@@ -246,7 +246,7 @@ export const LoadingScreen: React.FC<LoadingScreenProps> = ({ onFinish }) => {
           <View style={styles.progressFooterRow}>
             <View style={styles.liveIndicator}>
               <View style={styles.greenPulseDot} />
-              <Text style={styles.liveIndicatorText}>ZERO HALLUCINATION ENGINE</Text>
+              <Text style={styles.liveIndicatorText}>EVIDENCE AUDIT ENGINE</Text>
             </View>
             <Text style={styles.versionPill}>v1.1.0</Text>
           </View>

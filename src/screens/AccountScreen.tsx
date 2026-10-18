@@ -53,7 +53,7 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
   const handleClearCache = () => {
     Alert.alert(
       'Re-Index Proof Graph',
-      'This will refresh your local repository index and re-calculate the cryptographic Merkle root.',
+      'This will refresh your local repository index and re-calculate the SHA-256 integrity digest.',
       [
         { text: 'Cancel', style: 'cancel' },
         {
@@ -191,7 +191,7 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
           </Text>
           <Text style={styles.subDescription}>
             {isPro
-              ? 'Continuous git crawl, FAANG defense radar, and Merkle proof packs unlocked.'
+              ? 'Continuous git sync, architectural defense radar, and verified proof packs unlocked.'
               : 'Limited to 3 repositories. Upgrade to Pro for continuous indexing and sealed proof packs.'}
           </Text>
 
@@ -199,27 +199,27 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
           <View style={styles.proFeaturesList}>
             <View style={styles.proFeatureRow}>
               <Ionicons name="checkmark-circle" size={15} color={isPro ? Colors.emerald : Colors.textMuted} />
-              <Text style={styles.proFeatureTitle}>Cryptographic Merkle Seals (ED25519 & SHA-256)</Text>
+              <Text style={styles.proFeatureTitle}>SHA-256 Verifiable Integrity Attestation</Text>
             </View>
 
             <View style={styles.proFeatureRow}>
               <Ionicons name="checkmark-circle" size={15} color={isPro ? Colors.emerald : Colors.textMuted} />
-              <Text style={styles.proFeatureTitle}>FAANG Bar-Raiser Architectural Radar</Text>
+              <Text style={styles.proFeatureTitle}>Architectural Trade-Off Defense Radar</Text>
             </View>
 
             <View style={styles.proFeatureRow}>
               <Ionicons name="checkmark-circle" size={15} color={isPro ? Colors.emerald : Colors.textMuted} />
-              <Text style={styles.proFeatureTitle}>Seniority & Salary Calibrator ($185k–$275k)</Text>
+              <Text style={styles.proFeatureTitle}>Seniority & Scope Calibrator</Text>
             </View>
 
             <View style={styles.proFeatureRow}>
               <Ionicons name="checkmark-circle" size={15} color={isPro ? Colors.emerald : Colors.textMuted} />
-              <Text style={styles.proFeatureTitle}>Continuous Git AST Indexing Daemon</Text>
+              <Text style={styles.proFeatureTitle}>Recursive Git Tree & Manifest Indexer</Text>
             </View>
 
             <View style={styles.proFeatureRow}>
               <Ionicons name="checkmark-circle" size={15} color={isPro ? Colors.emerald : Colors.textMuted} />
-              <Text style={styles.proFeatureTitle}>AI System Design Live Defense Arena</Text>
+              <Text style={styles.proFeatureTitle}>System Design Live Defense Arena</Text>
             </View>
           </View>
 
@@ -262,7 +262,7 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
 
             <Text style={styles.settingTitle}>Proprietary Code & IP Boundary</Text>
             <Text style={styles.settingSub}>
-              You have 100% granular control over which repositories are analyzed. Proprietary employer codebases are never ingested or uploaded. All AST parsing runs locally in memory; only cryptographic hashes are retained.
+              You have 100% granular control over which repositories are analyzed. Proprietary employer codebases are never ingested or uploaded. All parsing runs locally in device memory; only verified integrity digests and references are retained.
             </Text>
 
             <View style={styles.privacyFeatureGrid}>
@@ -276,7 +276,7 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
               </View>
               <View style={styles.privacyFeatureRow}>
                 <Ionicons name="checkmark-done-circle" size={14} color={Colors.emerald} />
-                <Text style={styles.privacyFeatureText}>Client-side AST hashing (SOC2 & GDPR safe)</Text>
+                <Text style={styles.privacyFeatureText}>Client-side parsing & secure local storage</Text>
               </View>
             </View>
 
@@ -285,7 +285,7 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
               onPress={() => {
                 Alert.alert(
                   'Privacy & IP Compliance Certificate 🛡️',
-                  `Candidate Control Invariants:\n\n1. Zero Source Code Uploads: Parsing occurs strictly inside your device's memory.\n\n2. Proprietary Isolation: Only candidate-authorized public or personal repositories are indexed (15/15 currently verified).\n\n3. Cryptographic Hashes: Only SHA-256 Merkle proofs are exposed to hiring managers, protecting your intellectual property.`,
+                  `Candidate Control Invariants:\n\n1. Zero Source Code Uploads: Parsing occurs strictly inside your device's memory.\n\n2. Repository Isolation: Only candidate-authorized public or selected repositories are indexed.\n\n3. Verifiable Digests: Only authentic SHA-256 integrity digests and commit references are shared with hiring teams, protecting your IP.`,
                   [{ text: 'Verified' }]
                 );
               }}
@@ -383,7 +383,7 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
               <View style={[styles.terminalDot, { backgroundColor: '#F59E0B' }]} />
               <View style={[styles.terminalDot, { backgroundColor: '#10B981' }]} />
             </View>
-            <Text style={styles.terminalTitle}>evident-daemon://ast-audit-engine</Text>
+            <Text style={styles.terminalTitle}>evident-daemon://evidence-audit-engine</Text>
             <View style={styles.daemonLiveBadge}>
               <View style={styles.livePulseDot} />
               <Text style={styles.daemonLiveBadgeText}>ACTIVE</Text>
@@ -554,19 +554,19 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
             <ScrollView style={styles.modalBody}>
               {activeLegalModal === 'help' && (
                 <Text style={styles.modalText}>
-                  Evident replaces hallucinated resumes with verifiable proof.{'\n\n'}
+                  Evident grounds developer resumes in verifiable repository evidence.{'\n\n'}
                   1. Connect your GitHub account (e.g. nika619).{'\n'}
-                  2. Evident crawls your public commits and repositories.{'\n'}
-                  3. We mathematically calculate a SHA-256 Merkle root to seal your claims.{'\n'}
+                  2. Evident parses commit trees, dependency manifests, and author statistics.{'\n'}
+                  3. We compute authentic SHA-256 integrity digests for your claims.{'\n'}
                   4. Export your Proof Pack as Markdown or PDF for hiring teams.
                 </Text>
               )}
               {activeLegalModal === 'sources' && (
                 <Text style={styles.modalText}>
-                  Evident connects exclusively to authoritative developer data sources:{'\n\n'}
+                  Evident connects to authoritative developer data sources:{'\n\n'}
                   • GitHub REST API v3 (Public commit trees, repositories, topics){'\n'}
-                  • Language syntax detection engine{'\n'}
-                  • Commit provenance & cryptographic authorship graph{'\n'}
+                  • Manifest parsers (package.json, requirements.txt, Cargo.toml, go.mod){'\n'}
+                  • Commit provenance & author contribution ratios{'\n'}
                   • RevenueCat Test Store entitlement backend
                 </Text>
               )}

@@ -91,9 +91,9 @@ export const ProofPackModal: React.FC<ProofPackModalProps> = ({
 </head>
 <body>
   <div class="seal-box">
-    <strong>CRYPTOGRAPHIC MERKLE SEAL (PRO ACTIVE)</strong><br>
-    Root: <code>${merkleRoot}</code><br>
-    <small>SHA-256 Merkle root mathematically guarantees zero AI hallucination to senior hiring teams.</small>
+    <strong>VERIFIABLE INTEGRITY DIGEST (PRO ACTIVE)</strong><br>
+    SHA-256 Digest: <code>${merkleRoot}</code><br>
+    <small>Authentic SHA-256 digest computed from canonical evidence items and commit references.</small>
   </div>
   <pre>${markdown.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
   <script>
@@ -137,7 +137,7 @@ export const ProofPackModal: React.FC<ProofPackModalProps> = ({
             <View style={styles.titleRow}>
               <View style={styles.badge}>
                 <Ionicons name="shield-checkmark" size={13} color={Colors.emerald} />
-                <Text style={styles.badgeText}>SEALED DOSSIER</Text>
+                <Text style={styles.badgeText}>VERIFIED DOSSIER</Text>
               </View>
               <Text style={styles.headerTitle}>Candidate Proof Pack</Text>
             </View>
@@ -147,11 +147,11 @@ export const ProofPackModal: React.FC<ProofPackModalProps> = ({
             </TouchableOpacity>
           </View>
 
-          {/* Merkle Hash Badge */}
+          {/* SHA-256 Digest Badge */}
           <View style={styles.merkleRow}>
             <Ionicons name="finger-print-outline" size={13} color={Colors.primary} />
             <Text style={styles.merkleText} numberOfLines={1}>
-              Root: {merkleRoot}
+              SHA-256 Digest: {merkleRoot}
             </Text>
           </View>
 

@@ -1,7 +1,7 @@
 /**
  * Evident History & Audit Ledger Screen
  * Displays immutable timeline logs of continuous repository syncs,
- * cryptographic Merkle seals, and technical defense interview performances.
+ * verifiable SHA-256 integrity digests, and technical defense interview performances.
  */
 
 import React, { useState } from 'react';
@@ -68,24 +68,24 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
     {
       id: 'hist_2',
       type: 'proof_pack',
-      title: 'Cryptographic Merkle Seal Generated',
-      subtitle: 'Deterministic SHA-256 Merkle root anchored to commit history',
+      title: 'SHA-256 Integrity Digest Generated',
+      subtitle: 'Authentic SHA-256 digest anchored to verified commit history',
       timestamp: 'Today, 11:28 PM',
-      status: 'SEALED & IMMUTABLE',
+      status: 'VERIFIED & HASHED',
       badgeColor: Colors.primary,
-      hashOrScore: `Root: ${merkleRoot.slice(0, 22)}...`,
-      meta: 'ED25519-EVIDENT-PRO-74F9A80B',
+      hashOrScore: `Digest: ${merkleRoot.slice(0, 22)}...`,
+      meta: 'SHA-256 Canonical Evidence Attestation',
     },
     {
       id: 'hist_3',
       type: 'defense',
       title: 'Technical Defense Arena Simulation',
-      subtitle: 'Architectural interrogation against FAANG Bar-Raiser criteria',
+      subtitle: 'Architectural defense probing grounded in repository code files',
       timestamp: 'Today, 10:45 PM',
-      status: 'PASSED (94% ACCURACY)',
+      status: 'COMPLETED (STRONG DEFENSE)',
       badgeColor: Colors.purple,
-      hashOrScore: 'Score: 94 / 100 • L5 Senior Benchmarked',
-      meta: 'Evaluated against src/index.ts and repository architecture',
+      hashOrScore: 'Strong Vocabulary & Code Citations',
+      meta: 'Evaluated against src/domain/matchingEngine.ts and repository architecture',
     },
     {
       id: 'hist_4',
@@ -138,7 +138,7 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
           </View>
           <Text style={styles.headerTitle}>Provenance History</Text>
           <Text style={styles.headerSubtitle}>
-            Cryptographic ledger tracking every Git synchronization, Merkle seal, and defense audit.
+            Audit log tracking Git synchronization, SHA-256 integrity digests, and defense sessions.
           </Text>
         </View>
 

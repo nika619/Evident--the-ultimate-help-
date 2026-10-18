@@ -30,8 +30,8 @@ interface PaywallScreenProps {
 const PRO_BENEFITS = [
   {
     icon: 'sync-circle-outline',
-    title: 'Continuous Git AST Sync',
-    desc: 'Auto-indexes commits, branches, and repositories as you push code.',
+    title: 'Continuous Git Repository Sync',
+    desc: 'Auto-indexes commits, manifests, and repositories as you push code.',
   },
   {
     icon: 'shield-half-outline',
@@ -40,18 +40,18 @@ const PRO_BENEFITS = [
   },
   {
     icon: 'hardware-chip-outline',
-    title: 'AI System Design Live Defense Arena',
-    desc: 'Interactive Staff/Principal bar-raiser simulating 10M DAU scaling, partition tolerance & trade-offs.',
+    title: 'System Design Live Defense Arena',
+    desc: 'Interactive Staff/Principal defense simulator testing architecture, partition tolerance & trade-offs.',
   },
   {
     icon: 'finger-print-outline',
-    title: 'Cryptographic Merkle Seals',
-    desc: 'SHA-256 tamper-proof proof packs that guarantee zero hallucination.',
+    title: 'SHA-256 Verifiable Proof Packs',
+    desc: 'Tamper-proof digests that ground every resume claim in real commit history.',
   },
   {
     icon: 'trending-up-outline',
-    title: 'L5/L6 Seniority & Salary Calibrator',
-    desc: 'Benchmarks verified code against top compensation bands ($180k–$275k).',
+    title: 'Seniority & Scope Calibrator',
+    desc: 'Benchmarks verified code against scope, complexity, and responsibility levels.',
   },
   {
     icon: 'document-attach-outline',
@@ -149,7 +149,7 @@ export const PaywallScreen: React.FC<PaywallScreenProps> = ({ onClose }) => {
               text: 'Restore Pro Pass',
               onPress: async () => {
                 await setProTier(true);
-                Alert.alert('Pro Pass Active ⚡', 'All Pro features, System Design Arena, and Merkle proof packs are now unlocked.');
+                Alert.alert('Pro Pass Active ⚡', 'All Pro features, System Design Arena, and verified proof packs are now unlocked.');
               },
             },
           ]
@@ -189,25 +189,25 @@ export const PaywallScreen: React.FC<PaywallScreenProps> = ({ onClose }) => {
           </View>
           <Text style={styles.heroTitle}>Never Build An Application From Scratch Again</Text>
           <Text style={styles.heroSubtitle}>
-            Evident Pro converts your daily git commits into an immutable cryptographic career memory with real-time provenance syncing.
+            Evident Pro converts your daily git commits into an authentic, verifiable career memory with real-time provenance syncing.
           </Text>
         </Animated.View>
 
-        {/* Coder Vibes — Zero-Hallucination Compiler Diff */}
+        {/* Coder Vibes — Code-Grounded Evidence Diff */}
         <View style={styles.coderDiffCard}>
           <View style={styles.coderDiffHeader}>
             <Ionicons name="git-compare-outline" size={14} color={Colors.terminalPrompt} />
-            <Text style={styles.coderDiffTitle}>GROUNDING COMPILER SPEC</Text>
+            <Text style={styles.coderDiffTitle}>EVIDENCE GROUNDING SPEC</Text>
             <View style={styles.shaPill}>
               <Text style={styles.shaPillText}>SHA: 8f2a1c9</Text>
             </View>
           </View>
           <View style={styles.diffLinesBox}>
             <Text style={styles.diffMinus}>
-              - Standard LLM: "Engineered high-scale microservices" (Ungrounded)
+              - Generic Resume: "Engineered high-scale microservices" (Vague & Ungrounded)
             </Text>
             <Text style={styles.diffPlus}>
-              + Evident Pro: "Lock-free ring buffer in Rust (crate: tokio, 34 commits, AST verified)"
+              + Evident Pro: "Lock-free ring buffer in Rust (crate: tokio, 34 commits, tree-verified)"
             </Text>
           </View>
         </View>

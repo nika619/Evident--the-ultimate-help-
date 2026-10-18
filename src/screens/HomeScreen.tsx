@@ -164,7 +164,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   <Text style={styles.tourBadgeText}>INTERACTIVE WALKTHROUGH</Text>
                 </View>
                 <Text style={styles.tourBannerTitle}>Take the 5-Stop Interactive Tour</Text>
-                <Text style={styles.tourBannerSub}>Learn how Evident eliminates AI resume hallucination</Text>
+                <Text style={styles.tourBannerSub}>See how Evident grounds resumes in real repository evidence</Text>
               </View>
               <Ionicons name="chevron-forward" size={18} color={Colors.primary} />
             </LinearGradient>
@@ -296,13 +296,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </View>
               <View style={styles.targetStatPill}>
                 <Ionicons name="shield-checkmark" size={12} color={Colors.primary} />
-                <Text style={styles.targetStatText}>Zero Hallucination</Text>
+                <Text style={styles.targetStatText}>Grounded Claims</Text>
               </View>
             </View>
           </GlassCard>
         </TouchableOpacity>
 
-        {/* Cryptographic Merkle Seal Status Bar */}
+        {/* Verifiable Integrity Digest Status Bar */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>INTEGRITY & PROVENANCE</Text>
           <TouchableOpacity onPress={onNavigateToApplication}>
@@ -313,16 +313,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         <GlassCard style={styles.sealCard} variant="tinted">
           <View style={styles.sealHeader}>
             <Ionicons name="finger-print-outline" size={18} color={Colors.primary} />
-            <Text style={styles.sealTitle}>CRYPTOGRAPHIC MERKLE SEAL</Text>
+            <Text style={styles.sealTitle}>VERIFIABLE INTEGRITY DIGEST</Text>
             <View style={styles.proPill}>
               <Text style={styles.proPillText}>PRO ACTIVE</Text>
             </View>
           </View>
           <Text style={styles.sealHash} numberOfLines={1} ellipsizeMode="middle">
-            Root: {merkleRoot}
+            SHA-256 / Fingerprint: {merkleRoot}
           </Text>
           <Text style={styles.sealSub}>
-            SHA-256 Merkle root mathematically guarantees zero AI hallucination to senior hiring teams.
+            Cryptographic digest computed over canonical evidence items, grounding claims in public Git commits.
           </Text>
         </GlassCard>
 

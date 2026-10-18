@@ -63,7 +63,7 @@ const TUTORIAL_STOPS: TutorialStop[] = [
     badgeColor: Colors.emerald,
     icon: 'git-commit-outline',
     title: 'Receipts for Every Single Skill',
-    tagline: 'Zero-hallucination guarantee anchored to lines of code.',
+    tagline: 'Code-level provenance anchored to lines of code.',
     body:
       'Every claimed capability in Evident must map to an immutable source receipt: commit SHA, file path, line numbers, and author identity. If code evidence does not exist in your repositories, Evident strictly marks it as unverified.',
     demoType: 'receipt',
@@ -90,7 +90,7 @@ const TUTORIAL_STOPS: TutorialStop[] = [
     badge: 'STOP 4 OF 5 • DEFENSE ARENA',
     badgeColor: Colors.amber,
     icon: 'chatbubbles-outline',
-    title: 'FAANG Bar-Raiser Defense Arena',
+    title: 'Staff Architectural Defense Arena',
     tagline: 'Practice defending your actual architecture live.',
     body:
       'The hardest part of senior engineering interviews is articulating architectural trade-offs. Evident formulates targeted technical questions directly from your files (e.g. model/train_rf.py, proofPackService.ts) and grades your trade-off depth.',
@@ -101,15 +101,15 @@ const TUTORIAL_STOPS: TutorialStop[] = [
   {
     stopNumber: 5,
     totalStops: 5,
-    badge: 'STOP 5 OF 5 • CRYPTOGRAPHIC SEAL',
+    badge: 'STOP 5 OF 5 • INTEGRITY ATTESTATION',
     badgeColor: Colors.gold,
     icon: 'shield-checkmark',
-    title: 'Sealed Proof Pack & Executive Dossier',
+    title: 'Verifiable Proof Pack & Executive Dossier',
     tagline: 'Export recruiter-ready PDF/Markdown dossiers.',
     body:
-      'Compile your entire candidacy into an immutable, SHA-256 Merkle-sealed Proof Pack. Hiring managers can scan the cryptographic root or click commit links to verify your code in under 3 seconds.',
+      'Compile your entire candidacy into an authentic, SHA-256 integrity-attested Proof Pack. Hiring managers can inspect the integrity digest or click commit links to verify your code in under 3 seconds.',
     demoType: 'merkle',
-    takeaway: 'Stand out from 1,000 AI-generated resumes with verifiable cryptographic proof.',
+    takeaway: 'Stand out from generic AI-generated resumes with verifiable repository evidence.',
     accentColors: ['#EFF6FF', '#EDE9FE'],
   },
 ];
@@ -210,7 +210,7 @@ export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
             <View style={styles.receiptBody}>
               <Text style={styles.receiptFile}>src/services/proofPackService.ts:L20-45</Text>
               <Text style={styles.receiptClaim}>
-                "Deterministic Merkle root provenance generator for zero-hallucination claims"
+                "Deterministic SHA-256 integrity digest computed from canonical repository evidence"
               </Text>
               <View style={styles.receiptMetaRow}>
                 <Text style={styles.receiptCommit}>Commit: 98047cc</Text>
@@ -255,7 +255,7 @@ export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
           <View style={styles.demoBox}>
             <View style={styles.demoHeaderRow}>
               <Ionicons name="mic-outline" size={14} color={Colors.amber} />
-              <Text style={[styles.demoTitle, { color: Colors.amber }]}>FAANG BAR-RAISER PROMPT</Text>
+              <Text style={[styles.demoTitle, { color: Colors.amber }]}>STAFF ARCHITECTURAL PROMPT</Text>
             </View>
             <View style={styles.defenseCard}>
               <Text style={styles.defenseQuestion}>
@@ -275,12 +275,12 @@ export const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({
           <View style={styles.demoBox}>
             <View style={styles.demoHeaderRow}>
               <Ionicons name="finger-print-outline" size={14} color={Colors.primary} />
-              <Text style={styles.demoTitle}>ED25519 MERKLE PROOF SEAL</Text>
+              <Text style={styles.demoTitle}>SHA-256 INTEGRITY DIGEST</Text>
             </View>
             <View style={styles.merkleBox}>
-              <Text style={styles.merkleHash}>Root: 0x811c9dc57f4a9b2c8e1d5a3f90e712cd58b9f3041a92e47c1b820fae</Text>
+              <Text style={styles.merkleHash}>Digest: sha256:7f4a9b2c8e1d5a3f90e712cd58b9f3041a92e47c1b820fae</Text>
               <Text style={styles.merkleDossierMeta}>
-                15 Verified Repositories • 24 Verified Code Receipts • Zero Hallucination
+                15 Verified Repositories • 24 Verified Code Receipts • Grounded Evidence
               </Text>
             </View>
           </View>

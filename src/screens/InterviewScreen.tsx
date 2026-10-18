@@ -193,14 +193,14 @@ export const InterviewScreen: React.FC<InterviewScreenProps> = ({ onNavigateToPa
               </GlassCard>
               </AnimatedListItem>
 
-              {/* FAANG Bar-Raiser Blindspot Radar ($1M Tier Defense) */}
+              {/* Senior Staff Architectural Blindspot Radar */}
               <AnimatedListItem delayIndex={1.5}>
                 {isPro ? (
                   <GlassCard style={styles.radarCard}>
                     <View style={styles.radarHeader}>
                       <View style={styles.radarPill}>
                         <Ionicons name="shield-half-outline" size={13} color={Colors.accent} />
-                        <Text style={styles.radarPillText}>BAR-RAISER BLINDSPOT RADAR (PRO ACTIVE)</Text>
+                        <Text style={styles.radarPillText}>ARCHITECTURAL BLINDSPOT RADAR (PRO ACTIVE)</Text>
                       </View>
                       <Text style={styles.radarRiskBadge}>3 VECTORS ANALYZED</Text>
                     </View>
@@ -244,7 +244,7 @@ export const InterviewScreen: React.FC<InterviewScreenProps> = ({ onNavigateToPa
                       </View>
                       <Text style={styles.radarLockedUpgrade}>Unlock Pro →</Text>
                     </View>
-                    <Text style={styles.radarLockedTitle}>FAANG Bar-Raiser Blindspot Radar</Text>
+                    <Text style={styles.radarLockedTitle}>Senior Staff Architectural Blindspot Radar</Text>
                     <Text style={styles.radarLockedSub}>
                       2 potential architectural traps & edge-case vulnerabilities detected in `{currentQ.relevantFile}`. Unlock Pro to review before answering.
                     </Text>

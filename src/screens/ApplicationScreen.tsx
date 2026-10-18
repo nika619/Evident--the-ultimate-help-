@@ -260,26 +260,26 @@ export const ApplicationScreen: React.FC<ApplicationScreenProps> = ({
               <View style={styles.proofPackTitleBox}>
                 <Text style={styles.proofPackTitle}>Candidate Proof Pack Dossier</Text>
                 <Text style={styles.proofPackSubtext}>
-                  1-page dossier citing verified files, commits, and AST claims.
+                  1-page dossier citing verified files, commits, and code claims.
                 </Text>
               </View>
             </View>
 
-            {/* Cryptographic Merkle Seal Box */}
+            {/* Verifiable Integrity Digest Box */}
             <View style={styles.merkleBox}>
               <View style={styles.merkleHeader}>
                 <Ionicons name="finger-print-outline" size={14} color={Colors.primary} />
                 <Text style={styles.merkleTitle}>
-                  CRYPTOGRAPHIC MERKLE SEAL (PRO ACTIVE)
+                  VERIFIABLE INTEGRITY DIGEST (PRO ACTIVE)
                 </Text>
               </View>
               <View style={styles.merkleHashContainer}>
                 <Text style={styles.merkleHash} numberOfLines={1}>
-                  Root: {merkleRoot}
+                  SHA-256 / Fingerprint: {merkleRoot}
                 </Text>
               </View>
               <Text style={styles.merkleSub}>
-                SHA-256 Merkle root mathematically guarantees zero AI hallucination to senior hiring teams.
+                Authentic SHA-256 digest computed from canonical evidence items and commit references.
               </Text>
             </View>
 
@@ -293,7 +293,7 @@ export const ApplicationScreen: React.FC<ApplicationScreenProps> = ({
           </GlassCard>
         </View>
 
-        {/* Market Value & Seniority Calibrator ($1M Tier Intelligence) */}
+        {/* Market Value & Seniority Calibrator (Evidence-Grounded Scope) */}
         <View style={styles.section}>
           <GlassCard style={styles.calibratorCard}>
             <View style={styles.calibratorHeader}>
