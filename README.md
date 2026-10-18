@@ -3,7 +3,7 @@
 <div align="center">
 
 [![Shipathon 2026](https://img.shields.io/badge/RevenueCat_Shipathon-2026_Next_Gen_Award-blueviolet?style=for-the-badge&logo=revenuecat&logoColor=white)](https://devpost.com)
-[![Tests Passing](https://img.shields.io/badge/Tests-32%2F32_Passing_100%25-10B981?style=for-the-badge&logo=jest&logoColor=white)](https://github.com/nika619/Evident--the-ultimate-help-)
+[![Tests Passing](https://img.shields.io/badge/Tests-39%2F39_Passing_100%25-10B981?style=for-the-badge&logo=jest&logoColor=white)](https://github.com/nika619/Evident.)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Strict_5.x-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Expo](https://img.shields.io/badge/Expo-SDK_54_Native-000020?style=for-the-badge&logo=expo&logoColor=white)](https://expo.dev/)
 [![License](https://img.shields.io/badge/License-MIT-amber?style=for-the-badge)](./LICENSE)
@@ -235,9 +235,11 @@ We believe developer tools must be honest about what is running in code today ve
 | Feature Area | What Evident Does Today (Shipped) | Planned / Roadmap |
 | :--- | :--- | :--- |
 | **Code Extraction** | Reads real Git trees (via GitHub recursive trees API), parses manifests (`package.json`, `requirements.txt`, `Cargo.toml`, `go.mod`), analyzes commit history and author login. | AST-level symbol extraction via Tree-sitter or TypeScript Compiler API. |
+| **Taxonomy Alignment** | Maps extracted skills to official **O\*NET-SOC** codes (e.g. `15-1252.00` Software Developers, `15-2051.00` Data Scientists) and **ESCO** skill URIs. | Automated cross-mapping to enterprise HR-XML and Lightcast taxonomies. |
+| **Calibrated Confidence** | Empirical scoring formula factoring author commit ratios (fork penalty), source file depth (code vs manifest), and temporal freshness decay. | Blameline multi-contributor diff analysis. |
+| **CV Provenance Audit** | Extracts skills from raw CV/resume text, cross-references claims against repository evidence, and computes an audited Credibility Index. | Native PDF/DOCX binary stream ingestion. |
 | **Requirement Matching** | Tokenized n-gram normalization + Jaccard similarity scoring with stop word filtering and must-have weighting. | Dense vector embeddings (e.g., text-embedding-3 or local ONNX embeddings). |
 | **Integrity Seal** | Canonical evidence serialization + real SHA-256 digest via Web Crypto API / Node crypto fallback. | On-chain or Git-signed cryptographic attestation seals. |
-| **Taxonomy Mapping** | Maps framework & language names to structured skill IDs and categories. | Alignment with formal labor taxonomies (O*NET, ESCO). |
 | **Claim Auditor** | Verifies evidence existence, checks for undeclared skills, flags unbacked claims and low-contribution forks. | Automated test suite execution & diff-size verification. |
 
 ---
@@ -260,9 +262,9 @@ Where:
 
 ---
 
-## 8. Test Suite & Formal Verification (32/32 Passing)
+## 8. Test Suite & Formal Verification (39/39 Passing)
 
-Evident includes an automated test harness built with **Jest** verifying all domain logic and services:
+Evident includes an automated test harness built with **Jest** verifying all domain logic, taxonomies, and services:
 
 ```bash
 $ npm test
@@ -273,9 +275,10 @@ $ npm test
  PASS  src/__tests__/interviewService.test.ts
  PASS  src/__tests__/claimAuditor.test.ts
  PASS  src/__tests__/proofGraph.test.ts
+ PASS  src/__tests__/taxonomyAndCvAnalysis.test.ts
 
-Test Suites: 7 passed, 7 total
-Tests:       32 passed, 32 total
+Test Suites: 8 passed, 8 total
+Tests:       39 passed, 39 total
 Snapshots:   0 total
 Ran all test suites.
 ```
@@ -284,6 +287,7 @@ Ran all test suites.
 
 | Test Suite | Verified Invariant |
 | :--- | :--- |
+| `taxonomyAndCvAnalysis.test.ts` | **Taxonomy & CV Audit:** Maps skills to O\*NET & ESCO standards, tests calibrated confidence decay, and cross-references raw CV claims against code evidence. |
 | `claimAuditor.test.ts` | **Claim Verification:** Flags unsupported technologies (e.g., undeclared Kubernetes/AWS) and returns structured warnings for unbacked claims. |
 | `proofGraph.test.ts` | **Relational Integrity:** Verifies skill aggregation, project queries, deduplication, and node-link visual graph generation. |
 | `matchingEngine.test.ts` | **Similarity Matching:** Validates Jaccard similarity scoring, must-have requirements coverage, and grounded bullet synthesis. |
@@ -313,10 +317,18 @@ evident/
 │   │   └── ProofPackModal.tsx       # ProofPack export modal
 │   ├── domain/                      # Pure business logic (Zero UI dependencies)
 │   │   ├── claimAuditor.ts          # Claim auditing & cross-referencing engine
+│   │   ├── confidenceScorer.ts      # Empirical calibrated confidence calculation
 │   │   ├── fixtures.ts              # Clean demo fixtures with test coverage
 │   │   ├── matchingEngine.ts        # Jaccard similarity & coverage calculation
 │   │   ├── proofGraph.ts            # Relational evidence graph algorithms
+│   │   ├── taxonomyEngine.ts        # O*NET & ESCO standard occupational classification
 │   │   └── types.ts                 # Strict TypeScript schemas & evidence models
+│   ├── services/                    # Ingestion & external API interfaces
+│   │   ├── cvAnalysisService.ts     # CV text skill extraction & code provenance audit
+│   │   ├── githubService.ts         # GitHub trees, manifests, and author analysis
+│   │   ├── interviewService.ts      # Code-grounded technical defense prompts
+│   │   ├── proofPackService.ts      # SHA-256 integrity hash calculation
+│   │   └── purchaseService.ts       # RevenueCat In-App Purchases & entitlements
 │   ├── navigation/                  # Typed stack navigation and tab routing
 │   │   └── AppNavigator.tsx
 │   ├── screens/                     # Primary mobile screen views
