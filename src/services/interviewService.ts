@@ -16,68 +16,79 @@ export class InterviewService {
   ): DefenseQuestion[] {
     const questions: DefenseQuestion[] = [];
 
-    // 1. Evident: Deterministic SHA-256 Merkle Provenance & Hallucination Elimination
-    const evidentMerkle = evidence.find((e) => e.id === 'ev_evident_merkle');
-    if (evidentMerkle) {
+    // 1. Evident: Integrity Hashing & Anti-Tamper Attestation
+    const evidentProof = evidence.find(
+      (e) => e.projectId === 'proj_evident' && (e.id === 'demo_ev_proofpack' || e.skillName.toLowerCase().includes('integrity') || e.skillName.toLowerCase().includes('crypto'))
+    );
+    if (evidentProof || projects.some((p) => p.id === 'proj_evident')) {
       questions.push({
-        id: 'q_evident_merkle',
+        id: 'q_evident_proofpack',
         projectId: 'proj_evident',
-        projectName: 'Evident--the-ultimate-help-',
+        projectName: 'evident',
         question:
-          'In Evident, walk me through how your deterministic SHA-256 Merkle root generation in `src/services/proofPackService.ts` guarantees zero AI hallucination in candidate claims. What are the cryptographic boundary conditions?',
+          'In Evident, walk me through how your SHA-256 canonical integrity hash in `src/services/proofPackService.ts` ensures tamper-evidence for candidate evidence dossiers. How do you serialize and deterministically sort the evidence items?',
         intent: 'explain_implementation',
         relevantFile: 'src/services/proofPackService.ts',
-        relevantCommit: evidentMerkle.sourceLocation?.commitHash || '98047cc',
-        targetedSkill: 'Cryptographic Provenance (SHA-256 Merkle)',
-        keyTradeoffHint: 'Deterministic lexicographical sorting of evidence tokens vs performance on huge commit graphs.',
+        relevantCommit: evidentProof?.sourceLocation?.commitHash || '98047cc',
+        targetedSkill: 'Cryptographic Verification & Integrity',
+        keyTradeoffHint:
+          'Deterministic lexicographical serialization of evidence tokens vs computational overhead on large graphs.',
       });
     }
 
-    const evidentRn = evidence.find((e) => e.id === 'ev_evident_rn');
+    const evidentRn = evidence.find(
+      (e) => e.projectId === 'proj_evident' && (e.id === 'demo_ev_rn' || e.skillName.toLowerCase().includes('react'))
+    );
     if (evidentRn) {
       questions.push({
         id: 'q_evident_rn',
         projectId: 'proj_evident',
-        projectName: 'Evident--the-ultimate-help-',
+        projectName: 'evident',
         question:
-          'In `App.tsx`, how did you implement the multi-spectral living aurora canvas shaders and dynamic physics to maintain 60fps across mobile runtimes without battery drain?',
+          'In Evident (`App.tsx` and Zustand state store), how do you structure store subscriptions and manage component re-renders to maintain responsive 60fps performance on mobile devices?',
         intent: 'explore_tradeoff',
         relevantFile: 'App.tsx',
         relevantCommit: evidentRn.sourceLocation?.commitHash || '8628cfc',
         targetedSkill: 'React Native & Mobile Systems',
-        keyTradeoffHint: 'Hardware-accelerated native animations vs JavaScript thread bridge congestion.',
+        keyTradeoffHint:
+          'Selective Zustand selectors to prevent unnecessary re-render trees vs unified state synchronization.',
       });
     }
 
-    // 2. nids-project: ML Network Intrusion & SMOTE
-    const nidsRf = evidence.find((e) => e.id === 'ev_nids_rf');
-    if (nidsRf) {
+    // 2. nids-project: ML Network Intrusion
+    const nidsRf = evidence.find(
+      (e) => e.projectId === 'proj_nids' && (e.id === 'demo_ev_ml' || e.sourceLocation?.filePath?.includes('train_rf'))
+    );
+    if (nidsRf || projects.some((p) => p.id === 'proj_nids')) {
       questions.push({
         id: 'q_nids_rf',
         projectId: 'proj_nids',
         projectName: 'nids-project',
         question:
-          'In nids-project, how did you calibrate SMOTE oversampling alongside the Random Forest hyper-parameters in `model/train_rf.py` to balance intrusion detection sensitivity against false positive spikes on the NSL-KDD dataset?',
+          'In nids-project, how did you calibrate feature selection and Random Forest hyperparameters in `model/train_rf.py` to balance intrusion detection sensitivity against false positives on the NSL-KDD dataset?',
         intent: 'explore_tradeoff',
         relevantFile: 'model/train_rf.py',
-        relevantCommit: nidsRf.sourceLocation?.commitHash || 'e31b09f',
+        relevantCommit: nidsRf?.sourceLocation?.commitHash || 'e31b09f',
         targetedSkill: 'Machine Learning & Security Architecture',
-        keyTradeoffHint: 'Synthetic minority sample fidelity vs overfitting decision trees on anomalous edge cases.',
+        keyTradeoffHint:
+          'Handling class imbalance and feature correlation vs preventing decision tree overfitting on anomalous traffic.',
       });
     }
 
     // 3. SepsisGuard: Model Context Protocol (MCP) & Clinical AI
-    const sepsisMcp = evidence.find((e) => e.id === 'ev_sepsis_mcp');
-    if (sepsisMcp) {
+    const sepsisMcp = evidence.find(
+      (e) => e.projectId === 'proj_sepsis' && (e.id === 'demo_ev_mcp' || e.skillName.toLowerCase().includes('mcp'))
+    );
+    if (sepsisMcp || projects.some((p) => p.id === 'proj_sepsis')) {
       questions.push({
         id: 'q_sepsis_mcp',
         projectId: 'proj_sepsis',
-        projectName: 'SepsisGuard-AI-Real-Time-Sepsis-Intelligence-MCP',
+        projectName: 'sepsis-mcp',
         question:
-          'In SepsisGuard, walk through how you architected the Model Context Protocol (MCP) server in `server.py` for real-time clinical intelligence. How do you handle telemetry streaming latency?',
+          'In sepsis-mcp, walk through how you architected the Model Context Protocol (MCP) server in `server.py` for clinical risk prediction tools. How do you handle schema validation and latency budgets?',
         intent: 'explain_implementation',
         relevantFile: 'server.py',
-        relevantCommit: sepsisMcp.sourceLocation?.commitHash || 'a71e290',
+        relevantCommit: sepsisMcp?.sourceLocation?.commitHash || 'a71e290',
         targetedSkill: 'Model Context Protocol (MCP) & Clinical AI',
         keyTradeoffHint: 'Stateless tool calling overhead vs persistent WebSocket context streaming.',
       });
@@ -119,7 +130,7 @@ export class InterviewService {
       }
     }
 
-    // 5. Absolute Safety Guarantee: If no questions matched yet, synthesize from evidence directly
+    // 5. Fallback safety guarantee: if no questions matched yet, synthesize from evidence directly
     if (questions.length === 0 && evidence.length > 0) {
       for (let i = 0; i < Math.min(3, evidence.length); i++) {
         const ev = evidence[i];
@@ -140,7 +151,7 @@ export class InterviewService {
   }
 
   /**
-   * Generates Staff/Principal level System Design Live Defense Arena scenarios (Pro Tier)
+   * Generates System Design Live Defense Arena scenarios (Pro Tier)
    */
   public static generateSystemDesignArenaQuestions(
     projects: ProjectSource[],
@@ -150,7 +161,7 @@ export class InterviewService {
       {
         id: 'sd_sepsis_telemetry',
         projectId: 'proj_sepsis',
-        projectName: 'SepsisGuard-AI-Real-Time-Sepsis-Intelligence-MCP',
+        projectName: 'sepsis-mcp',
         question:
           'System Design Arena: Your clinical telemetry engine scales to 500 ICU facilities (10,000,000 vital readings/sec). Design the distributed stream-processing architecture. How do you guarantee sub-second p99 latency without dropping clinical alarm frames?',
         intent: 'explore_tradeoff',
@@ -162,13 +173,13 @@ export class InterviewService {
       {
         id: 'sd_evident_merkle',
         projectId: 'proj_evident',
-        projectName: 'Evident--the-ultimate-help-',
+        projectName: 'evident',
         question:
-          'System Design Arena: Evident must verify 100,000 candidate repository proof trees simultaneously during high-volume hiring sprints. Design a geo-replicated, tamper-proof Merkle verification cluster with sub-second response times.',
+          'System Design Arena: Evident must verify candidate repository trees across 100,000 concurrent hiring queries. Design a distributed, tamper-evident verification service with sub-second response times.',
         intent: 'explore_tradeoff',
         relevantFile: 'src/services/proofPackService.ts',
         relevantCommit: '98047cc',
-        targetedSkill: 'Cryptographic Distributed Ledgers & Scalability',
+        targetedSkill: 'Cryptographic Verification & Scalability',
         keyTradeoffHint: 'Read-through caching of immutable AST subtrees vs disk I/O under extreme peak concurrency.',
       },
       {
@@ -186,7 +197,7 @@ export class InterviewService {
       {
         id: 'sd_cache_invalidation',
         projectId: 'proj_evident',
-        projectName: 'Evident--the-ultimate-help-',
+        projectName: 'evident',
         question:
           'System Design Arena: Design an active-active multi-region caching layer for candidate proof dossiers. When a candidate pushes a new git commit, how do you invalidate global recruiter caches within 50ms while preventing cache stampedes?',
         intent: 'explore_tradeoff',

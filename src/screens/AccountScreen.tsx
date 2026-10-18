@@ -315,24 +315,24 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
               </View>
             </View>
 
-            <Text style={styles.settingTitle}>Strict Zero-Hallucination Invariant</Text>
+            <Text style={styles.settingTitle}>Evidence-Backed Claims Invariant</Text>
             <Text style={styles.settingSub}>
-              Every skill & claim is mathematically grounded to verified commit ASTs. Zero hallucinations tolerated.
+              Every skill & claim is grounded in verified source files, dependency manifests, and git commits.
             </Text>
 
             <TouchableOpacity
               style={styles.inspectProofBtn}
               onPress={() => {
                 Alert.alert(
-                  'Zero-Hallucination Protocol 🛡️',
-                  `Compiler Layer: AST Engine v2.4 (Rust)\nActive Root: ${ProofPackService.generateMerkleRoot(evidence).slice(0, 36)}...\n\nStrict zero-hallucination is the non-negotiable core of Evident. This cannot be turned off because hiring committees rely on this exact mathematical guarantee.`,
+                  'Evidence Integrity Attestation 🛡️',
+                  `Integrity Hash: SHA-256 (Canonical payload digest)\nActive Fingerprint: ${ProofPackService.generateFingerprint(evidence)}\nIndexed Artifacts: ${evidence.length} evidence items\n\nEvident guarantees that all resume claims reference verifiable source files and commits from your repositories.`,
                   [{ text: 'Understood' }]
                 );
               }}
               activeOpacity={0.7}
             >
               <Ionicons name="git-commit-outline" size={14} color={Colors.primary} />
-              <Text style={styles.inspectProofBtnText}>Inspect AST Merkle Invariants ›</Text>
+              <Text style={styles.inspectProofBtnText}>Inspect Integrity Fingerprint ›</Text>
             </TouchableOpacity>
           </View>
 
@@ -392,19 +392,19 @@ export const AccountScreen: React.FC<AccountScreenProps> = ({
 
           <View style={styles.terminalCodeBlock}>
             <Text style={styles.terminalPromptLine}>
-              <Text style={{ color: Colors.terminalPrompt }}>$ </Text>evident audit --policy=zero-hallucination --strict
+              <Text style={{ color: Colors.terminalPrompt }}>$ </Text>evident audit --policy=evidence-backed --strict
             </Text>
             <Text style={[styles.terminalOutputLine, { color: Colors.terminalGreen }]}>
-              ✓ [AST-COMPILER] 15/15 repositories verified in local cache
+              ✓ [REPOS] {projects.length} repositories indexed in local cache
             </Text>
             <Text style={[styles.terminalOutputLine, { color: Colors.textMuted }]}>
-              ✓ [COMMITS] 148 commits parsed • 0 ungrounded claims tolerated
+              ✓ [EVIDENCE] {evidence.length} source artifacts parsed • 0 ungrounded claims tolerated
             </Text>
             <Text style={[styles.terminalOutputLine, { color: Colors.coderCyan }]}>
-              ✓ [MERKLE-ROOT] {ProofPackService.generateMerkleRoot(evidence).slice(0, 28)}... (ED25519)
+              ✓ [INTEGRITY] SHA-256 / FNV-1a fingerprint: {ProofPackService.generateFingerprint(evidence)}
             </Text>
             <Text style={[styles.terminalOutputLine, { color: Colors.terminalGreen }]}>
-              ✓ [STATUS] Zero-Hallucination Invariant: 100.0% ENFORCED
+              ✓ [STATUS] Evidence Verification: 100.0% ENFORCED
             </Text>
           </View>
         </GlassCard>
