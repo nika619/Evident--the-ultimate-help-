@@ -1,8 +1,5 @@
 /**
- * Evident AmbientAuroraBackground
- * Autonomous 3D floating kinetic ambient light system for mobile and web.
- * Completely eliminates mouse pointer tracking for pure native mobile readiness,
- * while creating an ethereal 3D optical depth atmosphere.
+ * Ambient background gradient component providing subtle ambient lighting.
  */
 
 import React, { useEffect, useRef } from 'react';
