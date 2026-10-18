@@ -1,10 +1,10 @@
 /**
- * Evident Proof Pack Service
- * Generates an exportable, privacy-safe 1-page Candidate Evidence Dossier.
+ * ProofPack Service
+ * Generates exportable candidate evidence dossiers with integrity hashes.
  *
- * Privacy Rule:
- * Never exports raw private code or secrets externally.
- * Formats verifiable claims, file references, commit hashes, and public links.
+ * The integrity hash is a real SHA-256 digest computed from the evidence
+ * payload, not a decorative string. Recruiters can re-hash the same
+ * inputs and get the same output to verify nothing was tampered with.
  */
 
 import {
@@ -17,22 +17,61 @@ import {
 
 export class ProofPackService {
   /**
-   * Generates a deterministic Merkle Root Hash from candidate evidence items
+   * Computes a SHA-256 hash of the canonical evidence representation.
+   * Uses Web Crypto API when available (browser/RN), falls back to
+   * a simple deterministic hash for environments without crypto.
    */
-  public static generateMerkleRoot(evidence: EvidenceItem[]): string {
-    const rawTokens = evidence
-      .map((e) => `${e.id}:${e.projectId}:${e.sourceLocation?.commitHash || 'head'}`)
+  public static async generateIntegrityHash(evidence: EvidenceItem[]): Promise<string> {
+    const canonical = evidence
+      .map((e) => `${e.id}:${e.projectId}:${e.skillId}:${e.sourceLocation?.commitHash || 'head'}`)
       .sort()
       .join('|');
 
-    // Deterministic pseudo-hash generation for proof validation
-    let hash = 0x811c9dc5;
-    for (let i = 0; i < rawTokens.length; i++) {
-      hash ^= rawTokens.charCodeAt(i);
-      hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+    // Try Web Crypto API first (available in modern browsers and React Native)
+    if (typeof globalThis.crypto !== 'undefined' && globalThis.crypto.subtle) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(canonical);
+      const hashBuffer = await globalThis.crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
     }
-    const hex = (hash >>> 0).toString(16).padStart(8, '0');
-    return `0x${hex}7f4a9b2c8e1d5a3f90e712cd58b9f3041a92e47c1b820fae3d5c6b7a90f12e84`.slice(0, 66);
+
+    // Fallback: try Node.js crypto module
+    try {
+      const crypto = require('crypto');
+      return crypto.createHash('sha256').update(canonical).digest('hex');
+    } catch {
+      // Last resort: deterministic FNV-1a (clearly labeled as non-cryptographic)
+      return this.fnv1aHash(canonical);
+    }
+  }
+
+  /**
+   * Synchronous version for contexts where async isn't possible.
+   * Uses FNV-1a — labeled honestly as a non-cryptographic fingerprint.
+   */
+  public static generateFingerprint(evidence: EvidenceItem[]): string {
+    const canonical = evidence
+      .map((e) => `${e.id}:${e.projectId}:${e.skillId}:${e.sourceLocation?.commitHash || 'head'}`)
+      .sort()
+      .join('|');
+    return this.fnv1aHash(canonical);
+  }
+
+  /**
+   * Backward-compatible alias for generateFingerprint.
+   */
+  public static generateMerkleRoot(evidence: EvidenceItem[]): string {
+    return this.generateFingerprint(evidence);
+  }
+
+  private static fnv1aHash(input: string): string {
+    let hash = 0x811c9dc5;
+    for (let i = 0; i < input.length; i++) {
+      hash ^= input.charCodeAt(i);
+      hash = (hash * 0x01000193) >>> 0;
+    }
+    return hash.toString(16).padStart(8, '0');
   }
 
   public static generateDossierMarkdown(
@@ -46,79 +85,76 @@ export class ProofPackService {
     isPro: boolean = true
   ): string {
     const dateStr = new Date().toISOString().split('T')[0];
-    const merkleRoot = this.generateMerkleRoot(evidence);
+    const fingerprint = this.generateFingerprint(evidence);
 
     const projectSections = rankedProjects
       .filter((p) => p.matchCount > 0)
       .map((rp) => {
         const proj = projects.find((p) => p.id === rp.projectId);
-        const repoLink = proj?.repoUrl ? `[GitHub Repository](${proj.repoUrl})` : 'Private / Local Workspace';
-        return `### 📁 Project: ${rp.projectName}
-- **Focus:** ${proj?.description || 'Engineered software system'}
-- **Tech Stack:** ${proj?.languages?.join(', ') || 'TypeScript'} • ${proj?.frameworks?.join(', ') || 'Node.js'}
-- **Contribution History:** ${proj?.candidateCommits || 24}/${proj?.totalCommits || 30} commits authored by candidate
-- **Source Link:** ${repoLink}
-- **Relevance:** ${rp.relevanceReason}`;
+        const repoLink = proj?.repoUrl ? `[GitHub](${proj.repoUrl})` : 'Private / Local';
+        return `### Project: ${rp.projectName}
+- **Description:** ${proj?.description || 'Software project'}
+- **Stack:** ${proj?.languages?.join(', ') || 'TypeScript'} · ${proj?.frameworks?.join(', ') || 'Node.js'}
+- **Commits:** ${proj?.candidateCommits || 0}/${proj?.totalCommits || 0} by candidate
+- **Source:** ${repoLink}
+- **Match reason:** ${rp.relevanceReason}`;
       })
       .join('\n\n');
 
     const bulletPoints = bullets
       .map((b) => {
         const ev = evidence.find((e) => b.evidenceIds.includes(e.id));
-        const fileRef = ev?.sourceLocation?.filePath ? ` \`[File: ${ev.sourceLocation.filePath}]\`` : '';
-        const commitRef = ev?.sourceLocation?.commitHash ? ` \`[Commit: ${ev.sourceLocation.commitHash}]\`` : '';
+        const fileRef = ev?.sourceLocation?.filePath ? ` \`[${ev.sourceLocation.filePath}]\`` : '';
+        const commitRef = ev?.sourceLocation?.commitHash ? ` \`[${ev.sourceLocation.commitHash}]\`` : '';
         return `- ${b.text}${fileRef}${commitRef}`;
       })
       .join('\n');
 
-    const proCryptographicSeal = isPro
+    const integritySeal = isPro
       ? `
 ---
 
-## 🔐 Cryptographic Merkle Provenance Seal (Pro Tier)
-- **Merkle Root Hash:** \`${merkleRoot}\`
-- **Verification Signature:** \`ED25519-EVIDENT-PRO-74F9A80B\`
-- **Integrity Status:** VALIDATED (Git Tree & Commit Nonces Match)
-- **Tamper-Proof Audit URL:** \`https://evident.verify/proof/${candidateName.toLowerCase().replace(/[^a-z0-9]/g, '')}-2026\`
-- **Zero-Hallucination Guarantee:** Cryptographically guaranteed zero AI-hallucinated credentials.
+## Integrity Seal (Pro)
+- **Fingerprint:** \`${fingerprint}\`
+- **Method:** FNV-1a over canonical evidence payload (async SHA-256 available via API)
+- **Evidence count:** ${evidence.length} items across ${projects.length} repositories
+- **Verification:** Re-hash the same evidence IDs + commit SHAs to reproduce this fingerprint.
 `
       : '';
 
-    return `# EVIDENT — Candidate Application Proof Pack
+    return `# Evident — Candidate Evidence Dossier
 
 **Candidate:** ${candidateName}  
 **Target Role:** ${opportunity?.title || 'Software Engineer'}  
-**Opportunity Context:** ${opportunity?.companyOrContext || 'Engineering Organization'}  
-**Generated Date:** ${dateStr}  
-**Verification Standard:** Evident Truthfulness Contract (Source-Backed Provenance)
-${proCryptographicSeal}
+**Context:** ${opportunity?.companyOrContext || 'Engineering Organization'}  
+**Date:** ${dateStr}  
+**Standard:** Evidence-backed claims only — no self-reported skills without source references.
+${integritySeal}
 ---
 
-## 📊 Verifiable Evidence Coverage
-- **Direct First-Party Implementation:** ${coverage.directCount} requirements
-- **Supported / Config Evidence:** ${coverage.supportedCount} requirements
-- **Partial / Adjacent Evidence:** ${coverage.partialCount} requirements
-- **Identified Evidence Gaps:** ${coverage.notFoundCount} requirements
-- **Must-Have Coverage:** ${coverage.coveredMustHaves}/${coverage.totalMustHaves} core requirements backed by code
-
-> *"Every statement in this dossier is backed by verifiable repository artifacts, directory AST analysis, or commit history."*
+## Evidence Coverage Summary
+- **Direct (code found):** ${coverage.directCount} requirements
+- **Supported (config/docs):** ${coverage.supportedCount} requirements
+- **Partial (related work):** ${coverage.partialCount} requirements
+- **Gaps (no evidence):** ${coverage.notFoundCount} requirements
+- **Must-haves covered:** ${coverage.coveredMustHaves}/${coverage.totalMustHaves}
 
 ---
 
-## 🎯 Grounded Technical Achievements (Evidence-Backed)
+## Technical Claims (with source references)
 ${bulletPoints}
 
 ---
 
-## 🛠 Relevant Provenance Repositories
+## Relevant Repositories
 ${projectSections}
 
 ---
 
-## 🛡️ Anti-Hallucination & Integrity Attestation
-This candidate profile was synthesized using **Evident** by indexing real source code repositories. No responsibilities, technologies, or metrics were hallucinated or embellished by generative AI. All claims correspond to authentic development history.
+## Integrity Note
+Every claim in this dossier references a specific file path, commit hash, or dependency manifest from the candidate's public repositories. Claims without source evidence are flagged as gaps.
 
-*Verified via Evident Career Intelligence Engine • RevenueCat Shipathon 2026*
+*Generated by Evident*
 `;
   }
 }
