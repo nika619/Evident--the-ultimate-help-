@@ -17,7 +17,25 @@
 
 ---
 
+## 📸 App Screenshots
+
+<p align="center">
+  <img src="docs/cover.jpg" alt="Evident Cover" width="100%" />
+</p>
+
+| Home | Apply | Defense |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/home.jpg" width="220" /> | <img src="docs/screenshots/apply.jpg" width="220" /> | <img src="docs/screenshots/arena.jpg" width="220" /> |
+
+| Inspector | Evidence | Paywall |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/inspector-opened.jpg" width="220" /> | <img src="docs/screenshots/evidence.jpg" width="220" /> | <img src="docs/screenshots/paywall-packages.jpg" width="220" /> |
+
+---
+
 ## 📑 Table of Contents
+
+- [App Screenshots](#-app-screenshots)
 
 - [1. Executive Summary \& The Industry Problem](#1-executive-summary--the-industry-problem)
 - [2. The 5-Dimensional Evidence Model](#2-the-5-dimensional-evidence-model)
@@ -388,5 +406,6 @@ in the Software without restriction...
 
 <div align="center">
 <b>Evident</b> — <i>Built with conviction for the RevenueCat Shipathon 2026.</i><br/>
-<sub>Don't Claim It. Prove It.</sub>
+<sub>Don't Claim It. Prove It.</sub><br/><br/>
+Built by [Mayank Tiwari](https://github.com/nika619) · [Hire me on Contra](https://contra.com/mayank_tiwari_a4vkcjsh)
 </div>
